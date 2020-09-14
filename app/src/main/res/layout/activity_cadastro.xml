@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/degrade"
+    tools:context=".activity.CadastroActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/logo" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editNome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_person"
+                    android:drawablePadding="6dp"
+                    android:hint="Digite seu Nome"
+                    android:textColor="@android:color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editCpf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_cpf"
+                    android:drawablePadding="6dp"
+                    android:hint="Digite seu CPF"
+                    android:inputType="numberSigned"
+                    android:textColor="@android:color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editContato"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_contato"
+                    android:drawablePadding="6dp"
+                    android:hint="Digite seu Contato"
+                    android:inputType="numberSigned"
+                    android:textColor="@android:color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_email_black_24dp"
+                    android:drawablePadding="6dp"
+                    android:hint="Digite seu Email"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@android:color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editSenha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_lock"
+                    android:drawablePadding="6dp"
+                    android:hint="Digite sua Senha"
+                    android:inputType="textPassword"
+                    android:textColor="@android:color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editSenhaConfirmar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_lock"
+                    android:drawablePadding="6dp"
+                    android:hint="Confirme sua Senha"
+                    android:inputType="textPassword"
+                    android:textColor="@android:color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorPrimaryDark"
+                android:onClick="validarCadastro"
+                android:text="Cadastrar"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:drawableLeft="@drawable/ic_arrow_back"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:onClick="voltar"
+                android:text="Voltar"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:drawableStart="@drawable/ic_contato"
+                android:drawableTint="#AAA"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:text="(91) 98182-2113"
+                android:textColor="#AAA"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
