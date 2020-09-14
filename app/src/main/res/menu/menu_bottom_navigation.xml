@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/ic_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Home"/>
+
+    <item android:id="@+id/ic_produto"
+        android:icon="@drawable/ic_produto"
+        android:title="Produtos"/>
+
+    <item android:id="@+id/ic_cliente"
+        android:icon="@drawable/ic_user"
+        android:iconTint="@android:color/black"
+        android:title="Clientes"/>
+
+    <item android:id="@+id/ic_orcamento"
+        android:icon="@drawable/ic_money"
+        android:title="Orçamento"/>
+
+</menu>

@@ -57,4 +57,8 @@ dependencies {
     //MaterialSearchView
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
+    //BottomNavigation
+    implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
+    implementation "com.android.support:design:28.0.0"
+
 }
