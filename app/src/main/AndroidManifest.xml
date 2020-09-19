@@ -17,7 +17,16 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.QuemSomosActivity"></activity>
+        <activity android:name=".activity.CadastrarProdutoActivity"
+            android:parentActivityName=".activity.ProdutosActivity"></activity>
+        <activity
+            android:name=".activity.ProdutosActivity"
+            android:label="@string/title_activity_produtos"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.QuemSomosActivity"
+            android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.ConfiguracaoActivity" />
         <activity android:name=".activity.ClienteActivity" />

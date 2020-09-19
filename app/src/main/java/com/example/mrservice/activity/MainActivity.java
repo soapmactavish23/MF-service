@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.mrservice.R;
 import com.example.mrservice.config.ConfiguracaoFirebase;
@@ -75,4 +76,13 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void quemSomos(View view){
+        startActivity(new Intent(this, QuemSomosActivity.class));
+    }
+
+    public void abrirProdutos(View view){
+        startActivity(new Intent(this, ProdutosActivity.class));
+    }
+
 }
