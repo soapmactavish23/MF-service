@@ -2,6 +2,8 @@ package com.example.mrservice.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -21,48 +23,44 @@ public class QuemSomosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quem_somos);
 
-        /*Element contato = new Element();
+        //Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Element contato = new Element();
         contato.setTitle("Contato: (91) 98182-2113");
+        contato.setIconDrawable(R.drawable.ic_contato);
+        contato.setIconTint(R.color.dark);
+        contato.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel",  "9198182-2113", null)));
+            }
+        });
 
-        //Equipamentos
-        Element profissional = new Element();
-        profissional.setTitle("PROFISSIONAL");
-
-        Element REMANUFATURADO = new Element();
-        REMANUFATURADO.setTitle("REMANUFATURADO");
-
-        Element PILATES = new Element();
-        PILATES.setTitle("AO AR LIVRE");
-
-        Element arlivre = new Element();
-        arlivre.setTitle("PILATES");
-
-        //Cardio
-        Element ESTEIRA = new Element();
+        Element face = new Element();
+        face.setTitle("Curta no Facebook");
+        face.setIconDrawable(R.drawable.face);
+        face.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/MFSTORESERVICE/")));
+            }
+        });
 
         View aboutPage = new AboutPage(QuemSomosActivity.this)
                 .isRTL(false)
                 .setImage(R.drawable.logo_about)
                 .setDescription("A MF service, fundada em novembro de 2012, é uma empresa que procura a satisfação dos seus clientes aliando a oferta de produtos que são novidades no mercado nacional e internacional a um atendimento especializado e personalizado.\n" +
-                        "Oferecemos uma diversificada linha de produtos e serviços tais como:")
-                .addGroup("1- EQUIPAMENTOS")
-                .addItem(profissional)
-                .addItem(REMANUFATURADO)
-                .addItem(PILATES)
-                .addItem(arlivre)
-                .addGroup("2- CÁRDIO")
-                .addItem()
+                        "Confira !")
                 .addGroup("Entre em Contato")
                 .addEmail("mfstoreservices@gmail.com", "Envie um e-mail")
                 .addItem(contato)
                 .addGroup("Redes Sociais")
-                .addFacebook("the.HenrickNogueira", "Curta no Facebook: MFSTORESERVICE")
+                .addItem(face)
                 .addInstagram("mfstoreservice", "Siga no Instagram")
                 .create();
-        //Toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(aboutPage);*/
+        setContentView(aboutPage);
     }
 }

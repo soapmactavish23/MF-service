@@ -13,4 +13,58 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string-array name="categorias">
+        <item>EQUIPAMENTOS</item>
+        <item>CÁRDIO</item>
+        <item>ACESSÓRIOS</item>
+        <item>PISO</item>
+        <item>REVESTIMENTO</item>
+        <item>BRINQUEDO</item>
+    </string-array>
+    
+    <string-array name="equipamentos">
+        <item>PROFISSIONAL</item>
+        <item>REMANUFATURADO</item>
+        <item>PILATES</item>
+        <item>AO AR LIVRE</item>
+    </string-array>
+    
+    <string-array name="cardio">
+        <item>ESTEIRA</item>
+        <item>BIKE</item>
+        <item>ELÍPTICO</item>
+        <item>ESTAÇÃO</item>
+        <item>SIMULADOR</item>
+    </string-array>
+
+    <string-array name="acessorios">
+        <item>MUSCULAÇÃO</item>
+        <item>GINÁSTICA</item>
+        <item>ARTE MARCIAL</item>
+        <item>FUNCIONAL</item>
+        <item>CROSSFIT</item>
+        <item>HIDROGINÁSTICA</item>
+        <item>PILATES</item>
+        <item>CATRACA</item>
+        <item>PEÇA REPOSIÇÃO</item>
+    </string-array>
+
+    <string-array name="piso">
+        <item>VINÍLICO</item>
+        <item>RESINADO</item>
+        <item>EMBORRACHADO</item>
+        <item>TÁTIL</item>
+        <item>GRAMA SINTÉTICA: DECORATIVA E ESPORTIVA</item>
+    </string-array>
+
+    <string-array name="revestimento">
+        <item>PAREDE</item>
+        <item>AZULEJO</item>
+    </string-array>
+
+    <string-array name="brinquedo">
+        <item>PLAYGROUND</item>
+        <item>ÁREA DE LAZER</item>
+    </string-array>
 </resources>
