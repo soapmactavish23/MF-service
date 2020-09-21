@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -46,6 +47,8 @@ public class ProdutosActivity extends AppCompatActivity {
     private Produto produtoSelecionado;
     private AlertDialog dialog;
     private String filtroCategoria;
+    private String filtroTipoProduto;
+    private Button btnTipoProduto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class ProdutosActivity extends AppCompatActivity {
         //Configuracoes iniciais
         produtosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("produtos");
         recyclerViewProdutos = findViewById(R.id.recyclerViewProdutos);
+        btnTipoProduto = findViewById(R.id.btnTipoProduto);
 
         //Configurar o RecyclerView
         recyclerViewProdutos.setLayoutManager(new LinearLayoutManager(this));
@@ -199,6 +203,95 @@ public class ProdutosActivity extends AppCompatActivity {
                     for(DataSnapshot ds : tipo_produto.getChildren()){
                         listaProdutos.add(ds.getValue(Produto.class));
                     }
+                }
+                Collections.reverse(listaProdutos);
+                adapterProdutos.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void recuperarPorTipoProduto(View view){
+        try {
+            if(!filtroCategoria.isEmpty()) {
+                AlertDialog.Builder dialogCategoria = new AlertDialog.Builder(this);
+                dialogCategoria.setTitle("Selecione o tipo de produto desejado");
+
+                //Configurar spinner
+                View viewSpinner = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+                final Spinner spinner = viewSpinner.findViewById(R.id.spinnerFiltro);
+                //Carregar Spinner de categoria
+                String[] tipoProduto = getResources().getStringArray(R.array.equipamentos);
+                switch (filtroCategoria) {
+                    case "EQUIPAMENTOS":
+                        tipoProduto = getResources().getStringArray(R.array.equipamentos);
+                        break;
+                    case "CÁRDIOS":
+                        tipoProduto = getResources().getStringArray(R.array.cardio);
+                        break;
+                    case "ACESSÓRIOS":
+                        tipoProduto = getResources().getStringArray(R.array.acessorios);
+                        break;
+                    case "PISOS":
+                        tipoProduto = getResources().getStringArray(R.array.piso);
+                        break;
+                    case "REVESTIMENTOS":
+                        tipoProduto = getResources().getStringArray(R.array.revestimento);
+                        break;
+                    case "BRINQUEDOS":
+                        tipoProduto = getResources().getStringArray(R.array.brinquedo);
+                        break;
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        this, android.R.layout.simple_spinner_item, tipoProduto
+                );
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+
+                dialogCategoria.setView(viewSpinner);
+
+                dialogCategoria.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        filtroTipoProduto = spinner.getSelectedItem().toString();
+                        recuperarPorTipoProdutoFirebase();
+                    }
+                });
+                dialogCategoria.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                AlertDialog dialog = dialogCategoria.create();
+                dialog.show();
+            }
+        }catch (Exception e){
+            exibirMensagem("Selecione uma Categoria");
+        }
+    }
+
+    public void recuperarPorTipoProdutoFirebase(){
+        dialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Recuperando Produtos")
+                .setCancelable(false)
+                .build();
+        dialog.show();
+        //Configura nó por categoria
+        produtosCategoriaRef = ConfiguracaoFirebase.getFirebaseDatabase()
+                .child("produtos").child(filtroCategoria).child(filtroTipoProduto);
+        produtosCategoriaRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listaProdutos.clear();
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    listaProdutos.add(ds.getValue(Produto.class));
                 }
                 Collections.reverse(listaProdutos);
                 adapterProdutos.notifyDataSetChanged();
