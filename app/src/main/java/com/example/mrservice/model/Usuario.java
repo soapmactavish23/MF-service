@@ -46,7 +46,6 @@ public class Usuario implements Serializable {
         return usuarioMap;
     }
 
-
     public String getId() {
         return id;
     }

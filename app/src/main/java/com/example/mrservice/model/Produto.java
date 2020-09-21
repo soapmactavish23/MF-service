@@ -1,11 +1,22 @@
 package com.example.mrservice.model;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.config.UsuarioFirebase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Produto implements Serializable {
     private String id;
@@ -24,9 +35,40 @@ public class Produto implements Serializable {
 
     public void salvar(){
         DatabaseReference produtoRef = ConfiguracaoFirebase.getFirebaseDatabase().child("produtos");
-        produtoRef.child(UsuarioFirebase.getIdentificadorUsuario())
-                .child(getId())
-                .setValue(this);
+        produtoRef.child(getCategoria()).child(getProduto()).child(getId()).setValue(this);
+    }
+
+    public void deletar(){
+        DatabaseReference produtoRef = ConfiguracaoFirebase.getFirebaseDatabase()
+                .child("produtos")
+                .child(getCategoria())
+                .child(getProduto())
+                .child(getId());
+        produtoRef.removeValue();
+    }
+
+    public void atualizar(){
+        DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
+        DatabaseReference produtosRef = firebaseRef
+                .child("produtos")
+                .child(getCategoria())
+                .child(getProduto())
+                .child(getId());
+        Map<String, Object> valoresProdutos = converterParaMap();
+        produtosRef.updateChildren(valoresProdutos);
+    }
+
+    public Map<String, Object> converterParaMap(){
+        HashMap<String, Object> produtoMap = new HashMap<>();
+        produtoMap.put("titulo", getTitulo());
+        produtoMap.put("descricao", getDescricao());
+        produtoMap.put("id", getId());
+        produtoMap.put("precoVenda", getPrecoVenda());
+        produtoMap.put("precoCusto", getPrecoCusto());
+        produtoMap.put("fotos", getFotos());
+        produtoMap.put("categoria", getCategoria());
+        produtoMap.put("produto", getProduto());
+        return produtoMap;
     }
 
     public String getId() {

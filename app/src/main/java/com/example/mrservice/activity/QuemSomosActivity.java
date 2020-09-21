@@ -41,7 +41,8 @@ public class QuemSomosActivity extends AppCompatActivity {
 
         Element face = new Element();
         face.setTitle("Curta no Facebook");
-        face.setIconDrawable(R.drawable.face);
+        face.setIconDrawable(R.drawable.about_icon_facebook);
+        face.setIconTint(R.color.about_facebook_color);
         face.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

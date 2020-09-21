@@ -64,4 +64,10 @@ dependencies {
     //About
     implementation 'com.github.medyo:android-about-page:1.2.5'
     implementation 'com.github.BlacKCaT27:CurrencyEditText:2.0.2'
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //Spots
+    implementation 'com.github.d-max:spots-dialog:1.1@aar'
 }

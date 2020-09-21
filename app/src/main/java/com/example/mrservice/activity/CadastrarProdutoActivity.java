@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
@@ -19,35 +18,36 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.blackcat.currencyedittext.CurrencyEditText;
+import com.bumptech.glide.Glide;
 import com.example.mrservice.R;
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.helper.Permissao;
-import com.example.mrservice.helper.RecyclerItemClickListener;
 import com.example.mrservice.model.Produto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import dmax.dialog.SpotsDialog;
+
 public class CadastrarProdutoActivity extends AppCompatActivity {
 
     private TextInputEditText editTitulo, editDescricao;
     private CurrencyEditText editPrecoVenda, editPrecoCusto;
-    private ImageView imagem1, imagem2, imagem3;
+    private ImageView imagem1, imagem2, imagem3, imagem4, imagem5, imagem6;
     private Spinner spinnerCategoria, spinnerTipoProduto;
+    private android.app.AlertDialog dialog;
 
     private String[] permissoes = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -57,6 +57,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private List<String> listaUrlFotos = new ArrayList<>();
     private StorageReference storage;
     private Produto produto1;
+    private Produto produtoSelecionado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,9 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         imagem1 = findViewById(R.id.imgCadastroProduto1);
         imagem2 = findViewById(R.id.imgCadastroProduto2);
         imagem3 = findViewById(R.id.imgCadastroProduto3);
+        imagem4 = findViewById(R.id.imgCadastroProduto4);
+        imagem5 = findViewById(R.id.imgCadastroProduto5);
+        imagem6 = findViewById(R.id.imgCadastroProduto6);
         spinnerCategoria = findViewById(R.id.spinnerCategoria);
         spinnerTipoProduto = findViewById(R.id.spinnerTipoProduto);
         storage = ConfiguracaoFirebase.getStorageReference();
@@ -119,6 +123,27 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                 );
                 adapterProduto.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerTipoProduto.setAdapter(adapterProduto);
+
+                //Dados usuario
+                Bundle bundle = getIntent().getExtras();
+                if(bundle != null) {
+                    produtoSelecionado = (Produto) bundle.getSerializable("produtoSelecionado");
+                    editTitulo.setText(produtoSelecionado.getTitulo());
+                    editDescricao.setText(produtoSelecionado.getDescricao());
+                    editPrecoVenda.setText(produtoSelecionado.getPrecoVenda());
+                    editPrecoCusto.setText(produtoSelecionado.getPrecoCusto());
+                    //Foto de Produto
+                    for(int index = 0; index < produtoSelecionado.getFotos().size(); index ++){
+                        String foto = produtoSelecionado.getFotos().get(index);
+                        Uri uri = Uri.parse(foto);
+                        String img = "imagem" + index;
+                        if(uri != null){
+                            Glide.with(CadastrarProdutoActivity.this).load(uri).into(imagem1);
+                        }else{
+                            imagem1.setImageResource(R.drawable.galery_padrao);
+                        }
+                    }
+                }
             }
 
             @Override
@@ -140,7 +165,11 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                 if(!precoCusto.isEmpty()){
                     if(!precoVenda.isEmpty()){
                         if(!descricao.isEmpty()){
-                            produto1 = new Produto();
+                            if(produtoSelecionado != null){
+                                produto1 = produtoSelecionado;
+                            }else{
+                                produto1 = new Produto();
+                            }
                             produto1.setTitulo(titulo);
                             produto1.setDescricao(descricao);
                             produto1.setPrecoVenda(precoVenda);
@@ -149,35 +178,38 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                             produto1.setProduto(produto);
                             salvarProduto();
                         }else{
-                            exibirMensagemErro("Preencha o Campo de Descrição");
+                            exibirMensagem("Preencha o Campo de Descrição");
                         }
                     }else {
-                        exibirMensagemErro("Preencha o Campo Preço de Venda");
+                        exibirMensagem("Preencha o Campo Preço de Venda");
                     }
                 }else{
-                    exibirMensagemErro("Preencha o Campo Preço de Custo");
+                    exibirMensagem("Preencha o Campo Preço de Custo");
                 }
             }else{
-                exibirMensagemErro("Preencha o Campo Título");
+                exibirMensagem("Preencha o Campo Título");
             }
         }else{
-            exibirMensagemErro("Selecione ao menos uma foto");
+            exibirMensagem("Selecione ao menos uma foto");
         }
     }
 
-    private void exibirMensagemErro(String msg){
+    private void exibirMensagem(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void salvarProduto(){
+        dialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Salvando Produto")
+                .setCancelable(false)
+                .build();
+        dialog.show();
         int tamanhoLista = listaFotosRecuperadas.size();
         for(int i = 0; i < tamanhoLista; i++){
             String urlImagem = listaFotosRecuperadas.get(i);
             salvarFotoStorage(urlImagem, tamanhoLista, i);
         }
-        produto1.salvar();
-        exibirMensagemErro("Sucesso ao Salvar Usuário");
-        finish();
     }
 
     private void salvarFotoStorage(String urlString, final int totFotos, int contador){
@@ -191,14 +223,25 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
+                while(!uri.isComplete());
+                Uri url = uri.getResult();
+                final String urlConvertida = url.toString();
                 storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
-                        Uri url = task.getResult();
-                        String urlConvertida = url.toString();
                         listaUrlFotos.add(urlConvertida);
                         if(totFotos == listaUrlFotos.size()){
                             produto1.setFotos(listaUrlFotos);
+                            if(produtoSelecionado == null){
+                                produto1.salvar();
+                                dialog.dismiss();
+                                finish();
+                            }else{
+                                produto1.atualizar();
+                                dialog.dismiss();
+                                finish();
+                            }
                         }
                     }
                 });
@@ -206,7 +249,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                exibirMensagemErro("Fala ao fazer upload");
+                exibirMensagem("Fala ao fazer upload");
                 Log.i("INFO", "FALHA: " + e.getMessage());
             }
         });
@@ -223,6 +266,15 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                 break;
             case R.id.imgCadastroProduto3:
                 escolherImagem(3);
+                break;
+            case R.id.imgCadastroProduto4:
+                escolherImagem(4);
+                break;
+            case R.id.imgCadastroProduto5:
+                escolherImagem(5);
+                break;
+            case R.id.imgCadastroProduto6:
+                escolherImagem(6);
                 break;
         }
     }
@@ -246,6 +298,12 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                 imagem2.setImageURI(imagemSelecionada);
             }else if(requestCode == 3){
                 imagem3.setImageURI(imagemSelecionada);
+            }else if(requestCode == 4){
+                imagem4.setImageURI(imagemSelecionada);
+            }else if(requestCode == 5){
+                imagem5.setImageURI(imagemSelecionada);
+            }else if(requestCode == 6){
+                imagem6.setImageURI(imagemSelecionada);
             }
             listaFotosRecuperadas.add(caminhoImagem);
         }
