@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,16 +15,27 @@ import android.view.View;
 import com.example.mrservice.R;
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.config.UsuarioFirebase;
+import com.example.mrservice.model.Produto;
 import com.example.mrservice.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.example.mrservice.activity.GaleryActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth autenticacao;
+    private String[] activits = {
+            "PRODUTOS",
+            "SERVICOS",
+            "ORCAMENTOS",
+            "TRABALHOS FEITOS",
+            "CLIENTES SATISFEITOS",
+            "NOSSOS CLIENTES",
+            "NOSSOS PARCEIROS"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +94,70 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void abrirProdutos(View view){
-        startActivity(new Intent(this, ProdutosActivity.class));
+        abrir(activits[0]);
+    }
+
+    public void abrirServicos(View view){
+        abrir(activits[1]);
+    }
+
+    public void abrirOrcamento(View view){
+        abrir(activits[2]);
+    }
+
+    public void abrirTrabalhosFeitos(View view){
+        abrir(activits[3]);
+    }
+
+    public void abrirClientesSatisfeitos(View view){
+        abrir(activits[4]);
+    }
+
+    public void abrirNossosClientes(View view){
+        abrir(activits[5]);
+    }
+
+    public void abrirNossosParceiros(View view){
+        abrir(activits[6]);
+    }
+
+    private void abrir(final String activity) {
+        DatabaseReference databaseReference = ConfiguracaoFirebase.getFirebaseDatabase();
+        databaseReference.child("usuarios")
+                .child(UsuarioFirebase.getIdentificadorUsuario())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Usuario usuario = dataSnapshot.getValue(Usuario.class);
+                        switch (activity){
+                            case "PRODUTOS":
+                                Intent intent_produtos = new Intent(MainActivity.this, ProdutosActivity.class);
+                                intent_produtos.putExtra("DadosUsuario", usuario);
+                                startActivity(intent_produtos);
+                                break;
+                            case "SERVICOS":
+                                break;
+                            case "ORCAMENTO":
+                                break;
+                            case "TRABALHOS FEITOS":
+                                Intent intent_trabalhos = new Intent(MainActivity.this, TrabalhosFeitosActivity.class);
+                                intent_trabalhos.putExtra("DadosUsuario", usuario);
+                                startActivity(intent_trabalhos);
+                                break;
+                            case "CLIENTES SATISFEITOS":
+                                break;
+                            case "NOSSOS CLIENTES":
+                                break;
+                            case "NOSSOS PARCEIROS":
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
 }

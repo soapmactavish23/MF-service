@@ -70,4 +70,13 @@ dependencies {
 
     //Spots
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
+
+    //CarrouselView
+    implementation 'com.synnapps:carouselview:0.1.5'
+
+    //Galery
+    implementation 'com.veinhorn.scrollgalleryview:library:1.2.6'
+    implementation 'com.veinhorn.scrollgalleryview:picasso-loader:1.2.4'
+    implementation 'com.veinhorn.scrollgalleryview:glide-loader:1.2.4'
+    implementation 'com.veinhorn.scrollgalleryview:fresco-loader:1.2.4'
 }

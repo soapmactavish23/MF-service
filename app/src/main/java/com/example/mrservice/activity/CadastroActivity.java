@@ -106,7 +106,7 @@ public class CadastroActivity extends AppCompatActivity {
                     try{
                         String id = Base64Custom.codificarBase64(usuario.getEmail());
                         usuario.setId(id);
-                        usuario.setTipo_usuario("ADM");
+                        usuario.setTipo_usuario("CLIENTE");
                         usuario.salvar();
 
                         //Salvar dados no profile do firebase

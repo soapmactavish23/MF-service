@@ -22,14 +22,14 @@
         <item>REVESTIMENTOS</item>
         <item>BRINQUEDOS</item>
     </string-array>
-    
+
     <string-array name="equipamentos">
         <item>PROFISSIONAL</item>
         <item>REMANUFATURADO</item>
         <item>PILATES</item>
         <item>AO AR LIVRE</item>
     </string-array>
-    
+
     <string-array name="cardio">
         <item>ESTEIRA</item>
         <item>BIKE</item>
@@ -67,4 +67,5 @@
         <item>PLAYGROUND</item>
         <item>ÁREA DE LAZER</item>
     </string-array>
+    <string name="title_activity_trabalhos_feitos">TrabalhosFeitosActivity</string>
 </resources>

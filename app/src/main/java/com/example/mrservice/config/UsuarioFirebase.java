@@ -115,11 +115,9 @@ public class UsuarioFirebase {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Usuario usuario = dataSnapshot.getValue(Usuario.class);
                     String tipoUsuario = usuario.getTipo_usuario();
-                    if(tipoUsuario.equals("CLIENTE")){
-                        activity.startActivity(new Intent(activity, ClienteActivity.class));
-                    }else{
-                        activity.startActivity(new Intent(activity, MainActivity.class));
-                    }
+                    Intent intent = new Intent(activity, MainActivity.class);
+                    intent.putExtra("tipoUsuario", tipoUsuario);
+                    activity.startActivity(intent);
                 }
 
                 @Override

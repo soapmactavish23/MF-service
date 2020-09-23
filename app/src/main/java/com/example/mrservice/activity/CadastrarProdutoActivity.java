@@ -124,7 +124,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                 adapterProduto.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerTipoProduto.setAdapter(adapterProduto);
 
-                //Dados usuario
+                //Dados produto
                 Bundle bundle = getIntent().getExtras();
                 if(bundle != null) {
                     produtoSelecionado = (Produto) bundle.getSerializable("produtoSelecionado");

@@ -17,8 +17,23 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.CadastrarProdutoActivity"
-            android:parentActivityName=".activity.ProdutosActivity"></activity>
+        <activity android:name=".activity.DetalhesTrabalhosFeitosActivity"
+            android:parentActivityName=".activity.TrabalhosFeitosActivity"/>
+        <activity
+            android:name=".activity.CadastrarTrabalhosFeitosActivity"
+            android:parentActivityName=".activity.TrabalhosFeitosActivity" />
+        <activity
+            android:name=".activity.TrabalhosFeitosActivity"
+            android:label="@string/title_activity_trabalhos_feitos"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.GaleryActivity" />
+        <activity
+            android:name=".activity.DetalhesProdutoActivity"
+            android:parentActivityName=".activity.ProdutosActivity" />
+        <activity
+            android:name=".activity.CadastrarProdutoActivity"
+            android:parentActivityName=".activity.ProdutosActivity" />
         <activity
             android:name=".activity.ProdutosActivity"
             android:label="@string/title_activity_produtos"

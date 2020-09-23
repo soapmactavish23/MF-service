@@ -9,6 +9,7 @@ import com.example.mrservice.adapter.AdapterProdutos;
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.helper.RecyclerItemClickListener;
 import com.example.mrservice.model.Produto;
+import com.example.mrservice.model.Usuario;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,7 @@ public class ProdutosActivity extends AppCompatActivity {
     private String filtroCategoria;
     private String filtroTipoProduto;
     private Button btnTipoProduto;
+    private Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,16 +88,18 @@ public class ProdutosActivity extends AppCompatActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        exibirMensagem("Abrir Detalhes");
+                        produtoSelecionado = listaProdutos.get(position);
+                        Intent intent = new Intent(ProdutosActivity.this, DetalhesProdutoActivity.class);
+                        intent.putExtra("produtoSelecionado", produtoSelecionado);
+                        startActivity(intent);
                     }
 
                     @Override
                     public void onLongItemClick(View view, final int position) {
-                        exibirMensagem("Abrir Update");
-                        produtoSelecionado = listaProdutos.get(position);
+                        /*produtoSelecionado = listaProdutos.get(position);
                         Intent intent = new Intent(ProdutosActivity.this, CadastrarProdutoActivity.class);
                         intent.putExtra("produtoSelecionado", produtoSelecionado);
-                        startActivity(intent);
+                        startActivity(intent);*/
                     }
 
                     @Override
@@ -105,7 +109,14 @@ public class ProdutosActivity extends AppCompatActivity {
                 }
         ));
 
-        swipe();
+        //Checar se o usuario e adm
+        Bundle bundle = getIntent().getExtras();
+        usuario = (Usuario) bundle.getSerializable("DadosUsuario");
+        if(usuario.getTipo_usuario().equals("ADM")){
+            swipe();
+        }else{
+            fab.setVisibility(View.GONE);
+        }
 
     }
 
