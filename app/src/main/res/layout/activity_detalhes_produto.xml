@@ -8,7 +8,14 @@
     android:background="@drawable/degrade"
     tools:context=".activity.DetalhesProdutoActivity">
 
-    <include layout="@layout/toolbar"/>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:title="Detalhes" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -87,7 +94,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:clickable="true"
-                android:onClick="abrirGalery"
                 app:srcCompat="@drawable/orcamento">
 
             </com.google.android.material.floatingactionbutton.FloatingActionButton>

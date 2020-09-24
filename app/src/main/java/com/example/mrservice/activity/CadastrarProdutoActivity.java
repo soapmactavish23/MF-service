@@ -66,6 +66,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
         //Validar Permissoes
         Permissao.validarPermissoes(permissoes, this, 1);
@@ -151,6 +152,12 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
     }
 
     public void validarDadosProduto(View view){

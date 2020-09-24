@@ -30,7 +30,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes_produto);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar5);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
@@ -47,6 +47,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         if(bundle != null) {
             produtoSelecionado = (Produto) bundle.getSerializable("produtoSelecionado");
             txtTitulo.setText(produtoSelecionado.getTitulo());
+            toolbar.setTitle(produtoSelecionado.getTitulo());
             txtDescricao.setText(produtoSelecionado.getDescricao());
             txtCategoria.setText(produtoSelecionado.getCategoria());
             txtTipoProduto.setText(produtoSelecionado.getProduto());

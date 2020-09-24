@@ -68,4 +68,5 @@
         <item>ÁREA DE LAZER</item>
     </string-array>
     <string name="title_activity_trabalhos_feitos">TrabalhosFeitosActivity</string>
+    <string name="title_activity_clientes_satisfeitos">ClientesSatisfeitosActivity</string>
 </resources>

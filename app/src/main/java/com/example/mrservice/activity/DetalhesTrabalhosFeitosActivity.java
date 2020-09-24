@@ -38,6 +38,7 @@ public class DetalhesTrabalhosFeitosActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             trabalhosFeitos = (TrabalhosFeitos) bundle.getSerializable("trabalhoFeitoSelecionado");
+            toolbar.setTitle(trabalhosFeitos.getTitulo());
             txtTitulo.setText(trabalhosFeitos.getTitulo());
             txtDescricao.setText(trabalhosFeitos.getDescricao());
             ImageListener imageListener = new ImageListener() {

@@ -145,6 +145,9 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(intent_trabalhos);
                                 break;
                             case "CLIENTES SATISFEITOS":
+                                Intent intent_clientes_satisfeitos = new Intent(MainActivity.this, ClientesSatisfeitosActivity.class);
+                                intent_clientes_satisfeitos.putExtra("DadosUsuario", usuario);
+                                startActivity(intent_clientes_satisfeitos);
                                 break;
                             case "NOSSOS CLIENTES":
                                 break;

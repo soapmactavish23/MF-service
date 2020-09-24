@@ -80,7 +80,7 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.editEmail);
         txtCpf = findViewById(R.id.editCpf);
         txtContato = findViewById(R.id.editContato);
-        imgEditarPerfil = findViewById(R.id.imgFotoPerfil);
+        imgEditarPerfil = findViewById(R.id.imgFotoCliente);
         btnAlterar = findViewById(R.id.btnAlterar);
         btnMudarSenha = findViewById(R.id.btnMudarSenha);
         btnExcluirConta = findViewById(R.id.btnExcluirConta);

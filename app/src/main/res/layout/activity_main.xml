@@ -272,8 +272,7 @@
                     android:id="@+id/texT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
-                    android:text="Nossos Clientes"
+                    android:text="Clientes"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -310,7 +309,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Nossos Parceiros"
+                    android:text="Parceiros"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"

@@ -11,18 +11,19 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.mrservice.R;
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.helper.Permissao;
-import com.example.mrservice.model.TrabalhosFeitos;
+import com.example.mrservice.model.ClientesSatisfeitos;
+import com.example.mrservice.model.Produto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,30 +32,30 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ByteArrayOutputStream;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
 
-public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
+public class CadastrarClientesSatisfeitosActivity extends AppCompatActivity {
 
-    private TextInputEditText editTitulo, editDescricao;
-    private ImageView imagem1, imagem2;
-    private android.app.AlertDialog dialog;
+    private CircleImageView imgFotoCliente;
+    private TextInputEditText editNomeCliente, editDepoimento;
+    private String foto = "";
+    private ClientesSatisfeitos clientesSatisfeitos;
     private String[] permissoes = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
-    private List<String> listaFotosRecuperadas = new ArrayList<>();
-    private List<String> listaUrlFotos = new ArrayList<>();
     private StorageReference storage;
-    private TrabalhosFeitos trabalhosFeitos;
-    private TrabalhosFeitos trabalhosFeitosSelecionado;
+    private android.app.AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cadastrar_trabalhos_feitos);
-        Toolbar toolbar = findViewById(R.id.toolbar2);
+        setContentView(R.layout.activity_cadastrar_clientes_satisfeitos);
+
+        //Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar4);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Cadastrar Trabalhos Feitos");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -63,66 +64,65 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
         //Validar Permissoes
         Permissao.validarPermissoes(permissoes, this, 1);
 
-        //Inicializando componentes
-        editTitulo = findViewById(R.id.editTitulo);
-        editDescricao = findViewById(R.id.editDescricao);
-        imagem1 = findViewById(R.id.imgTrabalhosFeitosAntes);
-        imagem2 = findViewById(R.id.imgTrabalhosFeitosDepois);
+        //Inicializar Componentes
+        imgFotoCliente = findViewById(R.id.imgFotoCliente);
+        editNomeCliente = findViewById(R.id.editNomeCliente);
+        editDepoimento = findViewById(R.id.editDepoimento);
         storage = ConfiguracaoFirebase.getStorageReference();
 
     }
 
-    public void validarDadosTrabalhosFeitos(View view){
-        String titulo = editTitulo.getText().toString();
-        String descricao = editDescricao.getText().toString();
-        if(listaFotosRecuperadas.size() != 0){
-            if(!titulo.isEmpty()){
-                if(!descricao.isEmpty()){
-                    if(trabalhosFeitosSelecionado != null){
-                        trabalhosFeitos = trabalhosFeitosSelecionado;
-                    }else{
-                        trabalhosFeitos = new TrabalhosFeitos();
-                    }
-                    trabalhosFeitos.setTitulo(titulo);
-                    trabalhosFeitos.setDescricao(descricao);
-                    salvarTrabalhosFeitos();
-                }else{
-                    exibirMensagem("Preencha o Campo de Descrição");
-                }
-            }else{
-                exibirMensagem("Preencha o Campo Título");
-            }
-        }else{
-            exibirMensagem("Selecione ao menos uma foto");
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.imgFotoCliente:
+                escolherImagem(1);
+                break;
+            case R.id.btnCadastrar:
+                validarCadastro();
+                break;
         }
     }
 
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    public void validarCadastro(){
+        String nomeCliente = editNomeCliente.getText().toString();
+        String depoimento = editDepoimento.getText().toString();
+        if(!foto.equals("")){
+            if(!nomeCliente.isEmpty()){
+                if(!depoimento.isEmpty()){
+                    clientesSatisfeitos = new ClientesSatisfeitos();
+                    clientesSatisfeitos.setNomeCliente(nomeCliente);
+                    clientesSatisfeitos.setDepoimento(depoimento);
+                    clientesSatisfeitos.setFoto(foto);
+                    salvarClienteSatisfeito();
+                }else{
+                    exibirMensagem("Preencha o Campo Depoimento");
+                }
+            }else{
+                exibirMensagem("Preencha o Campo Nome do Cliente");
+            }
+        }else{
+            exibirMensagem("Insira uma foto");
+        }
     }
 
-    private void salvarTrabalhosFeitos(){
+    private void salvarClienteSatisfeito(){
         dialog = new SpotsDialog.Builder()
                 .setContext(this)
-                .setMessage("Salvando Trabalho Feito")
+                .setMessage("Salvando Cliente Satisfeito")
                 .setCancelable(false)
                 .build();
         dialog.show();
-        int tamanhoLista = listaFotosRecuperadas.size();
-        for(int i = 0; i < tamanhoLista; i++){
-            String urlImagem = listaFotosRecuperadas.get(i);
-            salvarFotoStorage(urlImagem, tamanhoLista, i);
-        }
+        salvarFotoStorage(foto);
+
     }
 
-    private void salvarFotoStorage(String urlString, final int totFotos, int contador){
+    private void salvarFotoStorage(String urlString){
         //Criar nó no storage
-        StorageReference imagemTrabalhoFeito = storage.child("imagens")
-                .child("trabalhos feitos")
-                .child(trabalhosFeitos.getId())
-                .child("imagem" + contador);
-
-        UploadTask uploadTask = imagemTrabalhoFeito.putFile(Uri.parse(urlString));
+        StorageReference imagemProduto = storage.child("imagens")
+                .child("produtos")
+                .child(clientesSatisfeitos.getId())
+                .child("imagem");
+        UploadTask uploadTask = imagemProduto.putFile(Uri.parse(urlString));
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -133,19 +133,10 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
                 storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
-                        listaUrlFotos.add(urlConvertida);
-                        if(totFotos == listaUrlFotos.size()){
-                            trabalhosFeitos.setFotos(listaUrlFotos);
-                            if(trabalhosFeitosSelecionado == null){
-                                trabalhosFeitos.salvar();
-                                dialog.dismiss();
-                                finish();
-                            }else{
-                                trabalhosFeitos.atualizar();
-                                dialog.dismiss();
-                                finish();
-                            }
-                        }
+                        clientesSatisfeitos.setFoto(urlConvertida);
+                        clientesSatisfeitos.salvar();
+                        dialog.dismiss();
+                        finish();
                     }
                 });
             }
@@ -158,17 +149,6 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
         });
 
     }
-    
-    public void onClick(View view){
-        switch (view.getId()){
-            case R.id.imgTrabalhosFeitosAntes:
-                escolherImagem(1);
-                break;
-            case R.id.imgTrabalhosFeitosDepois:
-                escolherImagem(2);
-                break;
-        }
-    }
 
     public void escolherImagem(int requestCode){
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -178,17 +158,12 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if(resultCode == Activity.RESULT_OK){
             //Recuperar Imagem
             Uri imagemSelecionada = data.getData();
             String caminhoImagem = imagemSelecionada.toString();
-            if(requestCode == 1){
-                imagem1.setImageURI(imagemSelecionada);
-            }else if(requestCode == 2){
-                imagem2.setImageURI(imagemSelecionada);
-            }
-            listaFotosRecuperadas.add(caminhoImagem);
+            imgFotoCliente.setImageURI(imagemSelecionada);
+            foto = caminhoImagem;
         }
     }
 
@@ -217,9 +192,15 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
         dialog.show();
     }
 
+
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return false;
+    }
+
+
+    private void exibirMensagem(String msg){
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

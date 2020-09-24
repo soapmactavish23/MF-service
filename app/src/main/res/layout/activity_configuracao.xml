@@ -32,7 +32,7 @@
             android:paddingTop="16dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgFotoPerfil"
+                android:id="@+id/imgFotoCliente"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
                 android:src="@drawable/padrao"
@@ -58,7 +58,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/textEmail"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imgFotoPerfil" />
+                app:layout_constraintTop_toBottomOf="@+id/imgFotoCliente" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textEmail"
