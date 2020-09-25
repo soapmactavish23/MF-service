@@ -69,4 +69,8 @@
     </string-array>
     <string name="title_activity_trabalhos_feitos">TrabalhosFeitosActivity</string>
     <string name="title_activity_clientes_satisfeitos">ClientesSatisfeitosActivity</string>
+    <string name="title_activity_cliente">ClienteActivity</string>
+    <string name="title_activity_parceiro">ParceiroActivity</string>
+    <string name="title_activity_parceiros">ParceirosActivity</string>
+    <string name="title_activity_clientes">ClientesActivity</string>
 </resources>

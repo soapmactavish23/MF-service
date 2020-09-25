@@ -7,7 +7,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.mrservice.activity.ClienteActivity;
 import com.example.mrservice.activity.MainActivity;
 import com.example.mrservice.helper.Base64Custom;
 import com.example.mrservice.model.Usuario;

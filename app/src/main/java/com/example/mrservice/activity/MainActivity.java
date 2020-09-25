@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
             "ORCAMENTOS",
             "TRABALHOS FEITOS",
             "CLIENTES SATISFEITOS",
-            "NOSSOS CLIENTES",
-            "NOSSOS PARCEIROS"
+            "CLIENTES",
+            "PARCEIROS"
     };
 
     @Override
@@ -149,9 +149,15 @@ public class MainActivity extends AppCompatActivity {
                                 intent_clientes_satisfeitos.putExtra("DadosUsuario", usuario);
                                 startActivity(intent_clientes_satisfeitos);
                                 break;
-                            case "NOSSOS CLIENTES":
+                            case "CLIENTES":
+                                Intent intent_clientes = new Intent(MainActivity.this, ClientesActivity.class);
+                                intent_clientes.putExtra("DadosUsuario", usuario);
+                                startActivity(intent_clientes);
                                 break;
-                            case "NOSSOS PARCEIROS":
+                            case "PARCEIROS":
+                                Intent intent_parceiros = new Intent(MainActivity.this, ParceirosActivity.class);
+                                intent_parceiros.putExtra("DadosUsuario", usuario);
+                                startActivity(intent_parceiros);
                                 break;
                         }
                     }

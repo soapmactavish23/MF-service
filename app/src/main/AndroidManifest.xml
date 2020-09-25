@@ -17,7 +17,22 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.DetalhesClienteSatisfeitoActivity"></activity>
+        <activity android:name=".activity.CadastrarClientesActivity"
+            android:parentActivityName=".activity.ClientesActivity"></activity>
+        <activity
+            android:name=".activity.ClientesActivity"
+            android:label="@string/title_activity_clientes"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.ParceirosActivity"
+            android:label="@string/title_activity_parceiros"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.InfoProdutosActivity"
+            android:parentActivityName=".activity.ProdutosActivity" />
+        <activity android:name=".activity.DetalhesClienteSatisfeitoActivity" />
         <activity
             android:name=".activity.CadastrarClientesSatisfeitosActivity"
             android:parentActivityName=".activity.ClientesSatisfeitosActivity" />
@@ -54,7 +69,6 @@
             android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.ConfiguracaoActivity" />
-        <activity android:name=".activity.ClienteActivity" />
         <activity android:name=".activity.CadastroActivity" />
         <activity android:name=".activity.LoginActivity">
             <intent-filter>

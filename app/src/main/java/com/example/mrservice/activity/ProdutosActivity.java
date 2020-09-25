@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -120,6 +123,23 @@ public class ProdutosActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_search_i, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menuInteratividade:
+                startActivity(new Intent(this, InfoProdutosActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void exibirMensagem(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
@@ -136,7 +156,7 @@ public class ProdutosActivity extends AppCompatActivity {
                 .setMessage("Recuperando Produtos")
                 .setCancelable(false)
                 .build();
-        dialog.show();
+        //dialog.show();
 
         produtosRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -149,7 +169,7 @@ public class ProdutosActivity extends AppCompatActivity {
                         }
                         Collections.reverse(listaProdutos);
                         adapterProdutos.notifyDataSetChanged();
-                        dialog.dismiss();
+                        //dialog.dismiss();
                     }
                 }
 
@@ -157,7 +177,7 @@ public class ProdutosActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                dialog.dismiss();
             }
         });
     }

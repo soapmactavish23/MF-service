@@ -199,7 +199,6 @@ public class CadastrarClientesSatisfeitosActivity extends AppCompatActivity {
         return false;
     }
 
-
     private void exibirMensagem(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }

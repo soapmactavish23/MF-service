@@ -29,7 +29,7 @@ public class AdapterClientesSatisfeitos extends RecyclerView.Adapter<AdapterClie
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_clientes_satisfeitos, parent, false);
+        View item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_nome_descricao, parent, false);
         return new MyViewHolder(item);
     }
 
