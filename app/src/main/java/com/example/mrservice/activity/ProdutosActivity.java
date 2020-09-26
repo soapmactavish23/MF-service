@@ -156,7 +156,7 @@ public class ProdutosActivity extends AppCompatActivity {
                 .setMessage("Recuperando Produtos")
                 .setCancelable(false)
                 .build();
-        //dialog.show();
+        dialog.show();
 
         produtosRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -169,7 +169,7 @@ public class ProdutosActivity extends AppCompatActivity {
                         }
                         Collections.reverse(listaProdutos);
                         adapterProdutos.notifyDataSetChanged();
-                        //dialog.dismiss();
+                        dialog.dismiss();
                     }
                 }
 

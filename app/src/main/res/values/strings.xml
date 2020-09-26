@@ -23,6 +23,17 @@
         <item>BRINQUEDOS</item>
     </string-array>
 
+    <string-array name="clientes_categorias">
+        <item>Academia</item>
+        <item>Condomínio</item>
+        <item>Clínica</item>
+        <item>Clube</item>
+        <item>Hotel</item>
+        <item>Orgão Público</item>
+        <item>Orgão Privado</item>
+        <item>Residência</item>
+    </string-array>
+
     <string-array name="equipamentos">
         <item>PROFISSIONAL</item>
         <item>REMANUFATURADO</item>

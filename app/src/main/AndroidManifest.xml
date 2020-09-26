@@ -17,8 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.CadastrarClientesActivity"
-            android:parentActivityName=".activity.ClientesActivity"></activity>
+        <activity android:name=".activity.ListClienteActivity" android:parentActivityName=".activity.ClientesActivity"></activity>
+        <activity
+            android:name=".activity.CadastrarClientesActivity"
+            android:parentActivityName=".activity.ClientesActivity" />
         <activity
             android:name=".activity.ClientesActivity"
             android:label="@string/title_activity_clientes"

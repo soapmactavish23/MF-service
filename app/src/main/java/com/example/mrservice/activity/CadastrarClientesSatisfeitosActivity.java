@@ -119,7 +119,7 @@ public class CadastrarClientesSatisfeitosActivity extends AppCompatActivity {
     private void salvarFotoStorage(String urlString){
         //Criar nó no storage
         StorageReference imagemProduto = storage.child("imagens")
-                .child("produtos")
+                .child("cliente_satisfeito")
                 .child(clientesSatisfeitos.getId())
                 .child("imagem");
         UploadTask uploadTask = imagemProduto.putFile(Uri.parse(urlString));
