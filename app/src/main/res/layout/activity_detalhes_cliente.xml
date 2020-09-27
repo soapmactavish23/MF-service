@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/degrade"
     android:orientation="vertical"
-    tools:context=".activity.DetalhesClienteSatisfeitoActivity">
+    tools:context=".activity.DetalhesClienteActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar6"

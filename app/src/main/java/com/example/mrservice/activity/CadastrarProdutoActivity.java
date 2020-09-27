@@ -169,21 +169,17 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         if(listaFotosRecuperadas.size() != 0){
             if(!titulo.isEmpty()) {
                 if (!precoVenda.isEmpty()) {
-                    if (!descricao.isEmpty()) {
-                        if (produtoSelecionado != null) {
-                            produto1 = produtoSelecionado;
-                        } else {
-                            produto1 = new Produto();
-                        }
-                        produto1.setTitulo(titulo);
-                        produto1.setDescricao(descricao);
-                        produto1.setPrecoVenda(precoVenda);
-                        produto1.setCategoria(categoria);
-                        produto1.setProduto(produto);
-                        salvarProduto();
+                    if (produtoSelecionado != null) {
+                        produto1 = produtoSelecionado;
                     } else {
-                        exibirMensagem("Preencha o Campo de Descrição");
+                        produto1 = new Produto();
                     }
+                    produto1.setTitulo(titulo);
+                    produto1.setDescricao(descricao);
+                    produto1.setPrecoVenda(precoVenda);
+                    produto1.setCategoria(categoria);
+                    produto1.setProduto(produto);
+                    salvarProduto();
                 } else {
                     exibirMensagem("Preencha o Campo Preço de Venda");
                 }

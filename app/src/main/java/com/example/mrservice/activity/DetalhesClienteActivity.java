@@ -7,21 +7,21 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.mrservice.R;
-import com.example.mrservice.model.ClientesSatisfeitos;
+import com.example.mrservice.model.Cliente;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class DetalhesClienteSatisfeitoActivity extends AppCompatActivity {
+public class DetalhesClienteActivity extends AppCompatActivity {
 
-    private ClientesSatisfeitos clientesSatisfeitos;
+    private Cliente cliente;
     private TextView txtNome, txtDepoimento;
     private CircleImageView circleImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detalhes_cliente_satisfeito);
+        setContentView(R.layout.activity_detalhes_cliente);
         //Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar6);
         setSupportActionBar(toolbar);
@@ -36,11 +36,11 @@ public class DetalhesClienteSatisfeitoActivity extends AppCompatActivity {
         //Linkando componentes
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {
-            clientesSatisfeitos = (ClientesSatisfeitos) bundle.getSerializable("clienteSatisfeito");
-            txtNome.setText(clientesSatisfeitos.getNomeCliente());
-            toolbar.setTitle(clientesSatisfeitos.getNomeCliente());
-            txtDepoimento.setText(clientesSatisfeitos.getDepoimento());
-            Picasso.get().load(clientesSatisfeitos.getFoto()).into(circleImageView);
+            cliente = (Cliente) bundle.getSerializable("cliente");
+            txtNome.setText(cliente.getNome());
+            toolbar.setTitle(cliente.getNome());
+            txtDepoimento.setText(cliente.getDepoimento());
+            Picasso.get().load(cliente.getFoto()).into(circleImageView);
         }
 
     }

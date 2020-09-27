@@ -90,10 +90,11 @@
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/floatingActionButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:clickable="true"
+                android:layout_marginTop="24dp"
                 android:contentDescription="Orçamento"
                 android:text="Orçamento"
                 app:srcCompat="@drawable/orcamento" />

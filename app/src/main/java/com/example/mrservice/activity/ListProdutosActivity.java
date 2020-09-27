@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.example.mrservice.model.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -129,27 +131,18 @@ public class ListProdutosActivity extends AppCompatActivity {
         //Configura nó por categoria
         produtosCategoriaRef = ConfiguracaoFirebase.getFirebaseDatabase()
                 .child("produtos").child(filtroCategoria).child(filtroTipoProduto);
-        produtosCategoriaRef.addValueEventListener(new ValueEventListener() {
+
+        Query produtoPesquisa = produtosCategoriaRef.orderByChild("titulo");
+
+        produtoPesquisa.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listaProdutos.clear();
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     listaProdutos.add(ds.getValue(Produto.class));
                 }
-                Collections.reverse(listaProdutos);
                 adapterProdutos.notifyDataSetChanged();
                 dialog.dismiss();
-                /*Produto produto = new Produto();
-                List<String> fotos = new ArrayList<>();
-                fotos.add("https://firebasestorage.googleapis.com/v0/b/mr-services-92166.appspot.com/o/imagens%2Fprodutos%2F-MI16-eJFhWvMLvsKZKb%2Fimagem0?alt=media&token=a19e49a2-a98b-4602-9f9d-ae0d16a96f7e");
-                produto.setFotos(fotos);
-                produto.setProduto("BLABLABLA");
-                produto.setTitulo("Blablabla");
-                produto.setCategoria("CCC");
-                produto.setPrecoCusto("200");
-                produto.setPrecoVenda("300");
-                produto.setDescricao("AUSHDAUHSDHUASDHUAS");
-                listaProdutos.add(produto);*/
             }
 
             @Override

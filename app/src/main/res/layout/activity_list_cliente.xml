@@ -27,10 +27,11 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerCliente"
+    <GridView
+        android:id="@+id/gridViewClientes"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:numColumns="3" />
 
 
 </LinearLayout>

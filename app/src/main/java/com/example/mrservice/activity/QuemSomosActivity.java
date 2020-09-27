@@ -60,7 +60,7 @@ public class QuemSomosActivity extends AppCompatActivity {
                 .addItem(contato)
                 .addGroup("Redes Sociais")
                 .addItem(face)
-                .addInstagram("mfstoreservice", "Siga no Instagram")
+                .addInstagram("mfservice_pa", "Siga no Instagram")
                 .create();
         setContentView(aboutPage);
     }

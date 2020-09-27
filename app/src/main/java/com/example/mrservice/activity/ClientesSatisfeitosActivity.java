@@ -9,10 +9,8 @@ import com.example.mrservice.adapter.AdapterClientesSatisfeitos;
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.helper.RecyclerItemClickListener;
 import com.example.mrservice.model.ClientesSatisfeitos;
-import com.example.mrservice.model.TrabalhosFeitos;
 import com.example.mrservice.model.Usuario;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -90,7 +88,7 @@ public class ClientesSatisfeitosActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(View view, int position) {
                         clientesSatisfeitos = clientesSatisfeitosList.get(position);
-                        Intent intent = new Intent(ClientesSatisfeitosActivity.this, DetalhesClienteSatisfeitoActivity.class);
+                        Intent intent = new Intent(ClientesSatisfeitosActivity.this, DetalhesClienteActivity.class);
                         intent.putExtra("clienteSatisfeito", clientesSatisfeitos);
                         startActivity(intent);
                     }
