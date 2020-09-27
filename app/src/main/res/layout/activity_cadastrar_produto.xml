@@ -130,7 +130,7 @@
                     android:layout_weight="1" />
             </LinearLayout>
 
-            <TextView
+            <!-- TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -151,7 +151,7 @@
                 android:drawableTint="@android:color/darker_gray"
                 android:hint="Digite o preço de custo"
                 android:textColor="@android:color/white"
-                android:textColorHint="@android:color/darker_gray" />
+                android:textColorHint="@android:color/darker_gray" /-->
 
             <TextView
                 android:layout_width="match_parent"

@@ -11,6 +11,7 @@ public class Cliente implements Serializable {
     private String nome;
     private String foto;
     private String categoria;
+    private String depoimento;
 
     public Cliente() {
         DatabaseReference clienteRef = ConfiguracaoFirebase.getFirebaseDatabase().child("clientes");
@@ -61,5 +62,13 @@ public class Cliente implements Serializable {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public String getDepoimento() {
+        return depoimento;
+    }
+
+    public void setDepoimento(String depoimento) {
+        this.depoimento = depoimento;
     }
 }

@@ -1,37 +1,51 @@
 package com.example.mrservice.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentActivity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.mrservice.R;
 import com.example.mrservice.model.Produto;
-import com.veinhorn.scrollgalleryview.ScrollGalleryView;
-import com.veinhorn.scrollgalleryview.builder.GallerySettings;
+import com.github.chrisbanes.photoview.PhotoView;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.veinhorn.scrollgalleryview.loader.picasso.dsl.DSL.image;
+public class GaleryActivity extends AppCompatActivity {
 
-public class GaleryActivity extends FragmentActivity {
-    private ScrollGalleryView galleryView;
+    private PhotoView pv_image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_galery);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
-        galleryView = ScrollGalleryView.from((ScrollGalleryView) findViewById(R.id.scroll_gallery_view))
-                .settings(
-                        GallerySettings
-                                .from(getSupportFragmentManager())
-                                .thumbnailSize(100)
-                                .enableZoom(true)
-                                .build()
-                )
-                .add(image("http://pirate-islands.com/wp-content/uploads/2018/07/07_Dom-Fernando-II_01-636x310.jpg"))
-                .add(image("http://povodu.ru/wp-content/uploads/2016/04/pochemu-korabl-derzitsa-na-vode.jpg")).build();
+        pv_image = findViewById(R.id.pv_image);
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            Uri uri = Uri.parse(bundle.getString("foto"));
+            toolbar.setTitle(bundle.getString("titulo"));
+            Picasso.get().load(uri).into(pv_image);
+        }
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
     }
 }

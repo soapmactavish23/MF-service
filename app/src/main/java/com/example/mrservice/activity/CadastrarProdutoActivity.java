@@ -75,7 +75,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         editTitulo = findViewById(R.id.editTitulo);
         editDescricao = findViewById(R.id.editDescricao);
         editPrecoVenda = findViewById(R.id.editPrecoVenda);
-        editPrecoCusto = findViewById(R.id.editPrecoCusto);
+        //editPrecoCusto = findViewById(R.id.editPrecoCusto);
         imagem1 = findViewById(R.id.imgCadastroProduto1);
         imagem2 = findViewById(R.id.imgCadastroProduto2);
         imagem3 = findViewById(R.id.imgCadastroProduto3);
@@ -132,7 +132,6 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                     editTitulo.setText(produtoSelecionado.getTitulo());
                     editDescricao.setText(produtoSelecionado.getDescricao());
                     editPrecoVenda.setText(produtoSelecionado.getPrecoVenda());
-                    editPrecoCusto.setText(produtoSelecionado.getPrecoCusto());
                     //Foto de Produto
                     for(int index = 0; index < produtoSelecionado.getFotos().size(); index ++){
                         String foto = produtoSelecionado.getFotos().get(index);
@@ -164,34 +163,29 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         String titulo = editTitulo.getText().toString();
         String descricao = editDescricao.getText().toString();
         String precoVenda = String.valueOf(editPrecoVenda.getRawValue());
-        String precoCusto = String.valueOf(editPrecoCusto.getRawValue());
+        //String precoCusto = String.valueOf(editPrecoCusto.getRawValue());
         String categoria = spinnerCategoria.getSelectedItem().toString();
         String produto = spinnerTipoProduto.getSelectedItem().toString();
         if(listaFotosRecuperadas.size() != 0){
-            if(!titulo.isEmpty()){
-                if(!precoCusto.isEmpty()){
-                    if(!precoVenda.isEmpty()){
-                        if(!descricao.isEmpty()){
-                            if(produtoSelecionado != null){
-                                produto1 = produtoSelecionado;
-                            }else{
-                                produto1 = new Produto();
-                            }
-                            produto1.setTitulo(titulo);
-                            produto1.setDescricao(descricao);
-                            produto1.setPrecoVenda(precoVenda);
-                            produto1.setPrecoCusto(precoCusto);
-                            produto1.setCategoria(categoria);
-                            produto1.setProduto(produto);
-                            salvarProduto();
-                        }else{
-                            exibirMensagem("Preencha o Campo de Descrição");
+            if(!titulo.isEmpty()) {
+                if (!precoVenda.isEmpty()) {
+                    if (!descricao.isEmpty()) {
+                        if (produtoSelecionado != null) {
+                            produto1 = produtoSelecionado;
+                        } else {
+                            produto1 = new Produto();
                         }
-                    }else {
-                        exibirMensagem("Preencha o Campo Preço de Venda");
+                        produto1.setTitulo(titulo);
+                        produto1.setDescricao(descricao);
+                        produto1.setPrecoVenda(precoVenda);
+                        produto1.setCategoria(categoria);
+                        produto1.setProduto(produto);
+                        salvarProduto();
+                    } else {
+                        exibirMensagem("Preencha o Campo de Descrição");
                     }
-                }else{
-                    exibirMensagem("Preencha o Campo Preço de Custo");
+                } else {
+                    exibirMensagem("Preencha o Campo Preço de Venda");
                 }
             }else{
                 exibirMensagem("Preencha o Campo Título");

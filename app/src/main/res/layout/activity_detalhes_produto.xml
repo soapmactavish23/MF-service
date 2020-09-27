@@ -94,9 +94,19 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:clickable="true"
-                app:srcCompat="@drawable/orcamento">
+                android:contentDescription="Orçamento"
+                android:text="Orçamento"
+                app:srcCompat="@drawable/orcamento" />
 
-            </com.google.android.material.floatingactionbutton.FloatingActionButton>
+            <TextView
+                android:id="@+id/txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_arrow_top"
+                android:gravity="center"
+                android:text="Adicione aos Orçamentos"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
         </LinearLayout>
     </ScrollView>

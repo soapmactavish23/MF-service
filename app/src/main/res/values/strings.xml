@@ -16,7 +16,7 @@
 
     <string-array name="categorias">
         <item>EQUIPAMENTOS</item>
-        <item>CÁRDIOS</item>
+        <item>CÁRDIO</item>
         <item>ACESSÓRIOS</item>
         <item>PISOS</item>
         <item>REVESTIMENTOS</item>
@@ -35,8 +35,7 @@
     </string-array>
 
     <string-array name="equipamentos">
-        <item>PROFISSIONAL</item>
-        <item>REMANUFATURADO</item>
+        <item>MUSCULAÇÃO</item>
         <item>PILATES</item>
         <item>AO AR LIVRE</item>
     </string-array>
@@ -75,8 +74,8 @@
     </string-array>
 
     <string-array name="brinquedo">
-        <item>PLAYGROUND</item>
         <item>ÁREA DE LAZER</item>
+        <item>PLAYGROUND</item>
     </string-array>
     <string name="title_activity_trabalhos_feitos">TrabalhosFeitosActivity</string>
     <string name="title_activity_clientes_satisfeitos">ClientesSatisfeitosActivity</string>

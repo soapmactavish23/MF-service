@@ -37,7 +37,7 @@ import dmax.dialog.SpotsDialog;
 
 public class CadastrarClientesActivity extends AppCompatActivity {
 
-    private TextInputEditText editNomeCliente;
+    private TextInputEditText editNomeCliente, editDepoimento;
     private CircleImageView imgFotoCliente;
     private String foto = "";
     private String[] permissoes = new String[]{
@@ -63,6 +63,7 @@ public class CadastrarClientesActivity extends AppCompatActivity {
         //Inicializar Componentes
         imgFotoCliente = findViewById(R.id.imgFotoCliente);
         editNomeCliente = findViewById(R.id.editNomeCliente);
+        editDepoimento = findViewById(R.id.editDepoimento);
         spinnerCategoria = findViewById(R.id.spinnerCategoria);
         storage = ConfiguracaoFirebase.getStorageReference();
 
@@ -89,12 +90,14 @@ public class CadastrarClientesActivity extends AppCompatActivity {
 
     public void validarCadastro(){
         String nomeCliente = editNomeCliente.getText().toString();
+        String depoimentoCliente = editDepoimento.getText().toString();
         if(!foto.equals("")){
             if(!nomeCliente.isEmpty()){
                 cliente = new Cliente();
                 cliente.setNome(nomeCliente);
                 cliente.setCategoria(spinnerCategoria.getSelectedItem().toString());
                 cliente.setFoto(foto);
+                cliente.setDepoimento(depoimentoCliente);
                 salvarCliente();
             }else{
                 exibirMensagem("Preencha o Campo Nome do Cliente");

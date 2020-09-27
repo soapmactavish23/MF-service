@@ -3,15 +3,21 @@ package com.example.mrservice.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.mrservice.R;
 import com.example.mrservice.model.TrabalhosFeitos;
 import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
+import com.synnapps.carouselview.ImageClickListener;
 import com.synnapps.carouselview.ImageListener;
+import com.synnapps.carouselview.ViewListener;
 
 public class DetalhesTrabalhosFeitosActivity extends AppCompatActivity {
 
@@ -41,15 +47,29 @@ public class DetalhesTrabalhosFeitosActivity extends AppCompatActivity {
             toolbar.setTitle(trabalhosFeitos.getTitulo());
             txtTitulo.setText(trabalhosFeitos.getTitulo());
             txtDescricao.setText(trabalhosFeitos.getDescricao());
-            ImageListener imageListener = new ImageListener() {
+            final ImageListener imageListener = new ImageListener() {
                 @Override
                 public void setImageForPosition(int position, ImageView imageView) {
+                    //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     String urlString = trabalhosFeitos.getFotos().get(position);
-                    Picasso.get().load(urlString).into(imageView);
+                    Picasso.get()
+                            .load(urlString)
+                            .fit()
+                            .centerInside()
+                            .into(imageView);
                 }
             };
             carouselView.setPageCount(trabalhosFeitos.getFotos().size());
             carouselView.setImageListener(imageListener);
+            carouselView.setImageClickListener(new ImageClickListener() {
+                @Override
+                public void onClick(int position) {
+                    Intent intent = new Intent(DetalhesTrabalhosFeitosActivity.this, GaleryActivity.class);
+                    intent.putExtra("foto", trabalhosFeitos.getFotos().get(position));
+                    intent.putExtra("titulo", trabalhosFeitos.getTitulo());
+                    startActivity(intent);
+                }
+            });
         }
     }
 

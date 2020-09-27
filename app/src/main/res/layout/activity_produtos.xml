@@ -5,74 +5,252 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@drawable/degrade"
     tools:context=".activity.ProdutosActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/colorPrimaryDark"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Produtos" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <LinearLayout
-        android:id="@+id/linearBusca"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btnCategoria"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:onClick="recuperarPorCategoria"
-            android:text="Categoria"
-            android:textColor="@android:color/white" />
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="|"
-            android:textColor="@android:color/white"
-            android:textSize="30sp" />
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.AppBarOverlay"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/btnTipoProduto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:onClick="recuperarPorTipoProduto"
-            android:text="Tipo de Produto"
-            android:textColor="@android:color/white" />
-    </LinearLayout>
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/colorPrimaryDark"
+                    app:popupTheme="@style/AppTheme.PopupOverlay"
+                    app:title="Produtos" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewProdutos"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearBusca" />
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <ImageView
+                android:id="@+id/imageView10"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/logo" />
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="Oferecemos uma diversificada linha de produtos, novos e remanufaturados, além de peças de reposição."
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgEquipamento"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        app:civ_border_width="2dp"
+                        android:onClick="onClick"
+                        app:civ_border_color="@color/colorAccent"
+                        android:src="@drawable/equipamentos_info"
+                        app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/include"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_weight="1"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/textView20"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="EQUIPAMENTOS"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:textAlignment="center"
+                        android:layout_marginTop="8dp"
+                        android:textSize="18sp"/>
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgAcessorio"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        app:civ_border_width="2dp"
+                        android:onClick="onClick"
+                        app:civ_border_color="@color/colorAccent"
+                        android:src="@drawable/acessorios_info"
+                        app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/include"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_weight="1"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/textView22"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="ACESSÓRIOS"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:textAlignment="center"
+                        android:layout_marginTop="8dp"
+                        android:textSize="18sp"/>
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgRevestimento"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        app:civ_border_width="2dp"
+                        android:onClick="onClick"
+                        app:civ_border_color="@color/colorAccent"
+                        android:src="@drawable/revestimento_info"
+                        app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/include"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_weight="1"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/textView24"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_weight="1"
+                        android:text="REVESTIMENTOS"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgCardio"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        app:civ_border_width="2dp"
+                        android:onClick="onClick"
+                        app:civ_border_color="@color/colorAccent"
+                        android:src="@drawable/cardio_info"
+                        app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/include"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_weight="1"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/textView21"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="CÁRDIO"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:textAlignment="center"
+                        android:layout_marginTop="8dp"
+                        android:textSize="18sp"/>
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgPiso"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        app:civ_border_width="2dp"
+                        android:onClick="onClick"
+                        app:civ_border_color="@color/colorAccent"
+                        android:src="@drawable/pisos_info"
+                        app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/include"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_weight="1"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/textView23"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="PISOS"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:textAlignment="center"
+                        android:layout_marginTop="8dp"
+                        android:textSize="18sp"/>
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgBrinquedo"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="8dp"
+                        app:civ_border_width="2dp"
+                        android:onClick="onClick"
+                        app:civ_border_color="@color/colorAccent"
+                        android:src="@drawable/brinquedos_info"
+                        app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/include"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_weight="1"
+                        app:layout_constraintVertical_chainStyle="packed" />
+
+                    <TextView
+                        android:id="@+id/textView25"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_weight="1"
+                        android:text="BRINQUEDOS"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -80,8 +258,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
+        android:layout_gravity="right"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

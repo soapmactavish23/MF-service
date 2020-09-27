@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <com.veinhorn.scrollgalleryview.ScrollGalleryView
-        android:id="@+id/scroll_gallery_view"
+    android:layout_height="match_parent"
+    android:background="#000"
+    android:orientation="vertical"
+    tools:context=".activity.GaleryActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorPrimaryDark"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="Produtos" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/galery_padrao" /-->
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/pv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000"/>
+        android:scaleType="fitCenter"
+        android:src="@drawable/galery_padrao" />
+
 </LinearLayout>

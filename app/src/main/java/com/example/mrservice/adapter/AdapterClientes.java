@@ -42,6 +42,7 @@ public class AdapterClientes extends RecyclerView.Adapter<AdapterClientes.MyView
 
         Cliente cliente = listaClientes.get(position);
         holder.titulo.setText(cliente.getNome());
+        holder.descricao.setText(cliente.getDepoimento());
         //Picasso.get().load(cliente.getFoto()).into(holder.foto);
         Uri uri = Uri.parse(cliente.getFoto());
         Glide.with(context).load(uri).into(holder.foto);
@@ -54,12 +55,13 @@ public class AdapterClientes extends RecyclerView.Adapter<AdapterClientes.MyView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView titulo;
+        TextView titulo, descricao;
         CircleImageView foto;
         public MyViewHolder(View itemView){
             super(itemView);
             foto = itemView.findViewById(R.id.img);
             titulo = itemView.findViewById(R.id.txtNome);
+            descricao = itemView.findViewById(R.id.txtDepoimento);
         }
     }
 
