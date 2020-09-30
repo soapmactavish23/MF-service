@@ -13,6 +13,9 @@ import android.content.Intent;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,6 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,6 +54,7 @@ public class ListProdutosActivity extends AppCompatActivity {
     private String filtroCategoria;
     private String filtroTipoProduto;
     private Usuario usuario;
+    private MaterialSearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,35 @@ public class ListProdutosActivity extends AppCompatActivity {
         usuario = (Usuario) bundle.getSerializable("DadosUsuario");
         filtroCategoria = bundle.getString("categoria");
         filtroTipoProduto = bundle.getString("tipo_produto");
+        searchView = findViewById(R.id.materialSearchProdutos);
+
+        //Configurar o SearchView
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText != null && !newText.isEmpty()){
+                    pesquisarProdutos(newText.toLowerCase());
+                }
+                return true;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                recarregarProdutos();
+            }
+        });
 
         //Checar se o usuario e adm
         if(usuario.getTipo_usuario().equals("ADM")){
@@ -111,6 +145,17 @@ public class ListProdutosActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search_i, menu);
+
+        //Configurar botao pesquisa
+        MenuItem item = menu.findItem(R.id.menu_pesquisa);
+        searchView.setMenuItem(item);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     private void exibirMensagem(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
@@ -119,6 +164,25 @@ public class ListProdutosActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         recuperarProdutos();
+    }
+
+    private void pesquisarProdutos(String text){
+        List<Produto> listProdutosBusca = new ArrayList<>();
+        for(Produto produto : listaProdutos){
+            String titulo = produto.getTitulo().toLowerCase();
+            if(titulo.contains(text)){
+                listProdutosBusca.add(produto);
+            }
+        }
+        adapterProdutos = new AdapterProdutos(listProdutosBusca, getApplicationContext());
+        recyclerViewProdutos.setAdapter(adapterProdutos);
+        adapterProdutos.notifyDataSetChanged();
+    }
+
+    private void recarregarProdutos(){
+        adapterProdutos = new AdapterProdutos(listaProdutos, getApplicationContext());
+        recyclerViewProdutos.setAdapter(adapterProdutos);
+        adapterProdutos.notifyDataSetChanged();
     }
 
     public void recuperarProdutos(){

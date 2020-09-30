@@ -21,6 +21,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +50,7 @@ public class TrabalhosFeitosActivity extends AppCompatActivity {
     private TrabalhosFeitos trabalhosFeitosSelecionado;
     private AlertDialog dialog;
     private Usuario usuario;
+    private MaterialSearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +64,14 @@ public class TrabalhosFeitosActivity extends AppCompatActivity {
         //Configuracoes Iniciais
         trabalhosFeitosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("trabalhos feitos");
         recyclerViewTrabalhosFeitos = findViewById(R.id.recyclerViewTrabalhosFeitos);
+        searchView = findViewById(R.id.materialSearchTrabalhos);
 
         //Configurar o RecyclerView
         recyclerViewTrabalhosFeitos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTrabalhosFeitos.setHasFixedSize(true);
         adapterTrabalhosFeitos = new AdapterTrabalhosFeitos(listaTrabalhosFeitos, this);
         recyclerViewTrabalhosFeitos.setAdapter(adapterTrabalhosFeitos);
+
 
         //Configurando o toque no recyclerView
         recyclerViewTrabalhosFeitos.addOnItemTouchListener(
@@ -110,12 +117,69 @@ public class TrabalhosFeitosActivity extends AppCompatActivity {
             fab.setVisibility(View.GONE);
         }
 
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText != null && !newText.isEmpty()){
+                    procurarTrabalhos(newText.toLowerCase());
+                }
+                return true;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                recarregarTrabalhos();
+            }
+        });
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         recuperarTrabalhosFeitos();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search_i, menu);
+
+        //Configurar botao pesquisa
+        MenuItem item = menu.findItem(R.id.menu_pesquisa);
+        searchView.setMenuItem(item);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void procurarTrabalhos(String text){
+        List<TrabalhosFeitos> listTrabalhosPesquisa = new ArrayList<>();
+        for(TrabalhosFeitos trabalhosFeitos : listaTrabalhosFeitos){
+            String titulo = trabalhosFeitos.getTitulo().toLowerCase();
+            if(titulo.contains(text)){
+                listTrabalhosPesquisa.add(trabalhosFeitos);
+            }
+        }
+        adapterTrabalhosFeitos = new AdapterTrabalhosFeitos(listTrabalhosPesquisa, getApplicationContext());
+        recyclerViewTrabalhosFeitos.setAdapter(adapterTrabalhosFeitos);
+        adapterTrabalhosFeitos.notifyDataSetChanged();
+    }
+
+    private void recarregarTrabalhos(){
+        adapterTrabalhosFeitos = new AdapterTrabalhosFeitos(listaTrabalhosFeitos, getApplicationContext());
+        recyclerViewTrabalhosFeitos.setAdapter(adapterTrabalhosFeitos);
+        adapterTrabalhosFeitos.notifyDataSetChanged();
     }
 
     private void exibirMensagem(String msg){

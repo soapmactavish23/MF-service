@@ -7,7 +7,7 @@
     android:background="@drawable/degrade"
     tools:context=".activity.ListProdutosActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <FrameLayout
         android:id="@+id/appBarLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,9 +22,18 @@
             android:layout_height="match_parent"
             android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Produtos" />
+            app:title="Produtos" >
 
-    </com.google.android.material.appbar.AppBarLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <com.miguelcatalan.materialsearchview.MaterialSearchView
+            android:id="@+id/materialSearchProdutos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
+    <!-- include layout="@layout/toolbar"/ -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProdutos"

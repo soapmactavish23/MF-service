@@ -35,13 +35,11 @@ import dmax.dialog.SpotsDialog;
 
 public class ListClienteActivity extends AppCompatActivity {
 
-    // private RecyclerView recyclerCliente;
     private Usuario usuario;
     private String categoria;
     private List<Cliente> listaClientes = new ArrayList<>();
     private DatabaseReference clientesCategoriaRef;
     private Cliente clienteSelecionado;
-    //private AdapterClientes adapterClientes;
     private AdapterGrid adapterGrid;
     private AlertDialog dialog;
     private GridView gridViewClientes;
@@ -66,19 +64,17 @@ public class ListClienteActivity extends AppCompatActivity {
         //Configuracoes Iniciais
         clientesCategoriaRef = ConfiguracaoFirebase.getFirebaseDatabase().child("clientes").child(categoria);
         gridViewClientes = findViewById(R.id.gridViewClientes);
-        //recyclerCliente = findViewById(R.id.recyclerCliente);
-
-        //Configurar o RecyclerView
-        //recyclerCliente.setLayoutManager(new LinearLayoutManager(this));
-        //recyclerCliente.setHasFixedSize(true);
-        //adapterClientes = new AdapterClientes(listaClientes, this);
-        //recyclerCliente.setAdapter(adapterClientes);
+        inicializarImageLoader();
 
         if(usuario.getTipo_usuario().equals("ADM")){
-            swipe();
+            gridViewClientes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    excluirProduto(i);
+                    return false;
+                }
+            });
         }
-
-        inicializarImageLoader();
 
         gridViewClientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -151,31 +147,7 @@ public class ListClienteActivity extends AppCompatActivity {
         return false;
     }
 
-    public void swipe(){
-        ItemTouchHelper.Callback itemTouch = new ItemTouchHelper.Callback() {
-            @Override
-            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                int dragFlags = ItemTouchHelper.ACTION_STATE_IDLE;
-                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-                return makeMovementFlags(dragFlags, swipeFlags);
-            }
-
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                excluirProduto(viewHolder);
-            }
-        };
-
-        // new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerCliente);
-
-    }
-
-    public void excluirProduto(final RecyclerView.ViewHolder viewHolder){
+    public void excluirProduto(final int position){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ListClienteActivity.this);
         alertDialog.setTitle("Excluir");
         alertDialog.setMessage("Tem certeza que deseja excluir esse cliente?");
@@ -183,18 +155,16 @@ public class ListClienteActivity extends AppCompatActivity {
         alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                int position = viewHolder.getAdapterPosition();
                 clienteSelecionado = listaClientes.get(position);
                 clienteSelecionado.deletar();
-                //adapterClientes.notifyItemRemoved(position);
                 listaClientes.clear();
-                //adapterClientes.notifyDataSetChanged();
+                gridViewClientes.deferNotifyDataSetChanged();
             }
         });
         alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                //adapterClientes.notifyDataSetChanged();
+
             }
         });
         AlertDialog alert = alertDialog.create();
