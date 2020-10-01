@@ -9,12 +9,13 @@
     tools:context=".activity.ServicosActivity">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton3"
+        android:id="@+id/addServico"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
+        android:onClick="onClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
@@ -52,79 +53,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="400dp">
-
-                <ImageView
-                    android:id="@+id/imageView8"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/guideline5"
-                    app:srcCompat="@drawable/galery_padrao" />
-
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="121dp"
-                    android:layout_height="68dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="MANUTENÇÃO PREVENTIVA E CORRETIVA"
-                    android:textAlignment="center"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView8" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.04" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.5013193" />
-
-                <ImageView
-                    android:id="@+id/imageView16"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline6"
-                    app:layout_constraintTop_toTopOf="@+id/guideline5"
-                    app:srcCompat="@drawable/galery_padrao" />
-
-                <TextView
-                    android:id="@+id/textView29"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="TextView"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline6"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView16" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <!--LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -132,12 +63,12 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-
                 <ImageView
-                    android:id="@+id/imageView8"
+                    android:id="@+id/imgAssessoria"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginTop="16dp"
+                    android:onClick="onClick"
+                    android:layout_marginTop="0dp"
                     app:srcCompat="@drawable/galery_padrao" />
 
                 <TextView
@@ -145,33 +76,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="MANUTENÇÃO PREVENTIVA E CORRETIVA"
+                    android:text="ASSESSORIA PARA IMPLEMENTAÇÃO DE PROJETOS"
                     android:textAlignment="center"
+                    android:textColor="@android:color/white"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <ImageView
-                    android:id="@+id/imageView10"
+                    android:id="@+id/imgManutencao"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:onClick="onClick"
                     android:layout_marginTop="16dp"
                     app:srcCompat="@drawable/galery_padrao" />
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/textView1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="INSTALAÇÃO PISOS ESPORTIVOS "
+                    android:text="MANUTENÇÃO PREVENTIVA E CORRETIVA"
                     android:textAlignment="center"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <ImageView
-                    android:id="@+id/imageView10"
+                    android:id="@+id/imgInstalacaoPisosEsportivos"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_marginTop="16dp"
+                    android:onClick="onClick"
                     app:srcCompat="@drawable/galery_padrao" />
 
                 <TextView
@@ -181,6 +116,7 @@
                     android:layout_marginTop="10dp"
                     android:text="INSTALAÇÃO PISOS ESPORTIVOS "
                     android:textAlignment="center"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -195,9 +131,10 @@
                 android:padding="16dp">
 
                 <ImageView
-                    android:id="@+id/imageView9"
+                    android:id="@+id/imgServicos"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:onClick="onClick"
                     app:srcCompat="@drawable/galery_padrao" />
 
                 <TextView
@@ -207,14 +144,16 @@
                     android:layout_marginTop="10dp"
                     android:text="SERVIÇOS DE ENGENHARIA "
                     android:textAlignment="center"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <ImageView
-                    android:id="@+id/imageView0"
+                    android:id="@+id/imgInstalacaoEquipamentos"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginTop="16dp"
+                    android:onClick="onClick"
+                    android:layout_marginTop="27dp"
                     app:srcCompat="@drawable/galery_padrao" />
 
                 <TextView
@@ -224,14 +163,16 @@
                     android:layout_marginTop="10dp"
                     android:text="INSTALAÇÃO EQUIPAMENTOS"
                     android:textAlignment="center"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <ImageView
-                    android:id="@+id/imageView12"
+                    android:id="@+id/imgInstalacaoGramadoSintetico"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="18dp"
+                    android:onClick="onClick"
                     app:srcCompat="@drawable/galery_padrao" />
 
                 <TextView
@@ -239,12 +180,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="INSTALAÇÃO PISOS ESPORTIVOS "
+                    android:text="INSTALAÇÃO GRAMADO SINTÉTICO"
                     android:textAlignment="center"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-            </LinearLayout -->
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

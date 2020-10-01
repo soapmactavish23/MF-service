@@ -3,7 +3,10 @@ package com.example.mrservice.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mrservice.R;
@@ -16,7 +19,8 @@ public class DetalhesClienteActivity extends AppCompatActivity {
 
     private Cliente cliente;
     private TextView txtNome, txtDepoimento;
-    private CircleImageView circleImageView;
+    //private CircleImageView circleImageView;
+    private ImageView circleImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,16 @@ public class DetalhesClienteActivity extends AppCompatActivity {
             txtDepoimento.setText(cliente.getDepoimento());
             Picasso.get().load(cliente.getFoto()).into(circleImageView);
         }
+
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DetalhesClienteActivity.this, GaleryActivity.class);
+                intent.putExtra("foto", cliente.getFoto());
+                intent.putExtra("titulo", cliente.getNome());
+                startActivity(intent);
+            }
+        });
 
     }
 

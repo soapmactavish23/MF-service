@@ -136,6 +136,9 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(intent_produtos);
                                 break;
                             case "SERVICOS":
+                                Intent intent_servicos = new Intent(MainActivity.this, ServicosActivity.class);
+                                intent_servicos.putExtra("DadosUsuario", usuario);
+                                startActivity(intent_servicos);
                                 break;
                             case "ORCAMENTO":
                                 break;

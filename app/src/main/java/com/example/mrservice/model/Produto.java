@@ -34,7 +34,10 @@ public class Produto implements Serializable {
 
     public void salvar(){
         DatabaseReference produtoRef = ConfiguracaoFirebase.getFirebaseDatabase().child("produtos");
-        produtoRef.child(getCategoria()).child(getProduto()).child(getId()).setValue(this);
+        produtoRef.child(getCategoria())
+                .child(getProduto())
+                .child(getId())
+                .setValue(this);
     }
 
     public void deletar(){

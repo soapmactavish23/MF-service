@@ -54,8 +54,8 @@ public class QuemSomosActivity extends AppCompatActivity {
                 .isRTL(false)
                 .setImage(R.drawable.logo_about)
                 .setDescription("A MF service, fundada em novembro de 2012, é uma empresa que procura a satisfação dos seus clientes aliando a oferta de produtos que são novidades no mercado nacional e internacional a um atendimento especializado e personalizado.\n" +
-                        "Oferecemos uma diversificada linha de produtos novos e remanufaturados, além de peças de reposição.")
-                .addGroup("EQUIPAMENTOS")
+                        "Confira!")
+                /*.addGroup("EQUIPAMENTOS")
                 .addItem(new Element().setTitle("PROFISSIONAL"))
                 .addItem(new Element().setTitle("PILATES"))
                 .addItem(new Element().setTitle("AO AR LIVRE"))
@@ -97,7 +97,7 @@ public class QuemSomosActivity extends AppCompatActivity {
                 .addItem(new Element().setTitle("CLUBE"))
                 .addItem(new Element().setTitle("HOTEL"))
                 .addItem(new Element().setTitle("ÓRGÃO: PÚBLICO E PRIVADO"))
-                .addItem(new Element().setTitle("RESIDÊNCIA"))
+                .addItem(new Element().setTitle("RESIDÊNCIA"))*/
                 .addGroup("Entre em Contato")
                 .addEmail("mfstoreservices@gmail.com", "Envie um e-mail")
                 .addItem(contato)
