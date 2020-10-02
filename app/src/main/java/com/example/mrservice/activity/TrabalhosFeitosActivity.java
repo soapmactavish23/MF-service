@@ -89,7 +89,10 @@ public class TrabalhosFeitosActivity extends AppCompatActivity {
 
                             @Override
                             public void onLongItemClick(View view, int position) {
-
+                                trabalhosFeitosSelecionado = listaTrabalhosFeitos.get(position);
+                                Intent intent = new Intent(TrabalhosFeitosActivity.this, CadastrarTrabalhosFeitosActivity.class);
+                                intent.putExtra("trabalhoFeitoSelecionado", trabalhosFeitosSelecionado);
+                                startActivity(intent);
                             }
 
                             @Override

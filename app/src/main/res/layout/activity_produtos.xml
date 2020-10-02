@@ -66,7 +66,25 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <com.github.siyamed.shapeimageview.HexagonImageView
+                        android:id="@+id/imgEquipamento"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="8dp"
+                        android:onClick="onClick"
+                        android:src="@drawable/equipamentos_info"
+                        app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/include"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_weight="1"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        app:siBorderWidth="2dp"
+                        app:siBorderColor="@color/azulEscuro"
+                        />
+
+                    <!-- de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imgEquipamento"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
@@ -81,7 +99,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/include"
                         app:layout_constraintTop_toTopOf="parent"
                         android:layout_weight="1"
-                        app:layout_constraintVertical_chainStyle="packed" />
+                        app:layout_constraintVertical_chainStyle="packed" /-->
 
                     <TextView
                         android:id="@+id/textView20"
@@ -94,14 +112,12 @@
                         android:layout_marginTop="8dp"
                         android:textSize="18sp"/>
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <com.github.siyamed.shapeimageview.HexagonImageView
                         android:id="@+id/imgAcessorio"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_margin="8dp"
-                        app:civ_border_width="2dp"
                         android:onClick="onClick"
-                        app:civ_border_color="@color/colorAccent"
                         android:src="@drawable/acessorios_info"
                         app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -109,7 +125,10 @@
                         app:layout_constraintTop_toBottomOf="@+id/include"
                         app:layout_constraintTop_toTopOf="parent"
                         android:layout_weight="1"
-                        app:layout_constraintVertical_chainStyle="packed" />
+                        app:layout_constraintVertical_chainStyle="packed"
+                        app:siBorderWidth="2dp"
+                        app:siBorderColor="@color/azulEscuro"
+                        />
 
                     <TextView
                         android:id="@+id/textView22"
@@ -123,14 +142,12 @@
                         android:layout_marginTop="8dp"
                         android:textSize="18sp"/>
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <com.github.siyamed.shapeimageview.HexagonImageView
                         android:id="@+id/imgRevestimento"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_margin="8dp"
-                        app:civ_border_width="2dp"
                         android:onClick="onClick"
-                        app:civ_border_color="@color/colorAccent"
                         android:src="@drawable/revestimento_info"
                         app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -138,7 +155,10 @@
                         app:layout_constraintTop_toBottomOf="@+id/include"
                         app:layout_constraintTop_toTopOf="parent"
                         android:layout_weight="1"
-                        app:layout_constraintVertical_chainStyle="packed" />
+                        app:layout_constraintVertical_chainStyle="packed"
+                        app:siBorderWidth="2dp"
+                        app:siBorderColor="@color/azulEscuro"
+                        />
 
                     <TextView
                         android:id="@+id/textView24"
@@ -161,14 +181,12 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <com.github.siyamed.shapeimageview.HexagonImageView
                         android:id="@+id/imgCardio"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_margin="8dp"
-                        app:civ_border_width="2dp"
                         android:onClick="onClick"
-                        app:civ_border_color="@color/colorAccent"
                         android:src="@drawable/cardio_info"
                         app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -176,7 +194,10 @@
                         app:layout_constraintTop_toBottomOf="@+id/include"
                         app:layout_constraintTop_toTopOf="parent"
                         android:layout_weight="1"
-                        app:layout_constraintVertical_chainStyle="packed" />
+                        app:layout_constraintVertical_chainStyle="packed"
+                        app:siBorderWidth="2dp"
+                        app:siBorderColor="@color/azulEscuro"
+                        />
 
                     <TextView
                         android:id="@+id/textView21"
@@ -190,14 +211,12 @@
                         android:layout_marginTop="8dp"
                         android:textSize="18sp"/>
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <com.github.siyamed.shapeimageview.HexagonImageView
                         android:id="@+id/imgPiso"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_margin="8dp"
-                        app:civ_border_width="2dp"
                         android:onClick="onClick"
-                        app:civ_border_color="@color/colorAccent"
                         android:src="@drawable/pisos_info"
                         app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -205,7 +224,10 @@
                         app:layout_constraintTop_toBottomOf="@+id/include"
                         app:layout_constraintTop_toTopOf="parent"
                         android:layout_weight="1"
-                        app:layout_constraintVertical_chainStyle="packed" />
+                        app:layout_constraintVertical_chainStyle="packed"
+                        app:siBorderWidth="2dp"
+                        app:siBorderColor="@color/azulEscuro"
+                        />
 
                     <TextView
                         android:id="@+id/textView23"
@@ -219,14 +241,12 @@
                         android:layout_marginTop="8dp"
                         android:textSize="18sp"/>
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <com.github.siyamed.shapeimageview.HexagonImageView
                         android:id="@+id/imgBrinquedo"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_margin="8dp"
-                        app:civ_border_width="2dp"
                         android:onClick="onClick"
-                        app:civ_border_color="@color/colorAccent"
                         android:src="@drawable/brinquedos_info"
                         app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -234,7 +254,10 @@
                         app:layout_constraintTop_toBottomOf="@+id/include"
                         app:layout_constraintTop_toTopOf="parent"
                         android:layout_weight="1"
-                        app:layout_constraintVertical_chainStyle="packed" />
+                        app:layout_constraintVertical_chainStyle="packed"
+                        app:siBorderWidth="2dp"
+                        app:siBorderColor="@color/azulEscuro"
+                        />
 
                     <TextView
                         android:id="@+id/textView25"

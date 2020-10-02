@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mrservice.R;
@@ -49,6 +50,7 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
     private StorageReference storage;
     private TrabalhosFeitos trabalhosFeitos;
     private TrabalhosFeitos trabalhosFeitosSelecionado;
+    private TextView txtAntes, txtDepois;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +71,34 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
         imagem1 = findViewById(R.id.imgTrabalhosFeitosAntes);
         imagem2 = findViewById(R.id.imgTrabalhosFeitosDepois);
         storage = ConfiguracaoFirebase.getStorageReference();
+        txtAntes = findViewById(R.id.txtAntes);
+        txtDepois = findViewById(R.id.txtDepois);
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            trabalhosFeitosSelecionado = (TrabalhosFeitos) bundle.getSerializable("trabalhoFeitoSelecionado");
+            editTitulo.setText(trabalhosFeitosSelecionado.getTitulo());
+            editDescricao.setText(trabalhosFeitosSelecionado.getDescricao());
+            imagem1.setVisibility(View.GONE);
+            imagem2.setVisibility(View.GONE);
+            txtAntes.setVisibility(View.GONE);
+            txtDepois.setVisibility(View.GONE);
+        }
 
     }
 
     public void validarDadosTrabalhosFeitos(View view){
         String titulo = editTitulo.getText().toString();
         String descricao = editDescricao.getText().toString();
-        if(listaFotosRecuperadas.size() != 0){
+        if(listaFotosRecuperadas.size() != 0 || trabalhosFeitosSelecionado != null){
             if(!titulo.isEmpty()){
                 if(!descricao.isEmpty()){
                     if(trabalhosFeitosSelecionado != null){
                         trabalhosFeitos = trabalhosFeitosSelecionado;
+                        trabalhosFeitos.setTitulo(titulo);
+                        trabalhosFeitos.setDescricao(descricao);
+                        trabalhosFeitos.atualizar();
+                        finish();
                     }else{
                         trabalhosFeitos = new TrabalhosFeitos();
                     }

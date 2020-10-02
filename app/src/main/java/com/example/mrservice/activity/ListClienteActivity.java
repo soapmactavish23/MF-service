@@ -70,7 +70,10 @@ public class ListClienteActivity extends AppCompatActivity {
             gridViewClientes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    excluirProduto(i);
+                    Cliente cliente = listaClientes.get(i);
+                    Intent intent = new Intent(ListClienteActivity.this, CadastrarClientesActivity.class);
+                    intent.putExtra("cliente", cliente);
+                    startActivity(intent);
                     return false;
                 }
             });
@@ -145,29 +148,5 @@ public class ListClienteActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return false;
-    }
-
-    public void excluirProduto(final int position){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ListClienteActivity.this);
-        alertDialog.setTitle("Excluir");
-        alertDialog.setMessage("Tem certeza que deseja excluir esse cliente?");
-        alertDialog.setCancelable(false);
-        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                clienteSelecionado = listaClientes.get(position);
-                clienteSelecionado.deletar();
-                listaClientes.clear();
-                gridViewClientes.deferNotifyDataSetChanged();
-            }
-        });
-        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        AlertDialog alert = alertDialog.create();
-        alert.show();
     }
 }

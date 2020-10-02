@@ -44,7 +44,11 @@ public class DetalhesClienteActivity extends AppCompatActivity {
             txtNome.setText(cliente.getNome());
             toolbar.setTitle(cliente.getNome());
             txtDepoimento.setText(cliente.getDepoimento());
-            Picasso.get().load(cliente.getFoto()).into(circleImageView);
+            if (cliente.getFoto().equals("")){
+                circleImageView.setImageResource(R.drawable.padrao);
+            }else{
+                Picasso.get().load(cliente.getFoto()).into(circleImageView);
+            }
         }
 
         circleImageView.setOnClickListener(new View.OnClickListener() {

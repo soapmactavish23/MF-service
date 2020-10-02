@@ -4,6 +4,8 @@ import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.google.firebase.database.DatabaseReference;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Cliente implements Serializable {
 
@@ -30,6 +32,26 @@ public class Cliente implements Serializable {
                 .child(getId());
         clienteRef.removeValue();
 
+    }
+
+    public void atualizar(){
+        DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
+        DatabaseReference clientesRef = firebaseRef
+                .child("clientes")
+                .child(getCategoria())
+                .child(getId());
+        Map<String, Object> valoresClientes = converterParaMap();
+        clientesRef.updateChildren(valoresClientes);
+    }
+
+    public Map<String, Object> converterParaMap(){
+        HashMap<String, Object> clienteMap = new HashMap<>();
+        clienteMap.put("nome", getNome());
+        clienteMap.put("depoimento", getDepoimento());
+        clienteMap.put("id", getId());
+        clienteMap.put("foto", getFoto());
+        clienteMap.put("categoria", getCategoria());
+        return clienteMap;
     }
 
     public String getId() {

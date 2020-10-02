@@ -23,6 +23,9 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.List;
 
+import static com.example.mrservice.R.*;
+import static com.example.mrservice.R.drawable.padrao;
+
 public class AdapterGrid extends ArrayAdapter<Cliente> {
 
     private Context context;
@@ -39,6 +42,7 @@ public class AdapterGrid extends ArrayAdapter<Cliente> {
     public class ViewHolder{
         ImageView img;
         ProgressBar progressBar;
+        TextView txtTitulo;
     }
 
     @NonNull
@@ -49,35 +53,42 @@ public class AdapterGrid extends ArrayAdapter<Cliente> {
             viewHolder = new ViewHolder();
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(layoutResource, parent, false);
-            viewHolder.progressBar = convertView.findViewById(R.id.progressBar);
-            viewHolder.img = convertView.findViewById(R.id.img);
-            //viewHolder.txtTitulo = convertView.findViewById(R.id.txtTitulo);
+            viewHolder.progressBar = convertView.findViewById(id.progressBar);
+            viewHolder.img = convertView.findViewById(id.img);
+            viewHolder.txtTitulo = convertView.findViewById(id.txtTitulo);
+            viewHolder.txtTitulo.setText(listaClientes.get(position).getNome());
+
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
         ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.displayImage(listaClientes.get(position).getFoto(), viewHolder.img, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                viewHolder.progressBar.setVisibility(View.VISIBLE);
-            }
+        if(!listaClientes.get(position).getFoto().equals("")){
+            imageLoader.displayImage(listaClientes.get(position).getFoto(), viewHolder.img, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    viewHolder.progressBar.setVisibility(View.VISIBLE);
+                }
 
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                viewHolder.progressBar.setVisibility(View.GONE);
-            }
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    viewHolder.progressBar.setVisibility(View.GONE);
+                }
 
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                viewHolder.progressBar.setVisibility(View.GONE);
-            }
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    viewHolder.progressBar.setVisibility(View.GONE);
+                }
 
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                viewHolder.progressBar.setVisibility(View.GONE);
-            }
-        });
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                    viewHolder.progressBar.setVisibility(View.GONE);
+                }
+            });
+        }else{
+            viewHolder.progressBar.setVisibility(View.GONE);
+            viewHolder.img.setImageResource(R.drawable.padrao);
+        }
 
         return convertView;
     }

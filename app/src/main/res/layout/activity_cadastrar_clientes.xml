@@ -118,6 +118,17 @@
                 android:text="Cadastrar Cliente"
                 android:textColor="@android:color/white" />
 
+            <Button
+                android:id="@+id/btnExcluir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:onClick="onClick"
+                android:background="@color/danger"
+                android:visibility="gone"
+                android:text="Excluir Cliente"
+                android:textColor="@android:color/white" />
+
         </LinearLayout>
     </ScrollView>
 

@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
@@ -44,9 +46,11 @@ public class CadastrarClientesActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
     private Cliente cliente;
+    private Cliente clienteSelecionado;
     private StorageReference storage;
     private android.app.AlertDialog dialog;
     private Spinner spinnerCategoria;
+    private Button btnExcluir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,19 @@ public class CadastrarClientesActivity extends AppCompatActivity {
         editDepoimento = findViewById(R.id.editDepoimento);
         spinnerCategoria = findViewById(R.id.spinnerCategoria);
         storage = ConfiguracaoFirebase.getStorageReference();
+        btnExcluir = findViewById(R.id.btnExcluir);
+
+        //Bundle
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            clienteSelecionado = (Cliente) bundle.getSerializable("cliente");
+            editNomeCliente.setText(clienteSelecionado.getNome());
+            editDepoimento.setText(clienteSelecionado.getDepoimento());
+            Uri uri = Uri.parse(clienteSelecionado.getFoto());
+            Picasso.get().load(uri).into(imgFotoCliente);
+            spinnerCategoria.setVisibility(View.VISIBLE);
+            btnExcluir.setVisibility(View.VISIBLE);
+        }
 
         //Carregar Spinner de categoria
         String[] categoria = getResources().getStringArray(R.array.clientes_categorias);
@@ -85,25 +102,34 @@ public class CadastrarClientesActivity extends AppCompatActivity {
             case R.id.btnCadastrar:
                 validarCadastro();
                 break;
+            case R.id.btnExcluir:
+                excluirCliente();
+                break;
         }
     }
 
     public void validarCadastro(){
         String nomeCliente = editNomeCliente.getText().toString();
         String depoimentoCliente = editDepoimento.getText().toString();
-        if(!foto.equals("")){
-            if(!nomeCliente.isEmpty()){
+        if(!nomeCliente.isEmpty()){
+            if(clienteSelecionado != null){
+                clienteSelecionado.setNome(nomeCliente);
+                clienteSelecionado.setDepoimento(depoimentoCliente);
+                if(!foto.isEmpty()){
+                    clienteSelecionado.setFoto(foto);
+                }
+                clienteSelecionado.atualizar();
+                finish();
+            }else{
                 cliente = new Cliente();
                 cliente.setNome(nomeCliente);
                 cliente.setCategoria(spinnerCategoria.getSelectedItem().toString());
                 cliente.setFoto(foto);
                 cliente.setDepoimento(depoimentoCliente);
                 salvarCliente();
-            }else{
-                exibirMensagem("Preencha o Campo Nome do Cliente");
             }
         }else{
-            exibirMensagem("Insira uma foto");
+            exibirMensagem("Preencha o Campo Nome do Cliente");
         }
     }
 
@@ -119,38 +145,43 @@ public class CadastrarClientesActivity extends AppCompatActivity {
     }
 
     private void salvarFotoStorage(String urlString){
-        //Criar nó no storage
-        StorageReference imagemProduto = storage.child("imagens")
-                .child("cliente")
-                .child(cliente.getCategoria())
-                .child(cliente.getId())
-                .child("imagem");
-        UploadTask uploadTask = imagemProduto.putFile(Uri.parse(urlString));
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
-                while(!uri.isComplete());
-                Uri url = uri.getResult();
-                final String urlConvertida = url.toString();
-                storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        cliente.setFoto(urlConvertida);
-                        cliente.salvar();
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                exibirMensagem("Fala ao fazer upload");
-                Log.i("INFO", "FALHA: " + e.getMessage());
-            }
-        });
-
+        if(urlString.isEmpty()){
+            cliente.salvar();
+            dialog.dismiss();
+            finish();
+        }else{
+            //Criar nó no storage
+            StorageReference imagemProduto = storage.child("imagens")
+                    .child("cliente")
+                    .child(cliente.getCategoria())
+                    .child(cliente.getId())
+                    .child("imagem");
+            UploadTask uploadTask = imagemProduto.putFile(Uri.parse(urlString));
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
+                    while(!uri.isComplete());
+                    Uri url = uri.getResult();
+                    final String urlConvertida = url.toString();
+                    storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            cliente.setFoto(urlConvertida);
+                            cliente.salvar();
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    exibirMensagem("Fala ao fazer upload");
+                    Log.i("INFO", "FALHA: " + e.getMessage());
+                }
+            });
+        }
     }
 
     public void escolherImagem(int requestCode){
@@ -203,5 +234,27 @@ public class CadastrarClientesActivity extends AppCompatActivity {
 
     private void exibirMensagem(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void excluirCliente(){
+        android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builder(CadastrarClientesActivity.this);
+        alertDialog.setTitle("Excluir");
+        alertDialog.setMessage("Tem certeza que deseja excluir esse cliente?");
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                clienteSelecionado.deletar();
+                finish();
+            }
+        });
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        android.app.AlertDialog alert = alertDialog.create();
+        alert.show();
     }
 }

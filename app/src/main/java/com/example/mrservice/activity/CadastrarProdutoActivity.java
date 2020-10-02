@@ -166,20 +166,25 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         //String precoCusto = String.valueOf(editPrecoCusto.getRawValue());
         String categoria = spinnerCategoria.getSelectedItem().toString();
         String produto = spinnerTipoProduto.getSelectedItem().toString();
-        if(listaFotosRecuperadas.size() != 0){
+        if(listaFotosRecuperadas.size() != 0 || produtoSelecionado != null){
             if(!titulo.isEmpty()) {
                 if (!precoVenda.isEmpty()) {
                     if (produtoSelecionado != null) {
                         produto1 = produtoSelecionado;
+                        produto1.setTitulo(titulo);
+                        produto1.setDescricao(descricao);
+                        produto1.setPrecoVenda(precoVenda);
+                        produto1.atualizar();
+                        finish();
                     } else {
                         produto1 = new Produto();
+                        produto1.setTitulo(titulo);
+                        produto1.setDescricao(descricao);
+                        produto1.setPrecoVenda(precoVenda);
+                        produto1.setCategoria(categoria);
+                        produto1.setProduto(produto);
+                        salvarProduto();
                     }
-                    produto1.setTitulo(titulo);
-                    produto1.setDescricao(descricao);
-                    produto1.setPrecoVenda(precoVenda);
-                    produto1.setCategoria(categoria);
-                    produto1.setProduto(produto);
-                    salvarProduto();
                 } else {
                     exibirMensagem("Preencha o Campo Preço de Venda");
                 }

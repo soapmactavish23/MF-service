@@ -130,10 +130,10 @@ public class ListProdutosActivity extends AppCompatActivity {
 
                     @Override
                     public void onLongItemClick(View view, final int position) {
-                        /*produtoSelecionado = listaProdutos.get(position);
-                        Intent intent = new Intent(ProdutosActivity.this, CadastrarProdutoActivity.class);
+                        produtoSelecionado = listaProdutos.get(position);
+                        Intent intent = new Intent(ListProdutosActivity.this, CadastrarProdutoActivity.class);
                         intent.putExtra("produtoSelecionado", produtoSelecionado);
-                        startActivity(intent);*/
+                        startActivity(intent);
                     }
 
                     @Override
