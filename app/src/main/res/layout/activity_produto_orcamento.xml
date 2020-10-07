@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.ListClienteActivity"
     android:background="@drawable/degrade"
-    android:orientation="vertical">
+    tools:context=".activity.ProdutoOrcamentoActivity">
 
     <FrameLayout
         android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,27 +22,24 @@
             android:layout_height="match_parent"
             android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Clientes Atendidos">
+            app:title="Orçamentos dos Produtos" >
 
         </androidx.appcompat.widget.Toolbar>
 
         <com.miguelcatalan.materialsearchview.MaterialSearchView
-            android:id="@+id/materialSearchClientes"
+            android:id="@+id/materialSearchProdutos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerClientes"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:id="@+id/recyclerOrcamentoProduto"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
-    <!-- GridView
-        android:id="@+id/gridViewClientes"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:numColumns="3" /-->
-
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

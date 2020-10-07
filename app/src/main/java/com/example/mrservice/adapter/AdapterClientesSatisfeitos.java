@@ -56,7 +56,7 @@ public class AdapterClientesSatisfeitos extends RecyclerView.Adapter<AdapterClie
         {
             super(itemView);
             imgClienteSatisfeito = itemView.findViewById(R.id.imgClienteSatisfeito);
-            txtNomeClienteSatisfeito = itemView.findViewById(R.id.txtNomeClienteSatisfeito);
+            txtNomeClienteSatisfeito = itemView.findViewById(R.id.txtNome);
             txtDepoimento = itemView.findViewById(R.id.txtDepoimento);
         }
     }

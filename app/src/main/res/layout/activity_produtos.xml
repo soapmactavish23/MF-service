@@ -66,7 +66,7 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <com.github.siyamed.shapeimageview.HexagonImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imgEquipamento"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
@@ -112,7 +112,7 @@
                         android:layout_marginTop="8dp"
                         android:textSize="18sp"/>
 
-                    <com.github.siyamed.shapeimageview.HexagonImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imgAcessorio"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
@@ -142,7 +142,7 @@
                         android:layout_marginTop="8dp"
                         android:textSize="18sp"/>
 
-                    <com.github.siyamed.shapeimageview.HexagonImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imgRevestimento"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
@@ -181,7 +181,7 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <com.github.siyamed.shapeimageview.HexagonImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imgCardio"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
@@ -211,7 +211,7 @@
                         android:layout_marginTop="8dp"
                         android:textSize="18sp"/>
 
-                    <com.github.siyamed.shapeimageview.HexagonImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imgPiso"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
@@ -241,7 +241,7 @@
                         android:layout_marginTop="8dp"
                         android:textSize="18sp"/>
 
-                    <com.github.siyamed.shapeimageview.HexagonImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imgBrinquedo"
                         android:layout_width="100dp"
                         android:layout_height="100dp"

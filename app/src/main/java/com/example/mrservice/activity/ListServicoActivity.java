@@ -12,13 +12,12 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 
 import com.example.mrservice.R;
 import com.example.mrservice.adapter.AdapterServicos;
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.helper.RecyclerItemClickListener;
-import com.example.mrservice.model.Servico;
+import com.example.mrservice.model.ServicoOrcamento;
 import com.example.mrservice.model.Usuario;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -36,12 +35,12 @@ public class ListServicoActivity extends AppCompatActivity {
 
     private String categoria;
     private AdapterServicos adapterServicos;
-    private List<Servico> listaServicos = new ArrayList<>();
+    private List<ServicoOrcamento> listaServicoOrcamentos = new ArrayList<>();
     private RecyclerView recyclerView;
     private AlertDialog dialog;
     private DatabaseReference servicosRef;
     private Usuario usuario;
-    private Servico servicoSelecionado;
+    private ServicoOrcamento servicoOrcamentoSelecionado;
     private FloatingActionButton fabAddServico;
 
     @Override
@@ -66,7 +65,7 @@ public class ListServicoActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewServicos);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        adapterServicos = new AdapterServicos(this, listaServicos);
+        adapterServicos = new AdapterServicos(this, listaServicoOrcamentos);
         recyclerView.setAdapter(adapterServicos);
     }
 
@@ -91,9 +90,9 @@ public class ListServicoActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listaServicos.clear();
+                listaServicoOrcamentos.clear();
                 for (DataSnapshot ds : dataSnapshot.getChildren()){
-                    listaServicos.add(ds.getValue(Servico.class));
+                    listaServicoOrcamentos.add(ds.getValue(ServicoOrcamento.class));
                 }
                 adapterServicos.notifyDataSetChanged();
                 dialog.dismiss();
@@ -161,10 +160,10 @@ public class ListServicoActivity extends AppCompatActivity {
         alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                servicoSelecionado = listaServicos.get(position);
-                servicoSelecionado.deletar();
+                servicoOrcamentoSelecionado = listaServicoOrcamentos.get(position);
+                servicoOrcamentoSelecionado.deletar();
                 adapterServicos.notifyItemRemoved(position);
-                listaServicos.clear();
+                listaServicoOrcamentos.clear();
                 adapterServicos.notifyDataSetChanged();
             }
         });

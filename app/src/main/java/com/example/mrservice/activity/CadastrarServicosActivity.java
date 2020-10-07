@@ -10,7 +10,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.mrservice.R;
-import com.example.mrservice.model.Servico;
+import com.example.mrservice.model.ServicoOrcamento;
 import com.google.android.material.textfield.TextInputEditText;
 
 import dmax.dialog.SpotsDialog;
@@ -61,10 +61,10 @@ public class CadastrarServicosActivity extends AppCompatActivity {
                     .setCancelable(false)
                     .build();
             dialog.show();
-            Servico servico = new Servico();
-            servico.setTitulo(titulo);
-            servico.setCategoria(categoria);
-            if(servico.salvar()){
+            ServicoOrcamento servicoOrcamento = new ServicoOrcamento();
+            servicoOrcamento.setTitulo(titulo);
+            //servicoOrcamento.setCategoria(categoria);
+            if(servicoOrcamento.salvar()){
                 dialog.dismiss();
                 finish();
             }

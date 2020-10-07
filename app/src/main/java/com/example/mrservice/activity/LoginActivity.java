@@ -3,6 +3,8 @@ package com.example.mrservice.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -31,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText editEmail, editSenha;
     private FirebaseAuth autenticacao;
     private TextView txtNaoTemConta;
-    private Button btnEntrar;
+    private Button btnEntrar, btnEsqueceuSenha;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         textSenha = findViewById(R.id.textSenha);
         txtNaoTemConta = findViewById(R.id.txtNaoTemConta);
         btnEntrar = findViewById(R.id.btnEntrar);
+        btnEsqueceuSenha = findViewById(R.id.btnEsqueceuSenha);
 
     }
 
@@ -53,12 +56,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser usuarioAtual = autenticacao.getCurrentUser();
         if(usuarioAtual != null){
+            btnEsqueceuSenha.setVisibility(View.GONE);
             textEmail.setVisibility(View.GONE);
             textSenha.setVisibility(View.GONE);
             btnEntrar.setVisibility(View.GONE);
             txtNaoTemConta.setVisibility(View.GONE);
             abrirMainActivity();
         }else{
+            btnEsqueceuSenha.setVisibility(View.VISIBLE);
             textEmail.setVisibility(View.VISIBLE);
             textSenha.setVisibility(View.VISIBLE);
             btnEntrar.setVisibility(View.VISIBLE);
@@ -117,5 +122,44 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void abrirMainActivity(){
         UsuarioFirebase.redirecionarUsuarioLogado(LoginActivity.this);
+    }
+
+    public void esqueceuSenha(View view){
+        AlertDialog.Builder dialogCategoria = new AlertDialog.Builder(this);
+        dialogCategoria.setTitle("Digite seu email para redefinição de senha:");
+
+        //Configurar spinner
+        View viewMudarSenha = getLayoutInflater().inflate(R.layout.dialog_input, null);
+        final TextInputEditText editEmailMudar = viewMudarSenha.findViewById(R.id.editEmail);
+        dialogCategoria.setView(viewMudarSenha);
+
+        dialogCategoria.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                String emailAddress = editEmailMudar.getText().toString();
+
+                auth.sendPasswordResetEmail(emailAddress).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(
+                                    LoginActivity.this,
+                                    "Email com redefinição de senha enviado",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    }
+                });
+            }
+        });
+        dialogCategoria.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog dialog = dialogCategoria.create();
+        dialog.show();
     }
 }

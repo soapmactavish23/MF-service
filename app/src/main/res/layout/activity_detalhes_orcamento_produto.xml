@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/degrade"
-    tools:context=".activity.DetalhesProdutoActivity">
+    android:orientation="vertical"
+    tools:context=".activity.DetalhesOrcamentoProdutoActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar5"
+    <FrameLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
-        android:minHeight="?attr/actionBarSize"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:title="Detalhes" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorPrimaryDark"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </FrameLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,80 +51,105 @@
 
             </com.synnapps.carouselview.CarouselView>
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgFotoCliente"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_gravity="center"
+                android:src="@drawable/padrao"
+                app:layout_constraintBottom_toTopOf="@+id/btnAlterarFoto"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/include"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
             <TextView
-                android:id="@+id/txtTituloProduto"
+                android:id="@+id/txtCliente"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="4dp"
-                android:text="Título"
+                android:text="Cliente"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/txtCategoriaDetalhes"
+                android:id="@+id/txtProduto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="4dp"
-                android:text="Categoria"
+                android:text="Produto"
+                android:textStyle="bold"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/txtTipoProdutoDetalhes"
+                android:id="@+id/txtQuantidade"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="4dp"
-                android:text="Tipo de Produto"
+                android:text="Quantidade"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/txtDescricaoDetalhes"
+                android:id="@+id/txtStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="Descrição"
+                android:layout_marginBottom="4dp"
+                android:text="Status"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtPreco"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="4dp"
+                android:text="Preço Final"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <com.blackcat.currencyedittext.CurrencyEditText
+                android:id="@+id/editPrecoFinal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:drawableLeft="@drawable/ic_money"
+                android:drawablePadding="6dp"
+                android:drawableTint="@android:color/darker_gray"
+                android:hint="Digite o preço de venda"
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/darker_gray" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/floatingActionButton"
+                android:id="@+id/fabSave"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:clickable="true"
-                android:onClick="addOrcamento"
+                android:onClick="finalizarOrcamento"
                 android:layout_marginTop="24dp"
                 android:contentDescription="Orçamento"
-                android:text="Orçamento"
-                app:srcCompat="@drawable/orcamento" />
-
-            <TextView
-                android:id="@+id/txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
-                android:textAlignment="center"
-                android:drawableTop="@drawable/ic_arrow_top"
-                android:text="Adicionar ele aos orçamentos"
-                android:textColor="@android:color/white"
-                android:textSize="18sp" />
+                app:srcCompat="@drawable/ic_like" />
 
         </LinearLayout>
     </ScrollView>

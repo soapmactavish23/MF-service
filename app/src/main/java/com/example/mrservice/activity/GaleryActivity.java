@@ -38,7 +38,8 @@ public class GaleryActivity extends AppCompatActivity {
         if(bundle != null){
             Uri uri = Uri.parse(bundle.getString("foto"));
             toolbar.setTitle(bundle.getString("titulo"));
-            Picasso.get().load(uri).into(pv_image);
+            Glide.with(getApplicationContext()).load(uri).into(pv_image);
+            //Picasso.get().load(uri).into(pv_image);
         }
 
     }

@@ -140,7 +140,10 @@ public class MainActivity extends AppCompatActivity {
                                 intent_servicos.putExtra("DadosUsuario", usuario);
                                 startActivity(intent_servicos);
                                 break;
-                            case "ORCAMENTO":
+                            case "ORCAMENTOS":
+                                Intent intent_orcamento = new Intent(MainActivity.this, OrcamentoActivity.class);
+                                intent_orcamento.putExtra("DadosUsuario", usuario);
+                                startActivity(intent_orcamento);
                                 break;
                             case "TRABALHOS FEITOS":
                                 Intent intent_trabalhos = new Intent(MainActivity.this, TrabalhosFeitosActivity.class);

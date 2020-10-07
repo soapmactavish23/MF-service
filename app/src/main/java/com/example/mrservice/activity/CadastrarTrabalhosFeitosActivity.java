@@ -92,22 +92,18 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
         String descricao = editDescricao.getText().toString();
         if(listaFotosRecuperadas.size() != 0 || trabalhosFeitosSelecionado != null){
             if(!titulo.isEmpty()){
-                if(!descricao.isEmpty()){
-                    if(trabalhosFeitosSelecionado != null){
-                        trabalhosFeitos = trabalhosFeitosSelecionado;
-                        trabalhosFeitos.setTitulo(titulo);
-                        trabalhosFeitos.setDescricao(descricao);
-                        trabalhosFeitos.atualizar();
-                        finish();
-                    }else{
-                        trabalhosFeitos = new TrabalhosFeitos();
-                    }
+                if(trabalhosFeitosSelecionado != null){
+                    trabalhosFeitos = trabalhosFeitosSelecionado;
                     trabalhosFeitos.setTitulo(titulo);
                     trabalhosFeitos.setDescricao(descricao);
-                    salvarTrabalhosFeitos();
+                    trabalhosFeitos.atualizar();
+                    finish();
                 }else{
-                    exibirMensagem("Preencha o Campo de Descrição");
+                    trabalhosFeitos = new TrabalhosFeitos();
                 }
+                trabalhosFeitos.setTitulo(titulo);
+                trabalhosFeitos.setDescricao(descricao);
+                salvarTrabalhosFeitos();
             }else{
                 exibirMensagem("Preencha o Campo Título");
             }

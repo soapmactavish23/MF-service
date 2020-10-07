@@ -5,21 +5,23 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.io.Serializable;
 
-public class Servico implements Serializable {
+public class ServicoOrcamento implements Serializable {
 
     private String id;
     private String titulo;
-    private String categoria;
+    private String descricao;
+    private Usuario cliente;
 
-    public Servico() {
-        DatabaseReference servicosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("servicos");
+    public ServicoOrcamento() {
+        DatabaseReference servicosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("servicoOrcamento")
+                .child(getCliente().getId());
         setId(servicosRef.push().getKey());
     }
 
     public Boolean salvar(){
         DatabaseReference servicosRef = ConfiguracaoFirebase.getFirebaseDatabase()
-                .child("servicos")
-                .child(getCategoria())
+                .child("servicosOrcamento")
+                .child(getCliente().getId())
                 .child(getId());
         servicosRef.setValue(this);
         return true;
@@ -27,8 +29,8 @@ public class Servico implements Serializable {
 
     public void deletar(){
         DatabaseReference servicosRef = ConfiguracaoFirebase.getFirebaseDatabase()
-                .child("servicos")
-                .child(getCategoria())
+                .child("servicosOrcamento")
+                .child(getCliente().getId())
                 .child(getId());
         servicosRef.removeValue();
     }
@@ -49,11 +51,19 @@ public class Servico implements Serializable {
         this.titulo = titulo;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public Usuario getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Usuario cliente) {
+        this.cliente = cliente;
     }
 }

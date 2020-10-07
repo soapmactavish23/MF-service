@@ -124,6 +124,7 @@ public class ListProdutosActivity extends AppCompatActivity {
                     public void onItemClick(View view, int position) {
                         produtoSelecionado = listaProdutos.get(position);
                         Intent intent = new Intent(ListProdutosActivity.this, DetalhesProdutoActivity.class);
+                        intent.putExtra("cliente", usuario);
                         intent.putExtra("produtoSelecionado", produtoSelecionado);
                         startActivity(intent);
                     }

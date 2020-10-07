@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
 import com.example.mrservice.model.Cliente;
 import com.squareup.picasso.Picasso;
@@ -33,7 +34,7 @@ public class AdapterClientes extends RecyclerView.Adapter<AdapterClientes.MyView
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_foto_nome, parent, false);
+        View item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_nome_descricao, parent, false);
         return new MyViewHolder(item);
     }
 
@@ -43,10 +44,15 @@ public class AdapterClientes extends RecyclerView.Adapter<AdapterClientes.MyView
         Cliente cliente = listaClientes.get(position);
         holder.titulo.setText(cliente.getNome());
         holder.descricao.setText(cliente.getDepoimento());
-        //Picasso.get().load(cliente.getFoto()).into(holder.foto);
-        Uri uri = Uri.parse(cliente.getFoto());
-        Glide.with(context).load(uri).into(holder.foto);
-
+        if(!cliente.getFoto().isEmpty()){
+            Uri uri = Uri.parse(cliente.getFoto());
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.placeholder(R.drawable.padrao);
+            requestOptions.fitCenter();
+            Glide.with(context).applyDefaultRequestOptions(requestOptions).load(uri).into(holder.foto);
+        }else{
+            holder.foto.setImageResource(R.drawable.padrao);
+        }
     }
 
     @Override

@@ -4,25 +4,35 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.mrservice.R;
+import com.example.mrservice.adapter.AdapterClientes;
 import com.example.mrservice.adapter.AdapterGrid;
+import com.example.mrservice.adapter.AdapterProdutos;
 import com.example.mrservice.config.ConfiguracaoFirebase;
+import com.example.mrservice.helper.RecyclerItemClickListener;
 import com.example.mrservice.model.Cliente;
+import com.example.mrservice.model.Produto;
 import com.example.mrservice.model.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -41,8 +51,11 @@ public class ListClienteActivity extends AppCompatActivity {
     private DatabaseReference clientesCategoriaRef;
     private Cliente clienteSelecionado;
     private AdapterGrid adapterGrid;
+    private AdapterClientes adapterClientes;
     private AlertDialog dialog;
-    private GridView gridViewClientes;
+    //private GridView gridViewClientes;
+    private MaterialSearchView searchView;
+    private RecyclerView recyclerViewClientes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +76,47 @@ public class ListClienteActivity extends AppCompatActivity {
 
         //Configuracoes Iniciais
         clientesCategoriaRef = ConfiguracaoFirebase.getFirebaseDatabase().child("clientes").child(categoria);
-        gridViewClientes = findViewById(R.id.gridViewClientes);
+        //gridViewClientes = findViewById(R.id.gridViewClientes);
+        recyclerViewClientes = findViewById(R.id.recyclerClientes);
+        searchView = findViewById(R.id.materialSearchClientes);
         inicializarImageLoader();
 
-        if(usuario.getTipo_usuario().equals("ADM")){
+        //Configurando o recyclerView
+        recyclerViewClientes.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewClientes.setHasFixedSize(true);
+        adapterClientes = new AdapterClientes(listaClientes, this);
+        recyclerViewClientes.setAdapter(adapterClientes);
+
+        //Configurar o toque
+        recyclerViewClientes.addOnItemTouchListener(new RecyclerItemClickListener(
+                this,
+                recyclerViewClientes,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Cliente cliente = listaClientes.get(position);
+                        Intent intent = new Intent(ListClienteActivity.this, DetalhesClienteActivity.class);
+                        intent.putExtra("cliente", cliente);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        if(usuario.getTipo_usuario().equals("ADM")){
+                            Cliente cliente = listaClientes.get(position);
+                            Intent intent = new Intent(ListClienteActivity.this, CadastrarClientesActivity.class);
+                            intent.putExtra("cliente", cliente);
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                    }
+                }));
+
+        /*if(usuario.getTipo_usuario().equals("ADM")){
             gridViewClientes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -77,15 +127,44 @@ public class ListClienteActivity extends AppCompatActivity {
                     return false;
                 }
             });
-        }
+        }*/
 
-        gridViewClientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        /*gridViewClientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Cliente cliente = listaClientes.get(i);
                 Intent intent = new Intent(ListClienteActivity.this, DetalhesClienteActivity.class);
                 intent.putExtra("cliente", cliente);
                 startActivity(intent);
+            }
+        });*/
+
+                //Configurar o SearchView
+                searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        if (newText != null && !newText.isEmpty()) {
+                            pesquisarClientes(newText.toLowerCase());
+                        }
+                        return true;
+                    }
+                });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                recarregarClientes();
             }
         });
 
@@ -95,6 +174,37 @@ public class ListClienteActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         recuperarClientes();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search_i, menu);
+
+        //Configurar botao pesquisa
+        MenuItem item = menu.findItem(R.id.menu_pesquisa);
+        searchView.setMenuItem(item);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void pesquisarClientes(String text){
+        List<Cliente> listClienteBusca = new ArrayList<>();
+        for(Cliente cliente : listaClientes){
+            String titulo = cliente.getNome().toLowerCase();
+            if(titulo.contains(text)){
+                listClienteBusca.add(cliente);
+            }
+        }
+        adapterClientes = new AdapterClientes(listClienteBusca, getApplicationContext());
+        recyclerViewClientes.setAdapter(adapterClientes);
+        adapterClientes.notifyDataSetChanged();
+        //adapterGrid = new AdapterProdutos(listClienteBusca, getApplicationContext());
+    }
+
+    private void recarregarClientes(){
+        adapterClientes = new AdapterClientes(listaClientes, getApplicationContext());
+        recyclerViewClientes.setAdapter(adapterClientes);
+        adapterClientes.notifyDataSetChanged();
     }
 
     private void inicializarImageLoader(){
@@ -116,25 +226,24 @@ public class ListClienteActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .build();
         dialog.show();
-
-        clientesCategoriaRef.addValueEventListener(new ValueEventListener() {
+        Query query = clientesCategoriaRef.orderByChild("nome");
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //Configurando o Grid
-                int tamanhoGrid = getResources().getDisplayMetrics().widthPixels;
-                int tamanhoImagem = tamanhoGrid/3;
-                gridViewClientes.setColumnWidth(tamanhoImagem);
+                //int tamanhoGrid = getResources().getDisplayMetrics().widthPixels;
+                //int tamanhoImagem = tamanhoGrid/3;
+                //gridViewClientes.setColumnWidth(tamanhoImagem);
 
                 listaClientes.clear();
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     listaClientes.add(ds.getValue(Cliente.class));
                 }
+                adapterClientes.notifyDataSetChanged();
                 //Adapter Grid
-                adapterGrid = new AdapterGrid(getApplicationContext(), R.layout.grid_foto_titulo, listaClientes);
-                gridViewClientes.setAdapter(adapterGrid);
-
+                //adapterGrid = new AdapterGrid(getApplicationContext(), R.layout.grid_foto_titulo, listaClientes);
+                //gridViewClientes.setAdapter(adapterGrid);
                 dialog.dismiss();
-
             }
 
             @Override

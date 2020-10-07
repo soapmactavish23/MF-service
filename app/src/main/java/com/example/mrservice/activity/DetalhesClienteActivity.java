@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
 import com.example.mrservice.model.Cliente;
 import com.squareup.picasso.Picasso;
@@ -19,8 +21,8 @@ public class DetalhesClienteActivity extends AppCompatActivity {
 
     private Cliente cliente;
     private TextView txtNome, txtDepoimento;
-    //private CircleImageView circleImageView;
-    private ImageView circleImageView;
+    private CircleImageView circleImageView;
+    //private ImageView circleImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +49,13 @@ public class DetalhesClienteActivity extends AppCompatActivity {
             if (cliente.getFoto().equals("")){
                 circleImageView.setImageResource(R.drawable.padrao);
             }else{
-                Picasso.get().load(cliente.getFoto()).into(circleImageView);
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.placeholder(R.drawable.padrao);
+                requestOptions.fitCenter();
+                Glide.with(getApplicationContext())
+                        .applyDefaultRequestOptions(requestOptions)
+                        .load(cliente.getFoto())
+                        .into(circleImageView);
             }
         }
 

@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.helper.Permissao;
@@ -78,8 +80,14 @@ public class CadastrarClientesActivity extends AppCompatActivity {
             clienteSelecionado = (Cliente) bundle.getSerializable("cliente");
             editNomeCliente.setText(clienteSelecionado.getNome());
             editDepoimento.setText(clienteSelecionado.getDepoimento());
-            Uri uri = Uri.parse(clienteSelecionado.getFoto());
-            Picasso.get().load(uri).into(imgFotoCliente);
+            if(!clienteSelecionado.getFoto().isEmpty()){
+                Uri uri = Uri.parse(clienteSelecionado.getFoto());
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.placeholder(R.drawable.padrao);
+                Glide.with(getApplicationContext()).applyDefaultRequestOptions(requestOptions).load(uri).into(imgFotoCliente);
+            }else{
+                imgFotoCliente.setImageResource(R.drawable.padrao);
+            }
             spinnerCategoria.setVisibility(View.VISIBLE);
             btnExcluir.setVisibility(View.VISIBLE);
         }
@@ -118,8 +126,7 @@ public class CadastrarClientesActivity extends AppCompatActivity {
                 if(!foto.isEmpty()){
                     clienteSelecionado.setFoto(foto);
                 }
-                clienteSelecionado.atualizar();
-                finish();
+                salvarCliente();
             }else{
                 cliente = new Cliente();
                 cliente.setNome(nomeCliente);
@@ -141,46 +148,83 @@ public class CadastrarClientesActivity extends AppCompatActivity {
                 .build();
         dialog.show();
         salvarFotoStorage(foto);
-
     }
 
     private void salvarFotoStorage(String urlString){
-        if(urlString.isEmpty()){
-            cliente.salvar();
-            dialog.dismiss();
-            finish();
+        if(clienteSelecionado == null){
+            if(urlString.isEmpty()){
+                dialog.dismiss();
+                finish();
+            }else{
+                //Criar nó no storage
+                StorageReference imagemProduto = storage.child("imagens")
+                        .child("cliente")
+                        .child(cliente.getCategoria())
+                        .child(cliente.getId())
+                        .child("imagem");
+                UploadTask uploadTask = imagemProduto.putFile(Uri.parse(urlString));
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
+                        while(!uri.isComplete());
+                        Uri url = uri.getResult();
+                        final String urlConvertida = url.toString();
+                        storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                cliente.setFoto(urlConvertida);
+                                cliente.salvar();
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        exibirMensagem("Fala ao fazer upload");
+                        Log.i("INFO", "FALHA: " + e.getMessage());
+                    }
+                });
+            }
         }else{
-            //Criar nó no storage
-            StorageReference imagemProduto = storage.child("imagens")
-                    .child("cliente")
-                    .child(cliente.getCategoria())
-                    .child(cliente.getId())
-                    .child("imagem");
-            UploadTask uploadTask = imagemProduto.putFile(Uri.parse(urlString));
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
-                    while(!uri.isComplete());
-                    Uri url = uri.getResult();
-                    final String urlConvertida = url.toString();
-                    storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            cliente.setFoto(urlConvertida);
-                            cliente.salvar();
-                            dialog.dismiss();
-                            finish();
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    exibirMensagem("Fala ao fazer upload");
-                    Log.i("INFO", "FALHA: " + e.getMessage());
-                }
-            });
+            if(urlString.isEmpty()){
+                dialog.dismiss();
+                finish();
+            }else{
+                //Criar nó no storage
+                StorageReference imagemProduto = storage.child("imagens")
+                        .child("cliente")
+                        .child(clienteSelecionado.getCategoria())
+                        .child(clienteSelecionado.getId())
+                        .child("imagem");
+                UploadTask uploadTask = imagemProduto.putFile(Uri.parse(urlString));
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
+                        while(!uri.isComplete());
+                        Uri url = uri.getResult();
+                        final String urlConvertida = url.toString();
+                        storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                clienteSelecionado.setFoto(urlConvertida);
+                                clienteSelecionado.atualizar();
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        exibirMensagem("Fala ao fazer upload");
+                        Log.i("INFO", "FALHA: " + e.getMessage());
+                    }
+                });
+            }
         }
     }
 

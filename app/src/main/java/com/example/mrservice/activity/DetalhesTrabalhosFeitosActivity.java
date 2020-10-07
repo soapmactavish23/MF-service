@@ -52,11 +52,12 @@ public class DetalhesTrabalhosFeitosActivity extends AppCompatActivity {
                 public void setImageForPosition(int position, ImageView imageView) {
                     //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     String urlString = trabalhosFeitos.getFotos().get(position);
-                    Picasso.get()
+                    Glide.with(getApplicationContext()).load(urlString).into(imageView);
+                    /*Picasso.get()
                             .load(urlString)
                             .fit()
                             .centerInside()
-                            .into(imageView);
+                            .into(imageView);*/
                 }
             };
             carouselView.setPageCount(trabalhosFeitos.getFotos().size());

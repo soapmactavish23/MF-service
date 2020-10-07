@@ -5,26 +5,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mrservice.R;
-import com.example.mrservice.model.Servico;
+import com.example.mrservice.model.ServicoOrcamento;
 
 import java.util.List;
 
 public class AdapterServicos extends RecyclerView.Adapter<AdapterServicos.MyViewHolder> {
 
     private Context context;
-    private List<Servico> listaServicos;
+    private List<ServicoOrcamento> listaServicoOrcamentos;
 
-    public AdapterServicos(Context context, List<Servico> listaServicos) {
+    public AdapterServicos(Context context, List<ServicoOrcamento> listaServicoOrcamentos) {
         this.context = context;
-        this.listaServicos = listaServicos;
+        this.listaServicoOrcamentos = listaServicoOrcamentos;
     }
 
     @NonNull
@@ -37,8 +34,8 @@ public class AdapterServicos extends RecyclerView.Adapter<AdapterServicos.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        Servico servico = listaServicos.get(position);
-        holder.checkBox.setText(servico.getTitulo());
+        ServicoOrcamento servicoOrcamento = listaServicoOrcamentos.get(position);
+        holder.checkBox.setText(servicoOrcamento.getTitulo());
 
     }
 
@@ -49,7 +46,7 @@ public class AdapterServicos extends RecyclerView.Adapter<AdapterServicos.MyView
 
     @Override
     public int getItemCount() {
-        return listaServicos.size();
+        return listaServicoOrcamentos.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{

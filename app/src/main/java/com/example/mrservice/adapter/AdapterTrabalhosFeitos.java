@@ -10,10 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
 import com.example.mrservice.model.TrabalhosFeitos;
 import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Request;
 
 import java.util.List;
 
@@ -44,7 +47,11 @@ public class AdapterTrabalhosFeitos extends RecyclerView.Adapter<AdapterTrabalho
         //Pega a primira imagem da lista
         List<String> urlFotos = trabalhosFeitos.getFotos();
         String urlCapa = urlFotos.get(1);
-        Picasso.get().load(urlCapa).into(holder.fotoTrabalhoFeito);
+        //Picasso.get().load(urlCapa).into(holder.fotoTrabalhoFeito);
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.galery_padrao);
+        requestOptions.fitCenter();
+        Glide.with(context).load(urlCapa).apply(requestOptions).into(holder.fotoTrabalhoFeito);
     }
 
     @Override

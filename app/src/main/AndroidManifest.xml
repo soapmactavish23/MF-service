@@ -18,7 +18,12 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.ListServicoActivity"></activity>
+        <activity android:name=".activity.DetalhesOrcamentoProdutoActivity"></activity>
+        <activity android:name=".activity.ProdutoOrcamentoActivity" />
+        <activity
+            android:name=".activity.OrcamentoActivity"
+            android:parentActivityName=".activity.MainActivity" />
+        <activity android:name=".activity.ListServicoActivity" />
         <activity android:name=".activity.CadastrarServicosActivity" />
         <activity
             android:name=".activity.ServicosActivity"

@@ -2,7 +2,10 @@ package com.example.mrservice.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -15,8 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
 import com.example.mrservice.model.Produto;
+import com.example.mrservice.model.ProdutoOrcamento;
+import com.example.mrservice.model.Usuario;
+import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageClickListener;
@@ -26,11 +33,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class DetalhesProdutoActivity extends AppCompatActivity {
 
     private Produto produtoSelecionado;
     private TextView txtTitulo, txtDescricao, txtCategoria, txtTipoProduto;
     private CarouselView carouselView;
+    private Usuario cliente;
+    private ProdutoOrcamento produtoOrcamentoSelecionado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +63,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {
             produtoSelecionado = (Produto) bundle.getSerializable("produtoSelecionado");
+            cliente = (Usuario) bundle.getSerializable("cliente");
             txtTitulo.setText(produtoSelecionado.getTitulo());
             toolbar.setTitle(produtoSelecionado.getTitulo());
             txtDescricao.setText(produtoSelecionado.getDescricao());
@@ -60,9 +72,10 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
             ImageListener imageListener = new ImageListener() {
                 @Override
                 public void setImageForPosition(int position, ImageView imageView) {
-                    //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     String urlString = produtoSelecionado.getFotos().get(position);
-                    Picasso.get().load(urlString).into(imageView);
+                    RequestOptions requestOptions = new RequestOptions();
+                    requestOptions.placeholder(R.drawable.padrao);
+                    Glide.with(getApplicationContext()).applyDefaultRequestOptions(requestOptions).load(urlString).into(imageView);
                 }
             };
             carouselView.setPageCount(produtoSelecionado.getFotos().size());
@@ -82,9 +95,46 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
 
     }
 
+    public void addOrcamento(View view){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(DetalhesProdutoActivity.this);
+        alertDialog.setTitle("Solicitar Orçamento");
+        alertDialog.setMessage("Deseja solicitar o orçamento desse produto?");
+        alertDialog.setCancelable(true);
+
+        View viewQtd = getLayoutInflater().inflate(R.layout.dialog_qtd, null);
+        final TextInputEditText qtd = viewQtd.findViewById(R.id.editQtd);
+
+        alertDialog.setView(viewQtd);
+
+        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ProdutoOrcamento produtoOrcamento = new ProdutoOrcamento();
+                //Recuperar dados do usuario
+                produtoOrcamento.setCliente(cliente);
+                produtoOrcamento.setProduto(produtoSelecionado);
+                produtoOrcamento.setQtd(qtd.getText().toString());
+                produtoOrcamento.salvar();
+                exibirMensagem("Orçamento enviado com sucesso");
+            }
+        });
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog alert = alertDialog.create();
+        alert.show();
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return false;
+    }
+
+    private void exibirMensagem(String msg){
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

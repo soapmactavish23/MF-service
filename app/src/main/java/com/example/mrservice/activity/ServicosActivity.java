@@ -32,9 +32,7 @@ public class ServicosActivity extends AppCompatActivity {
         //Checar se o usuario e adm
         Bundle bundle = getIntent().getExtras();
         usuario = (Usuario) bundle.getSerializable("DadosUsuario");
-        if(!usuario.getTipo_usuario().equals("ADM")){
-            fab.setVisibility(View.GONE);
-        }
+
     }
 
     public void onClick(View view){
@@ -69,6 +67,10 @@ public class ServicosActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
         }
+    }
+
+    private void enviarOrcamento(){
+
     }
 
     @Override
