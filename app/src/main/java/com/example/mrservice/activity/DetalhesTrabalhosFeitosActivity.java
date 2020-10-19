@@ -50,14 +50,8 @@ public class DetalhesTrabalhosFeitosActivity extends AppCompatActivity {
             final ImageListener imageListener = new ImageListener() {
                 @Override
                 public void setImageForPosition(int position, ImageView imageView) {
-                    //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     String urlString = trabalhosFeitos.getFotos().get(position);
                     Glide.with(getApplicationContext()).load(urlString).into(imageView);
-                    /*Picasso.get()
-                            .load(urlString)
-                            .fit()
-                            .centerInside()
-                            .into(imageView);*/
                 }
             };
             carouselView.setPageCount(trabalhosFeitos.getFotos().size());

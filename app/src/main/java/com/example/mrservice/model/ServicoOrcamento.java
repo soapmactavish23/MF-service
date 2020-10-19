@@ -13,8 +13,7 @@ public class ServicoOrcamento implements Serializable {
     private Usuario cliente;
 
     public ServicoOrcamento() {
-        DatabaseReference servicosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("servicoOrcamento")
-                .child(getCliente().getId());
+        DatabaseReference servicosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("servicoOrcamento");
         setId(servicosRef.push().getKey());
     }
 

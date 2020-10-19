@@ -2,21 +2,30 @@ package com.example.mrservice.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blackcat.currencyedittext.CurrencyEditText;
 import com.example.mrservice.R;
+import com.example.mrservice.adapter.AdapterOrcamento;
+import com.example.mrservice.model.Produto;
 import com.example.mrservice.model.ProdutoOrcamento;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageClickListener;
 import com.synnapps.carouselview.ImageListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -25,10 +34,12 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
     private ProdutoOrcamento produtoOrcamentoSelecionado;
     private TextView txtCliente, txtQuantidade, txtProduto, txtPreco, txtStatus;
     private CurrencyEditText editPrecoFinal;
-    private CarouselView carouselView;
     private String tipoUsuario;
     private FloatingActionButton fabSave;
     private CircleImageView imgFotoCliente;
+    private List<Produto> produtosList = new ArrayList<>();
+    private AdapterOrcamento adapterOrcamento;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,22 +52,18 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
 
         //Configuracoes Iniciais
         txtCliente = findViewById(R.id.txtCliente);
-        txtQuantidade = findViewById(R.id.txtQuantidade);
-        txtProduto = findViewById(R.id.txtProduto);
         txtPreco = findViewById(R.id.txtPreco);
         editPrecoFinal = findViewById(R.id.editPrecoFinal);
         fabSave = findViewById(R.id.fabSave);
         imgFotoCliente = findViewById(R.id.imgFotoCliente);
-        carouselView = findViewById(R.id.carouselView);
         txtStatus = findViewById(R.id.txtStatus);
+        recyclerView = findViewById(R.id.recyclerProdutos);
         Bundle bundle = getIntent().getExtras();
 
         if(bundle != null){
             produtoOrcamentoSelecionado = (ProdutoOrcamento) bundle.getSerializable("produtoOrcamentoSelecionado");
             tipoUsuario = bundle.getString("tipoUsuario");
             txtCliente.setText("Cliente: "+ produtoOrcamentoSelecionado.getCliente().getNome());
-            txtQuantidade.setText("Quantidade: " + produtoOrcamentoSelecionado.getQtd());
-            txtProduto.setText("Produto: " + produtoOrcamentoSelecionado.getProduto().getTitulo());
             txtStatus.setText("Status: " + produtoOrcamentoSelecionado.getStatus());
 
             if(tipoUsuario.equals("ADM")){
@@ -66,7 +73,6 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
                     fabSave.setVisibility(View.GONE);
                 }
                 imgFotoCliente.setVisibility(View.VISIBLE);
-                carouselView.setVisibility(View.GONE);
                 if(!produtoOrcamentoSelecionado.getCliente().getFoto().equals("")){
                     Picasso.get().load(produtoOrcamentoSelecionado.getCliente().getFoto()).into(imgFotoCliente);
                 }else{
@@ -84,27 +90,6 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
             }else{
                 fabSave.setVisibility(View.GONE);
                 imgFotoCliente.setVisibility(View.GONE);
-                carouselView.setVisibility(View.VISIBLE);
-                ImageListener imageListener = new ImageListener() {
-                    @Override
-                    public void setImageForPosition(int position, ImageView imageView) {
-                        //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                        String urlString = produtoOrcamentoSelecionado.getProduto().getFotos().get(position);
-                        Picasso.get().load(urlString).into(imageView);
-                    }
-                };
-                carouselView.setPageCount(produtoOrcamentoSelecionado.getProduto().getFotos().size());
-                carouselView.setImageListener(imageListener);
-
-                carouselView.setImageClickListener(new ImageClickListener() {
-                    @Override
-                    public void onClick(int position) {
-                        Intent intent = new Intent(DetalhesOrcamentoProdutoActivity.this, GaleryActivity.class);
-                        intent.putExtra("foto", produtoOrcamentoSelecionado.getProduto().getFotos().get(position));
-                        intent.putExtra("titulo", produtoOrcamentoSelecionado.getProduto().getTitulo());
-                        startActivity(intent);
-                    }
-                });
             }
 
             if(produtoOrcamentoSelecionado.getStatus().equals("FINALIZADO") || tipoUsuario.equals("ADM")){
@@ -115,16 +100,26 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
                 editPrecoFinal.setVisibility(View.GONE);
             }
 
-            double precoVenda = Double.parseDouble(produtoOrcamentoSelecionado.getProduto().getPrecoVenda());
-            int qtd = Integer.parseInt(produtoOrcamentoSelecionado.getQtd());
-            double precoFinal = precoVenda * qtd;
-            editPrecoFinal.setText(precoFinal + "");
+            adapterOrcamento = new AdapterOrcamento(this, produtosList);
+
+            //Configurar o RecyclerView
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adapterOrcamento);
         }
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        for(int i = 0 ; i <= produtoOrcamentoSelecionado.getListaProdutos().size(); i++){
+            produtosList.add(produtoOrcamentoSelecionado.getListaProdutos().get(i));
+        }
+        adapterOrcamento.notifyDataSetChanged();
+    }
+
     public void finalizarOrcamento(View view){
-        produtoOrcamentoSelecionado.setPrecoFinal(editPrecoFinal.getText().toString());
         produtoOrcamentoSelecionado.setStatus("FINALIZADO");
         produtoOrcamentoSelecionado.atualizar();
     }

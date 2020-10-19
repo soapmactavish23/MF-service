@@ -154,6 +154,7 @@ public class CadastrarClientesActivity extends AppCompatActivity {
         if(clienteSelecionado == null){
             if(urlString.isEmpty()){
                 dialog.dismiss();
+                cliente.salvar();
                 finish();
             }else{
                 //Criar nó no storage
@@ -191,6 +192,7 @@ public class CadastrarClientesActivity extends AppCompatActivity {
         }else{
             if(urlString.isEmpty()){
                 dialog.dismiss();
+                clienteSelecionado.atualizar();
                 finish();
             }else{
                 //Criar nó no storage

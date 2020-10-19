@@ -25,6 +25,7 @@ public class Produto implements Serializable {
     private String precoVenda;
     private String categoria;
     private String produto;
+    private String linha;
     private List<String> fotos;
 
     public Produto() {
@@ -68,6 +69,7 @@ public class Produto implements Serializable {
         produtoMap.put("precoVenda", getPrecoVenda());
         produtoMap.put("fotos", getFotos());
         produtoMap.put("categoria", getCategoria());
+        produtoMap.put("linha", getLinha());
         produtoMap.put("produto", getProduto());
         return produtoMap;
     }
@@ -118,6 +120,14 @@ public class Produto implements Serializable {
 
     public void setProduto(String produto) {
         this.produto = produto;
+    }
+
+    public String getLinha() {
+        return linha;
+    }
+
+    public void setLinha(String linha) {
+        this.linha = linha;
     }
 
     public List<String> getFotos() {

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".activity.ServicosActivity">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!-- com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addServico"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         android:onClick="onClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add" />
+        app:srcCompat="@drawable/ic_add" /-->
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"

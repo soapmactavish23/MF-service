@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.config.UsuarioFirebase;
@@ -118,7 +119,10 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         //Foto de usuario
         Uri url = usuarioPerfil.getPhotoUrl();
         if(url != null){
-            Glide.with(this).load(url).into(imgEditarPerfil);
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.fitCenter();
+            requestOptions.placeholder(R.drawable.padrao);
+            Glide.with(this).applyDefaultRequestOptions(requestOptions).load(url).into(imgEditarPerfil);
         }else{
             imgEditarPerfil.setImageResource(R.drawable.padrao);
         }

@@ -18,7 +18,7 @@
             android:drawableLeft="@drawable/ic_description"
             android:drawablePadding="6dp"
             android:drawableTint="@android:color/darker_gray"
-            android:hint="Depoimento"
+            android:hint="Descrição"
             android:textColorHint="@android:color/darker_gray" />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

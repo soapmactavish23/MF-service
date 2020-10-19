@@ -3,18 +3,26 @@ package com.example.mrservice.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.example.mrservice.R;
 import com.example.mrservice.adapter.AdapterOrcamentoProduto;
 import com.example.mrservice.config.ConfiguracaoFirebase;
+import com.example.mrservice.fragment.OrcamentoProdutoFragment;
+import com.example.mrservice.fragment.ProdutosFragment;
 import com.example.mrservice.helper.RecyclerItemClickListener;
 import com.example.mrservice.model.Produto;
 import com.example.mrservice.model.ProdutoOrcamento;
@@ -25,6 +33,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +69,40 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         usuario = (Usuario) bundle.getSerializable("DadosUsuario");
         searchView = findViewById(R.id.materialSearchProdutos);
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                /*ProdutosFragment produtosFragment = (ProdutosFragment) adapter.getPage(0);
+                produtosFragment.recarregarProdutos();
+
+                OrcamentoProdutoFragment orcamentoProdutoFragment = (OrcamentoProdutoFragment) adapter.getPage(1);*/
+                //orcamentoProdutoFragment.recarregarOrcamentos();
+            }
+        });
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText)
+            {
+                /*ProdutosFragment fragment = (ProdutosFragment) adapter.getPage(0);
+                OrcamentoProdutoFragment orcamentoProdutoFragment = (OrcamentoProdutoFragment) adapter.getPage(1);
+                if(newText != null && !newText.isEmpty()){
+                    fragment.pesquisarProduto(newText.toLowerCase());
+                }*/
+                return false;
+            }
+        });
 
         //Configurar o RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -97,25 +142,33 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         recuperar();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search_i, menu);
+
+        //Configurar o botao de pesquisa
+        MenuItem item = menu.findItem(R.id.menu_pesquisa);
+        searchView.setMenuItem(item);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     private void recuperar(){
         dialog = new SpotsDialog.Builder()
                 .setContext(this)
-                .setMessage("Recuperando Produtos")
+                .setMessage("Recuperando Orçamentos")
                 .setCancelable(false)
                 .build();
         dialog.show();
         if(usuario.getTipo_usuario().equals("ADM")){
-            Query query = produtoOrcamentoRef.orderByChild("status");
-            query.addValueEventListener(new ValueEventListener() {
+            produtoOrcamentoRef.child(usuario.getId()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     listaOrcamento.clear();
-                    for(DataSnapshot ds: dataSnapshot.getChildren()){
-                        for(DataSnapshot res: ds.getChildren()){
-                            listaOrcamento.add(res.getValue(ProdutoOrcamento.class));
-                        }
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        listaOrcamento.add(ds.getValue(ProdutoOrcamento.class));
                     }
-                    Collections.reverse(listaOrcamento);
+                    //Collections.reverse(listaOrcamento);
                     adapterOrcamentoProduto.notifyDataSetChanged();
                     dialog.dismiss();
                 }
@@ -126,27 +179,25 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
                 }
             });
         }else{
-            produtoOrcamentoRef
-                    .child(usuario.getId())
-                    .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            listaOrcamento.clear();
-                            for(DataSnapshot ds: dataSnapshot.getChildren()){
-                                listaOrcamento.add(ds.getValue(ProdutoOrcamento.class));
-                                //ProdutoOrcamento produtoOrcamento = ds.getValue(ProdutoOrcamento.class);
-                                //System.out.println(produtoOrcamento.getStatus());
-
-                            }
-                            adapterOrcamentoProduto.notifyDataSetChanged();
-                            dialog.dismiss();
+            produtoOrcamentoRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    listaOrcamento.clear();
+                    for(DataSnapshot usuarios: dataSnapshot.getChildren()){
+                        for(DataSnapshot ds : usuarios.getChildren()){
+                            listaOrcamento.add(ds.getValue(ProdutoOrcamento.class));
                         }
+                    }
+                    //Collections.reverse(listaOrcamento);
+                    adapterOrcamentoProduto.notifyDataSetChanged();
+                    dialog.dismiss();
+                }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                }
+            });
         }
     }
 

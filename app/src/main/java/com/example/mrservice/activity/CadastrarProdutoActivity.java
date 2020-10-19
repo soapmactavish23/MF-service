@@ -43,7 +43,7 @@ import dmax.dialog.SpotsDialog;
 
 public class CadastrarProdutoActivity extends AppCompatActivity {
 
-    private TextInputEditText editTitulo, editDescricao;
+    private TextInputEditText editTitulo, editDescricao, editLinha;
     private CurrencyEditText editPrecoVenda, editPrecoCusto;
     private ImageView imagem1, imagem2, imagem3, imagem4, imagem5, imagem6;
     private Spinner spinnerCategoria, spinnerTipoProduto;
@@ -75,7 +75,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         editTitulo = findViewById(R.id.editTitulo);
         editDescricao = findViewById(R.id.editDescricao);
         editPrecoVenda = findViewById(R.id.editPrecoVenda);
-        //editPrecoCusto = findViewById(R.id.editPrecoCusto);
+        editLinha = findViewById(R.id.editLinha);
         imagem1 = findViewById(R.id.imgCadastroProduto1);
         imagem2 = findViewById(R.id.imgCadastroProduto2);
         imagem3 = findViewById(R.id.imgCadastroProduto3);
@@ -163,27 +163,33 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         String titulo = editTitulo.getText().toString();
         String descricao = editDescricao.getText().toString();
         String precoVenda = String.valueOf(editPrecoVenda.getRawValue());
-        //String precoCusto = String.valueOf(editPrecoCusto.getRawValue());
+        String linha = editLinha.getText().toString();
         String categoria = spinnerCategoria.getSelectedItem().toString();
         String produto = spinnerTipoProduto.getSelectedItem().toString();
         if(listaFotosRecuperadas.size() != 0 || produtoSelecionado != null){
             if(!titulo.isEmpty()) {
                 if (!precoVenda.isEmpty()) {
-                    if (produtoSelecionado != null) {
-                        produto1 = produtoSelecionado;
-                        produto1.setTitulo(titulo);
-                        produto1.setDescricao(descricao);
-                        produto1.setPrecoVenda(precoVenda);
-                        produto1.atualizar();
-                        finish();
-                    } else {
-                        produto1 = new Produto();
-                        produto1.setTitulo(titulo);
-                        produto1.setDescricao(descricao);
-                        produto1.setPrecoVenda(precoVenda);
-                        produto1.setCategoria(categoria);
-                        produto1.setProduto(produto);
-                        salvarProduto();
+                    if(!linha.isEmpty()){
+                        if (produtoSelecionado != null) {
+                            produto1 = produtoSelecionado;
+                            produto1.setTitulo(titulo);
+                            produto1.setDescricao(descricao);
+                            produto1.setPrecoVenda(precoVenda);
+                            produto1.setLinha(linha);
+                            produto1.atualizar();
+                            finish();
+                        } else {
+                            produto1 = new Produto();
+                            produto1.setTitulo(titulo);
+                            produto1.setDescricao(descricao);
+                            produto1.setPrecoVenda(precoVenda);
+                            produto1.setCategoria(categoria);
+                            produto1.setLinha(linha);
+                            produto1.setProduto(produto);
+                            salvarProduto();
+                        }
+                    }else{
+                        exibirMensagem("Preencha o Campo Linha");
                     }
                 } else {
                     exibirMensagem("Preencha o Campo Preço de Venda");

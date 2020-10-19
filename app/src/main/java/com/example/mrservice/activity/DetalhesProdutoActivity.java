@@ -32,6 +32,8 @@ import com.synnapps.carouselview.ImageListener;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -42,6 +44,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
     private CarouselView carouselView;
     private Usuario cliente;
     private ProdutoOrcamento produtoOrcamentoSelecionado;
+    private List<Produto> produtos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,10 +113,12 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 ProdutoOrcamento produtoOrcamento = new ProdutoOrcamento();
+                for(int index = 0 ; index <= Integer.parseInt(qtd.getText().toString()); index++){
+                    produtos.add(produtoSelecionado);
+                }
                 //Recuperar dados do usuario
                 produtoOrcamento.setCliente(cliente);
-                produtoOrcamento.setProduto(produtoSelecionado);
-                produtoOrcamento.setQtd(qtd.getText().toString());
+                produtoOrcamento.setListaProdutos(produtos);
                 produtoOrcamento.salvar();
                 exibirMensagem("Orçamento enviado com sucesso");
             }
@@ -128,13 +133,13 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         alert.show();
     }
 
+    private void exibirMensagem(String msg){
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return false;
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

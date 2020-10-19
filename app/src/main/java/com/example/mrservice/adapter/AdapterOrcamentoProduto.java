@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
 import com.example.mrservice.model.ProdutoOrcamento;
 import com.squareup.picasso.Picasso;
@@ -41,19 +42,14 @@ public class AdapterOrcamentoProduto extends RecyclerView.Adapter<AdapterOrcamen
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ProdutoOrcamento produtoOrcamento = listaOrcamento.get(position);
-        if (tipoUsuario.equals("ADM")){
-            holder.txtTitulo.setText(produtoOrcamento.getCliente().getNome());
-            if(!produtoOrcamento.getCliente().getFoto().isEmpty()){
-                Picasso.get().load(produtoOrcamento.getCliente().getFoto()).into(holder.foto);
-                Uri url = Uri.parse(produtoOrcamento.getCliente().getFoto());
-                Glide.with(holder.foto).load(url).into(holder.foto);
-            }else{
-                holder.foto.setImageResource(R.drawable.padrao);
-            }
-        }else{
-            holder.txtTitulo.setText(produtoOrcamento.getProduto().getTitulo());
-            Picasso.get().load(produtoOrcamento.getProduto().getFotos().get(0)).into(holder.foto);
-        }
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.padrao);
+        requestOptions.fitCenter();
+        holder.txtTitulo.setText(produtoOrcamento.getCliente().getNome());
+        Glide.with(context)
+                .applyDefaultRequestOptions(requestOptions)
+                .load(produtoOrcamento.getCliente().getFoto())
+                .into(holder.foto);
         holder.txtStatus.setText(produtoOrcamento.getStatus());
     }
 
