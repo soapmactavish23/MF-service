@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blackcat.currencyedittext.CurrencyEditText;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
@@ -21,10 +22,12 @@ import java.util.List;
 public class AdapterProdutos extends RecyclerView.Adapter<AdapterProdutos.MyViewHolder> {
 
     private List<Produto> produtos;
+    private String tipoUsuario;
     private Context context;
 
-    public AdapterProdutos(List<Produto> produtos, Context context) {
+    public AdapterProdutos(List<Produto> produtos, String tipoUsuario, Context context) {
         this.produtos = produtos;
+        this.tipoUsuario = tipoUsuario;
         this.context = context;
     }
 
@@ -41,7 +44,16 @@ public class AdapterProdutos extends RecyclerView.Adapter<AdapterProdutos.MyView
         Produto produto = produtos.get(position);
         holder.titulo.setText(produto.getTitulo());
         holder.categoria.setText(produto.getCategoria());
-        holder.produto.setText(produto.getProduto());
+        if(produto.getLinha().equals("")){
+            holder.produto.setText(produto.getProduto());
+        }else{
+            holder.produto.setText(produto.getLinha());
+        }
+        if(tipoUsuario.equals("ADM")){
+            holder.preco.setText( produto.getPrecoVenda());
+        }else{
+            holder.preco.setVisibility(View.GONE);
+        }
 
         //Pega a primira imagem da lista
         List<String> urlFotos = produto.getFotos();
@@ -65,6 +77,7 @@ public class AdapterProdutos extends RecyclerView.Adapter<AdapterProdutos.MyView
         TextView titulo;
         TextView categoria;
         TextView produto;
+        TextView preco;
         ImageView fotoProduto;
 
         public MyViewHolder(View itemView){
@@ -72,6 +85,7 @@ public class AdapterProdutos extends RecyclerView.Adapter<AdapterProdutos.MyView
             titulo = itemView.findViewById(R.id.txtTitulo);
             categoria = itemView.findViewById(R.id.txtCategoria);
             produto = itemView.findViewById(R.id.txtTipoProduto);
+            preco = itemView.findViewById(R.id.txtPreco);
             fotoProduto = itemView.findViewById(R.id.imgProduto);
         }
 

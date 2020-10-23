@@ -23,7 +23,7 @@
         <ImageView
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@drawable/logo" />
+            android:src="@drawable/logo_about" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textEmail"

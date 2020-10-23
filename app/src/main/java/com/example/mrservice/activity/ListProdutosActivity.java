@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -43,7 +44,7 @@ import java.util.List;
 import dmax.dialog.SpotsDialog;
 
 public class ListProdutosActivity extends AppCompatActivity {
-
+    private Button btnSelectLinha;
     private RecyclerView recyclerViewProdutos;
     private List<Produto> listaProdutos = new ArrayList<>();
     private AdapterProdutos adapterProdutos;
@@ -73,6 +74,7 @@ public class ListProdutosActivity extends AppCompatActivity {
         filtroCategoria = bundle.getString("categoria");
         filtroTipoProduto = bundle.getString("tipo_produto");
         searchView = findViewById(R.id.materialSearchProdutos);
+        btnSelectLinha = findViewById(R.id.btnSelectLinha);
 
         //Configurar o SearchView
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
@@ -112,7 +114,7 @@ public class ListProdutosActivity extends AppCompatActivity {
         //Configurar o RecyclerView
         recyclerViewProdutos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProdutos.setHasFixedSize(true);
-        adapterProdutos = new AdapterProdutos(listaProdutos, this);
+        adapterProdutos = new AdapterProdutos(listaProdutos, usuario.getTipo_usuario(),this);
         recyclerViewProdutos.setAdapter(adapterProdutos);
 
         //Configurar o toque
@@ -131,10 +133,12 @@ public class ListProdutosActivity extends AppCompatActivity {
 
                     @Override
                     public void onLongItemClick(View view, final int position) {
-                        produtoSelecionado = listaProdutos.get(position);
-                        Intent intent = new Intent(ListProdutosActivity.this, CadastrarProdutoActivity.class);
-                        intent.putExtra("produtoSelecionado", produtoSelecionado);
-                        startActivity(intent);
+                        if(usuario.getTipo_usuario().equals("ADM")){
+                            produtoSelecionado = listaProdutos.get(position);
+                            Intent intent = new Intent(ListProdutosActivity.this, CadastrarProdutoActivity.class);
+                            intent.putExtra("produtoSelecionado", produtoSelecionado);
+                            startActivity(intent);
+                        }
                     }
 
                     @Override
@@ -167,6 +171,20 @@ public class ListProdutosActivity extends AppCompatActivity {
         recuperarProdutos();
     }
 
+    private void recuperarPorLinha(String l){
+        List<Produto> listProdutosLinha = new ArrayList<>();
+        for(Produto produto: listaProdutos){
+            String linha = produto.getLinha();
+            if(linha.contains(l)){
+                listProdutosLinha.add(produto);
+            }
+        }
+        adapterProdutos = new AdapterProdutos(listProdutosLinha, usuario.getTipo_usuario(), getApplicationContext());
+        recyclerViewProdutos.setAdapter(adapterProdutos);
+        adapterProdutos.notifyDataSetChanged();
+        swipe();
+    }
+
     private void pesquisarProdutos(String text){
         List<Produto> listProdutosBusca = new ArrayList<>();
         for(Produto produto : listaProdutos){
@@ -175,15 +193,56 @@ public class ListProdutosActivity extends AppCompatActivity {
                 listProdutosBusca.add(produto);
             }
         }
-        adapterProdutos = new AdapterProdutos(listProdutosBusca, getApplicationContext());
+        adapterProdutos = new AdapterProdutos(listProdutosBusca, usuario.getTipo_usuario(),getApplicationContext());
         recyclerViewProdutos.setAdapter(adapterProdutos);
         adapterProdutos.notifyDataSetChanged();
+        swipe();
     }
 
     private void recarregarProdutos(){
-        adapterProdutos = new AdapterProdutos(listaProdutos, getApplicationContext());
+        adapterProdutos = new AdapterProdutos(listaProdutos, usuario.getTipo_usuario(),getApplicationContext());
         recyclerViewProdutos.setAdapter(adapterProdutos);
         adapterProdutos.notifyDataSetChanged();
+        swipe();
+    }
+
+    public void selectLinha(View view){
+        AlertDialog.Builder dialogCategoria = new AlertDialog.Builder(this);
+        dialogCategoria.setTitle("Escolha sua linha:");
+
+        //Configurar spinner
+        View viewSpinner = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+        final Spinner spinner = viewSpinner.findViewById(R.id.spinnerFiltro);
+
+        final String[] linha = getResources().getStringArray(R.array.linhas);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                getApplicationContext(), android.R.layout.simple_spinner_item, linha
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        dialogCategoria.setView(viewSpinner);
+
+        dialogCategoria.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String l = spinner.getSelectedItem().toString();
+                if(l.equals("NENHUM")){
+                    recuperarPorLinha("");
+                }else{
+                    recuperarPorLinha(l);
+                }
+            }
+        });
+        dialogCategoria.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog dialog = dialogCategoria.create();
+        dialog.show();
     }
 
     public void recuperarProdutos(){

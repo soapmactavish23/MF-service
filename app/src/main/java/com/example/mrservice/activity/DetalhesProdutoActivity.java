@@ -1,5 +1,6 @@
 package com.example.mrservice.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,13 +18,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blackcat.currencyedittext.CurrencyEditText;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
+import com.example.mrservice.config.ConfiguracaoFirebase;
+import com.example.mrservice.model.Item;
 import com.example.mrservice.model.Produto;
 import com.example.mrservice.model.ProdutoOrcamento;
 import com.example.mrservice.model.Usuario;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageClickListener;
@@ -40,11 +49,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class DetalhesProdutoActivity extends AppCompatActivity {
 
     private Produto produtoSelecionado;
-    private TextView txtTitulo, txtDescricao, txtCategoria, txtTipoProduto;
+    private TextView txtTitulo, txtDescricao, txtCategoria, txtTipoProduto, txtLinha;
     private CarouselView carouselView;
     private Usuario cliente;
+    private TextView txtPreco;
     private ProdutoOrcamento produtoOrcamentoSelecionado;
-    private List<Produto> produtos = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
+    private Boolean orcamentoPendente = false;
+    private ProdutoOrcamento produtoOrcamento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +72,8 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         txtCategoria = findViewById(R.id.txtCategoriaDetalhes);
         txtTipoProduto = findViewById(R.id.txtTipoProdutoDetalhes);
         txtDescricao = findViewById(R.id.txtDescricaoDetalhes);
+        txtLinha = findViewById(R.id.txtLinha);
+        txtPreco = findViewById(R.id.txtPreco);
         carouselView = findViewById(R.id.carouselView);
 
         //Dados produto
@@ -72,6 +86,12 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
             txtDescricao.setText(produtoSelecionado.getDescricao());
             txtCategoria.setText(produtoSelecionado.getCategoria());
             txtTipoProduto.setText(produtoSelecionado.getProduto());
+            txtLinha.setText(produtoSelecionado.getLinha());
+            if(cliente.getTipo_usuario().equals("ADM")){
+                txtPreco.setText(produtoSelecionado.getPrecoVenda());
+            }else{
+                txtPreco.setVisibility(View.GONE);
+            }
             ImageListener imageListener = new ImageListener() {
                 @Override
                 public void setImageForPosition(int position, ImageView imageView) {
@@ -93,7 +113,6 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-
         }
 
     }
@@ -111,16 +130,19 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
 
         alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ProdutoOrcamento produtoOrcamento = new ProdutoOrcamento();
-                for(int index = 0 ; index <= Integer.parseInt(qtd.getText().toString()); index++){
-                    produtos.add(produtoSelecionado);
-                }
-                //Recuperar dados do usuario
+            public void onClick(DialogInterface dialogInterface, final int i) {
+                String qtdProdutos = qtd.getText().toString();
+                Item item = new Item();
+                item.setNome(produtoSelecionado.getTitulo());
+                item.setPreco(produtoSelecionado.getPrecoVenda());
+                items.add(item);
+
+                produtoOrcamento = new ProdutoOrcamento();
+                produtoOrcamento.setItems(items);
                 produtoOrcamento.setCliente(cliente);
-                produtoOrcamento.setListaProdutos(produtos);
-                produtoOrcamento.salvar();
-                exibirMensagem("Orçamento enviado com sucesso");
+                produtoOrcamento.setStatus("PENDENTE");
+                produtoOrcamento.atualizar();
+
             }
         });
         alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

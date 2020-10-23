@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Produtos" >
+            app:title="Produtos">
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -35,6 +35,18 @@
 
     <!-- include layout="@layout/toolbar"/ -->
 
+    <Button
+        android:id="@+id/btnSelectLinha"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="Selecione uma linha"
+        android:onClick="selectLinha"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProdutos"
         android:layout_width="0dp"
@@ -42,6 +54,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSelectLinha" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

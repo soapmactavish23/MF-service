@@ -12,7 +12,7 @@ public class ProdutoOrcamento implements Serializable {
 
     private String id;
     private Usuario cliente;
-    private List<Produto> listaProdutos;
+    private List<Item> items;
     private String status;
 
     public ProdutoOrcamento() {
@@ -25,16 +25,14 @@ public class ProdutoOrcamento implements Serializable {
     public void salvar(){
         DatabaseReference produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase()
                 .child("produtoOrcamento")
-                .child(getCliente().getId())
-                .child(getId());
+                .child(getCliente().getId());
         produtoOrcamentoRef.setValue(this);
     }
 
     public void deletar(){
         DatabaseReference produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase()
                 .child("produtoOrcamento")
-                .child(getCliente().getId())
-                .child(getId());
+                .child(getCliente().getId());
         produtoOrcamentoRef.removeValue();
     }
 
@@ -42,8 +40,7 @@ public class ProdutoOrcamento implements Serializable {
         DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
         DatabaseReference produtosRef = firebaseRef
                 .child("produtoOrcamento")
-                .child(getCliente().getId())
-                .child(getId());
+                .child(getCliente().getId());
         Map<String, Object> valoresProdutosOrcamento = converterParaMap();
         produtosRef.updateChildren(valoresProdutosOrcamento);
     }
@@ -52,7 +49,7 @@ public class ProdutoOrcamento implements Serializable {
         HashMap<String, Object> produtoOrcamentoMap = new HashMap<>();
         produtoOrcamentoMap.put("cliente", getCliente());
         produtoOrcamentoMap.put("id", getId());
-        produtoOrcamentoMap.put("listaProdutos", getListaProdutos());
+        produtoOrcamentoMap.put("items", getItems());
         produtoOrcamentoMap.put("status", getStatus());
         return produtoOrcamentoMap;
     }
@@ -82,11 +79,11 @@ public class ProdutoOrcamento implements Serializable {
         this.status = status;
     }
 
-    public List<Produto> getListaProdutos() {
-        return listaProdutos;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public void setListaProdutos(List<Produto> listaProdutos) {
-        this.listaProdutos = listaProdutos;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 }

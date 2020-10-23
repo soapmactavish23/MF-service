@@ -113,10 +113,6 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        for(int i = 0 ; i <= produtoOrcamentoSelecionado.getListaProdutos().size(); i++){
-            produtosList.add(produtoOrcamentoSelecionado.getListaProdutos().get(i));
-        }
-        adapterOrcamento.notifyDataSetChanged();
     }
 
     public void finalizarOrcamento(View view){

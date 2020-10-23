@@ -99,11 +99,11 @@ public class QuemSomosActivity extends AppCompatActivity {
                 .addItem(new Element().setTitle("ÓRGÃO: PÚBLICO E PRIVADO"))
                 .addItem(new Element().setTitle("RESIDÊNCIA"))*/
                 .addGroup("Entre em Contato")
-                .addEmail("mfstoreservices@gmail.com", "Envie um e-mail")
+                .addEmail("mfservicepa@gmail.com", "Envie um e-mail")
                 .addItem(contato)
                 .addGroup("Redes Sociais")
                 .addItem(face)
-                .addInstagram("mfservice_pa", "Siga no Instagram")
+                .addInstagram("mfservicepa", "Siga no Instagram")
                 .create();
         setContentView(aboutPage);
     }

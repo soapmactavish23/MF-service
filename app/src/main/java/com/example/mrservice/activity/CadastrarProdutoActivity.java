@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -43,11 +44,12 @@ import dmax.dialog.SpotsDialog;
 
 public class CadastrarProdutoActivity extends AppCompatActivity {
 
-    private TextInputEditText editTitulo, editDescricao, editLinha;
+    private TextInputEditText editTitulo, editDescricao;
     private CurrencyEditText editPrecoVenda, editPrecoCusto;
     private ImageView imagem1, imagem2, imagem3, imagem4, imagem5, imagem6;
-    private Spinner spinnerCategoria, spinnerTipoProduto;
+    private Spinner spinnerCategoria, spinnerTipoProduto, spinnerLinha;
     private android.app.AlertDialog dialog;
+    private Button btnExcluir;
 
     private String[] permissoes = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -75,16 +77,25 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         editTitulo = findViewById(R.id.editTitulo);
         editDescricao = findViewById(R.id.editDescricao);
         editPrecoVenda = findViewById(R.id.editPrecoVenda);
-        editLinha = findViewById(R.id.editLinha);
         imagem1 = findViewById(R.id.imgCadastroProduto1);
         imagem2 = findViewById(R.id.imgCadastroProduto2);
         imagem3 = findViewById(R.id.imgCadastroProduto3);
         imagem4 = findViewById(R.id.imgCadastroProduto4);
         imagem5 = findViewById(R.id.imgCadastroProduto5);
         imagem6 = findViewById(R.id.imgCadastroProduto6);
+        btnExcluir = findViewById(R.id.btnExcluir);
         spinnerCategoria = findViewById(R.id.spinnerCategoria);
         spinnerTipoProduto = findViewById(R.id.spinnerTipoProduto);
+        spinnerLinha = findViewById(R.id.spinnerLinha);
         storage = ConfiguracaoFirebase.getStorageReference();
+
+        //Carregar Spinner de linha
+        String[] linha = getResources().getStringArray(R.array.linhas);
+        ArrayAdapter<String> adapterLinha = new ArrayAdapter<String>(
+                this, R.layout.simple_pinner_item_white, linha
+        );
+        adapterLinha.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerLinha.setAdapter(adapterLinha);
 
         //Carregar Spinner de categoria
         String[] categoria = getResources().getStringArray(R.array.categorias);
@@ -132,6 +143,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                     editTitulo.setText(produtoSelecionado.getTitulo());
                     editDescricao.setText(produtoSelecionado.getDescricao());
                     editPrecoVenda.setText(produtoSelecionado.getPrecoVenda());
+                    btnExcluir.setVisibility(View.VISIBLE);
                     //Foto de Produto
                     for(int index = 0; index < produtoSelecionado.getFotos().size(); index ++){
                         String foto = produtoSelecionado.getFotos().get(index);
@@ -162,34 +174,33 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     public void validarDadosProduto(View view){
         String titulo = editTitulo.getText().toString();
         String descricao = editDescricao.getText().toString();
-        String precoVenda = String.valueOf(editPrecoVenda.getRawValue());
-        String linha = editLinha.getText().toString();
+        String precoVenda = editPrecoVenda.getText().toString();
+        String linha = "";
+        if(!spinnerLinha.getSelectedItem().toString().equals("NENHUM")){
+            linha = spinnerLinha.getSelectedItem().toString();
+        }
         String categoria = spinnerCategoria.getSelectedItem().toString();
         String produto = spinnerTipoProduto.getSelectedItem().toString();
         if(listaFotosRecuperadas.size() != 0 || produtoSelecionado != null){
             if(!titulo.isEmpty()) {
                 if (!precoVenda.isEmpty()) {
-                    if(!linha.isEmpty()){
-                        if (produtoSelecionado != null) {
-                            produto1 = produtoSelecionado;
-                            produto1.setTitulo(titulo);
-                            produto1.setDescricao(descricao);
-                            produto1.setPrecoVenda(precoVenda);
-                            produto1.setLinha(linha);
-                            produto1.atualizar();
-                            finish();
-                        } else {
-                            produto1 = new Produto();
-                            produto1.setTitulo(titulo);
-                            produto1.setDescricao(descricao);
-                            produto1.setPrecoVenda(precoVenda);
-                            produto1.setCategoria(categoria);
-                            produto1.setLinha(linha);
-                            produto1.setProduto(produto);
-                            salvarProduto();
-                        }
-                    }else{
-                        exibirMensagem("Preencha o Campo Linha");
+                    if (produtoSelecionado != null) {
+                        produto1 = produtoSelecionado;
+                        produto1.setTitulo(titulo);
+                        produto1.setDescricao(descricao);
+                        produto1.setPrecoVenda(precoVenda);
+                        produto1.setLinha(linha);
+                        produto1.atualizar();
+                        finish();
+                    } else {
+                        produto1 = new Produto();
+                        produto1.setTitulo(titulo);
+                        produto1.setDescricao(descricao);
+                        produto1.setPrecoVenda(precoVenda);
+                        produto1.setCategoria(categoria);
+                        produto1.setLinha(linha);
+                        produto1.setProduto(produto);
+                        salvarProduto();
                     }
                 } else {
                     exibirMensagem("Preencha o Campo Preço de Venda");
@@ -341,5 +352,27 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void excluir(View view){
+        android.app.AlertDialog.Builder alertDialog = new android.app.AlertDialog.Builder(CadastrarProdutoActivity.this);
+        alertDialog.setTitle("Excluir");
+        alertDialog.setMessage("Tem certeza que deseja excluir esse cliente?");
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                produtoSelecionado.deletar();
+                finish();
+            }
+        });
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        android.app.AlertDialog alert = alertDialog.create();
+        alert.show();
     }
 }

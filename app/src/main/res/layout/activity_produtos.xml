@@ -42,7 +42,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/logo" />
+                app:srcCompat="@drawable/logo_about" />
 
             <TextView
                 android:id="@+id/textView19"

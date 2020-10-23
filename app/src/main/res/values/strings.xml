@@ -23,6 +23,15 @@
         <item>INSTALAÇÃO GRAMADO SINTÉTICO</item>
     </string-array>
 
+    <string-array name="linhas">
+        <item>SIGMA</item>
+        <item>URANOS</item>
+        <item>CROMUS</item>
+        <item>EVO</item>
+        <item>PESO LIVRE</item>
+        <item>NENHUM</item>
+    </string-array>
+
     <string-array name="categorias">
         <item>EQUIPAMENTOS</item>
         <item>CÁRDIO</item>

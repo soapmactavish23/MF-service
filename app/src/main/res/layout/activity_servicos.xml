@@ -68,8 +68,9 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:onClick="onClick"
+                    android:scaleType="centerCrop"
                     android:layout_marginTop="0dp"
-                    app:srcCompat="@drawable/galery_padrao" />
+                    app:srcCompat="@drawable/assessoria_iplementacao_de_projetos" />
 
                 <TextView
                     android:id="@+id/textView8"
@@ -87,8 +88,9 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:onClick="onClick"
+                    android:scaleType="centerCrop"
                     android:layout_marginTop="16dp"
-                    app:srcCompat="@drawable/galery_padrao" />
+                    app:srcCompat="@drawable/menutencao" />
 
                 <TextView
                     android:id="@+id/textView1"
@@ -107,7 +109,8 @@
                     android:layout_height="100dp"
                     android:layout_marginTop="16dp"
                     android:onClick="onClick"
-                    app:srcCompat="@drawable/galery_padrao" />
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/piso" />
 
                 <TextView
                     android:id="@+id/textView10"
@@ -135,7 +138,8 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:onClick="onClick"
-                    app:srcCompat="@drawable/galery_padrao" />
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/engenharia" />
 
                 <TextView
                     android:id="@+id/textView11"
@@ -173,7 +177,8 @@
                     android:layout_height="100dp"
                     android:layout_marginTop="18dp"
                     android:onClick="onClick"
-                    app:srcCompat="@drawable/galery_padrao" />
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/gramado" />
 
                 <TextView
                     android:id="@+id/textView12"

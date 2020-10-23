@@ -72,7 +72,7 @@ public class ProdutosFragment extends Fragment {
         //Configurar o RecyclerView
         recyclerViewProdutos.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewProdutos.setHasFixedSize(true);
-        adapterProdutos = new AdapterProdutos(listaProdutos, getActivity());
+        adapterProdutos = new AdapterProdutos(listaProdutos, usuario.getTipo_usuario(),getActivity());
         recyclerViewProdutos.setAdapter(adapterProdutos);
 
         recyclerViewProdutos.addOnItemTouchListener(new RecyclerItemClickListener(
@@ -125,13 +125,13 @@ public class ProdutosFragment extends Fragment {
                 listaProdutoPesquisa.add(produto);
             }
         }
-        adapterProdutos = new AdapterProdutos(listaProdutoPesquisa, getActivity());
+        adapterProdutos = new AdapterProdutos(listaProdutoPesquisa, usuario.getTipo_usuario(),getActivity());
         recyclerViewProdutos.setAdapter(adapterProdutos);
         adapterProdutos.notifyDataSetChanged();
     }
 
     public void recarregarProdutos(){
-        adapterProdutos = new AdapterProdutos(listaProdutos, getActivity());
+        adapterProdutos = new AdapterProdutos(listaProdutos, usuario.getTipo_usuario(),getActivity());
         recyclerViewProdutos.setAdapter(adapterProdutos);
         adapterProdutos.notifyDataSetChanged();
     }
