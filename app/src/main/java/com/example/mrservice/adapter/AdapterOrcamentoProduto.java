@@ -50,7 +50,7 @@ public class AdapterOrcamentoProduto extends RecyclerView.Adapter<AdapterOrcamen
                 .applyDefaultRequestOptions(requestOptions)
                 .load(produtoOrcamento.getCliente().getFoto())
                 .into(holder.foto);
-        holder.txtStatus.setText(produtoOrcamento.getStatus());
+        //holder.txtStatus.setText(produtoOrcamento.getStatus());
     }
 
     @Override

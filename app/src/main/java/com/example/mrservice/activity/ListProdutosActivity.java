@@ -124,7 +124,7 @@ public class ListProdutosActivity extends AppCompatActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        produtoSelecionado = listaProdutos.get(position);
+                        produtoSelecionado = adapterProdutos.getProdutos().get(position);
                         Intent intent = new Intent(ListProdutosActivity.this, DetalhesProdutoActivity.class);
                         intent.putExtra("cliente", usuario);
                         intent.putExtra("produtoSelecionado", produtoSelecionado);
@@ -134,7 +134,7 @@ public class ListProdutosActivity extends AppCompatActivity {
                     @Override
                     public void onLongItemClick(View view, final int position) {
                         if(usuario.getTipo_usuario().equals("ADM")){
-                            produtoSelecionado = listaProdutos.get(position);
+                            produtoSelecionado = adapterProdutos.getProdutos().get(position);
                             Intent intent = new Intent(ListProdutosActivity.this, CadastrarProdutoActivity.class);
                             intent.putExtra("produtoSelecionado", produtoSelecionado);
                             startActivity(intent);
@@ -310,10 +310,10 @@ public class ListProdutosActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 int position = viewHolder.getAdapterPosition();
-                produtoSelecionado = listaProdutos.get(position);
+                produtoSelecionado = adapterProdutos.getProdutos().get(position);
                 produtoSelecionado.deletar();
                 adapterProdutos.notifyItemRemoved(position);
-                listaProdutos.clear();
+                adapterProdutos.getProdutos().clear();
                 adapterProdutos.notifyDataSetChanged();
             }
         });

@@ -30,6 +30,14 @@ public class AdapterTrabalhosFeitos extends RecyclerView.Adapter<AdapterTrabalho
         this.context = context;
     }
 
+    public List<TrabalhosFeitos> getTrabalhosFeitosList() {
+        return trabalhosFeitosList;
+    }
+
+    public void setTrabalhosFeitosList(List<TrabalhosFeitos> trabalhosFeitosList) {
+        this.trabalhosFeitosList = trabalhosFeitosList;
+    }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

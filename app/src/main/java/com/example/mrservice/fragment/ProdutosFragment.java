@@ -9,21 +9,28 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
 import com.example.mrservice.activity.CadastrarProdutoActivity;
 import com.example.mrservice.activity.DetalhesOrcamentoProdutoActivity;
 import com.example.mrservice.activity.DetalhesProdutoActivity;
 import com.example.mrservice.activity.ListProdutosActivity;
 import com.example.mrservice.activity.ProdutoOrcamentoActivity;
+import com.example.mrservice.adapter.AdapterItem;
 import com.example.mrservice.adapter.AdapterProdutos;
 import com.example.mrservice.config.ConfiguracaoFirebase;
+import com.example.mrservice.config.UsuarioFirebase;
 import com.example.mrservice.helper.RecyclerItemClickListener;
 import com.example.mrservice.model.Produto;
+import com.example.mrservice.model.ProdutoOrcamento;
 import com.example.mrservice.model.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +42,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
 
 /**
@@ -42,20 +50,16 @@ import dmax.dialog.SpotsDialog;
  */
 public class ProdutosFragment extends Fragment {
 
-    private RecyclerView recyclerViewProdutos;
-    private List<Produto> listaProdutos = new ArrayList<>();
-    private AdapterProdutos adapterProdutos;
-    private DatabaseReference produtosRef;
-    private Produto produtoSelecionado;
-    private MaterialSearchView searchView;
-    private AlertDialog dialog;
-    private Usuario usuario;
-    private ValueEventListener valueEventListenerProdutos;
+    private RecyclerView recyclerView;
+    private AdapterItem adapterItem;
+    private List<ProdutoOrcamento> listProdutoOrcamentos = new ArrayList<>();
+    private DatabaseReference produtosOrcamentosRef;
+    private ValueEventListener valueEventListener;
+    private CircleImageView foto;
+    private TextView txtNome, txtNoneProduto, txtPrecoTotal, txtTotal;
 
     public ProdutosFragment() {
-        // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,41 +67,26 @@ public class ProdutosFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_produtos, container, false);
 
-        Bundle bundle = getActivity().getIntent().getExtras();
-        usuario = (Usuario) bundle.getSerializable("DadosUsuario");
+        //Inicializar Componentes
+        foto = view.findViewById(R.id.imgFotoCliente);
+        txtNome = view.findViewById(R.id.txtNomeCliente);
+        txtPrecoTotal = view.findViewById(R.id.txtPrecoTotal);
+        txtNoneProduto = view.findViewById(R.id.txtNoneProduto);
+        txtTotal = view.findViewById(R.id.txtTotal);
+        recyclerView = view.findViewById(R.id.recyclerProdutosOrcamentos);
 
-        produtosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("produtos");
-        recyclerViewProdutos = view.findViewById(R.id.recyclerViewProdutos);
+        produtosOrcamentosRef = ConfiguracaoFirebase.getFirebaseDatabase()
+                .child("produtoOrcamento")
+                .child(UsuarioFirebase.getIdentificadorUsuario());
 
-        //Configurar o RecyclerView
-        recyclerViewProdutos.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerViewProdutos.setHasFixedSize(true);
-        adapterProdutos = new AdapterProdutos(listaProdutos, usuario.getTipo_usuario(),getActivity());
-        recyclerViewProdutos.setAdapter(adapterProdutos);
+        Glide.with(getActivity()).load(UsuarioFirebase.getUsuarioLogado().getFoto()).into(foto);
+        txtNome.setText(UsuarioFirebase.getUsuarioLogado().getNome());
 
-        recyclerViewProdutos.addOnItemTouchListener(new RecyclerItemClickListener(
-                getActivity(),
-                recyclerViewProdutos,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        produtoSelecionado = listaProdutos.get(position);
-                        Intent intent = new Intent(getActivity(), DetalhesProdutoActivity.class);
-                        intent.putExtra("produtoSelecionado", produtoSelecionado);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-
-                    }
-
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                    }
-                }
-        ));
+        //Configurar O RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+        adapterItem = new AdapterItem(getActivity(), listProdutoOrcamentos);
+        recyclerView.setAdapter(adapterItem);
 
         return view;
     }
@@ -105,61 +94,43 @@ public class ProdutosFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        recuperarProdutos();
+        recuperarOrcamentos();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        produtosRef.removeEventListener(valueEventListenerProdutos);
-        listaProdutos.clear();
+        produtosOrcamentosRef.removeEventListener(valueEventListener);
+        listProdutoOrcamentos.clear();
     }
 
-    public void pesquisarProduto(String text){
-        List<Produto> listaProdutoPesquisa = new ArrayList<>();
-        for(Produto produto : listaProdutos){
-            String titulo = produto.getTitulo().toLowerCase();
-            String categoria = produto.getCategoria().toLowerCase();
-            String tipo_produto = produto.getProduto().toLowerCase();
-            if(titulo.contains(text)){
-                listaProdutoPesquisa.add(produto);
-            }
-        }
-        adapterProdutos = new AdapterProdutos(listaProdutoPesquisa, usuario.getTipo_usuario(),getActivity());
-        recyclerViewProdutos.setAdapter(adapterProdutos);
-        adapterProdutos.notifyDataSetChanged();
-    }
-
-    public void recarregarProdutos(){
-        adapterProdutos = new AdapterProdutos(listaProdutos, usuario.getTipo_usuario(),getActivity());
-        recyclerViewProdutos.setAdapter(adapterProdutos);
-        adapterProdutos.notifyDataSetChanged();
-    }
-
-    public void recuperarProdutos(){
-        dialog = new SpotsDialog.Builder()
-                .setContext(getActivity())
-                .setMessage("Recuperando Produtos")
-                .setCancelable(false)
-                .build();
-        dialog.show();
-
-        Query produtoPesquisa = produtosRef.orderByChild("titulo");
-
-        valueEventListenerProdutos = produtoPesquisa.addValueEventListener(new ValueEventListener() {
+    public void recuperarOrcamentos(){
+        valueEventListener = produtosOrcamentosRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listaProdutos.clear();
-                for(DataSnapshot categoria : dataSnapshot.getChildren()){
-                    for (DataSnapshot tipoProduto : categoria.getChildren()){
-                        for(DataSnapshot ds : tipoProduto.getChildren()){
-                            listaProdutos.add(ds.getValue(Produto.class));
-                            System.out.println(ds.getValue(Produto.class).getTitulo());
-                        }
+                listProdutoOrcamentos.clear();
+                int total = 0;
+                String totalStr = "000";
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    ProdutoOrcamento produtoOrcamento = ds.getValue(ProdutoOrcamento.class);
+
+                    String valor1 = produtoOrcamento.getProduto().getPrecoVenda().replaceAll("[^0-9]", "");
+                    int valor = Integer.parseInt(valor1) * Integer.parseInt(produtoOrcamento.getQtd());
+                    total += valor;
+
+                    listProdutoOrcamentos.add(produtoOrcamento);
+                    if(produtoOrcamento != null){
+                        txtPrecoTotal.setVisibility(View.VISIBLE);
+                        txtTotal.setVisibility(View.VISIBLE);
+                        txtNoneProduto.setVisibility(View.GONE);
+                        totalStr = Integer.toString(total);
                     }
                 }
-                adapterProdutos.notifyDataSetChanged();
-                dialog.dismiss();
+
+                StringBuilder stringBuilder = new StringBuilder(Integer.toString(total));
+                stringBuilder.insert(totalStr.length() - 2, ",");
+                txtPrecoTotal.setText("R$ " + stringBuilder);
+                adapterItem.notifyDataSetChanged();
             }
 
             @Override
@@ -168,4 +139,5 @@ public class ProdutosFragment extends Fragment {
             }
         });
     }
+
 }

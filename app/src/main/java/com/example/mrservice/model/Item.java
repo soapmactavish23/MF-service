@@ -7,6 +7,7 @@ public class Item {
     private String id;
     private String nome;
     private String preco;
+    private String qtd;
 
     public Item() {
         DatabaseReference databaseReference = ConfiguracaoFirebase.getFirebaseDatabase();
@@ -37,4 +38,11 @@ public class Item {
         this.preco = preco;
     }
 
+    public String getQtd() {
+        return qtd;
+    }
+
+    public void setQtd(String qtd) {
+        this.qtd = qtd;
+    }
 }

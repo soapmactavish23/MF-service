@@ -31,6 +31,14 @@ public class AdapterClientes extends RecyclerView.Adapter<AdapterClientes.MyView
         this.context = context;
     }
 
+    public List<Cliente> getListaClientes() {
+        return listaClientes;
+    }
+
+    public void setListaClientes(List<Cliente> listaClientes) {
+        this.listaClientes = listaClientes;
+    }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

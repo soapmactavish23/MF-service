@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mrservice.R;
 import com.example.mrservice.model.TrabalhosFeitos;
 import com.squareup.picasso.Picasso;
@@ -51,7 +52,13 @@ public class DetalhesTrabalhosFeitosActivity extends AppCompatActivity {
                 @Override
                 public void setImageForPosition(int position, ImageView imageView) {
                     String urlString = trabalhosFeitos.getFotos().get(position);
-                    Glide.with(getApplicationContext()).load(urlString).into(imageView);
+                    RequestOptions requestOptions = new RequestOptions();
+                    requestOptions.placeholder(R.drawable.galery_padrao);
+                    requestOptions.fitCenter();
+                    Glide.with(getApplicationContext())
+                            .applyDefaultRequestOptions(requestOptions)
+                            .load(urlString)
+                            .into(imageView);
                 }
             };
             carouselView.setPageCount(trabalhosFeitos.getFotos().size());

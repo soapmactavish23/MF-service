@@ -13,9 +13,9 @@ import com.example.mrservice.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OrcamentoProdutoFragment extends Fragment {
+public class ProdutosFragmentAdm extends Fragment {
 
-    public OrcamentoProdutoFragment() {
+    public ProdutosFragmentAdm() {
         // Required empty public constructor
     }
 
@@ -24,7 +24,6 @@ public class OrcamentoProdutoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_orcamento_produto, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_produtos_adm, container, false);
     }
 }

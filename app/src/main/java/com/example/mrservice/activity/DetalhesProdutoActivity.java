@@ -132,17 +132,13 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, final int i) {
                 String qtdProdutos = qtd.getText().toString();
-                Item item = new Item();
-                item.setNome(produtoSelecionado.getTitulo());
-                item.setPreco(produtoSelecionado.getPrecoVenda());
-                items.add(item);
 
                 produtoOrcamento = new ProdutoOrcamento();
-                produtoOrcamento.setItems(items);
+                produtoOrcamento.setQtd(qtdProdutos);
+                produtoOrcamento.setProduto(produtoSelecionado);
                 produtoOrcamento.setCliente(cliente);
-                produtoOrcamento.setStatus("PENDENTE");
-                produtoOrcamento.atualizar();
-
+                produtoOrcamento.salvar();
+                exibirMensagem("Orçamento Enviado Com Sucesso!");
             }
         });
         alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

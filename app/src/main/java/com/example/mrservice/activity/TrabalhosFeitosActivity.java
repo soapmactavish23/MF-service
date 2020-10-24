@@ -81,7 +81,7 @@ public class TrabalhosFeitosActivity extends AppCompatActivity {
                         new RecyclerItemClickListener.OnItemClickListener() {
                             @Override
                             public void onItemClick(View view, int position) {
-                                trabalhosFeitosSelecionado = listaTrabalhosFeitos.get(position);
+                                trabalhosFeitosSelecionado = adapterTrabalhosFeitos.getTrabalhosFeitosList().get(position);
                                 Intent intent = new Intent(TrabalhosFeitosActivity.this, DetalhesTrabalhosFeitosActivity.class);
                                 intent.putExtra("trabalhoFeitoSelecionado", trabalhosFeitosSelecionado);
                                 startActivity(intent);
@@ -90,7 +90,7 @@ public class TrabalhosFeitosActivity extends AppCompatActivity {
                             @Override
                             public void onLongItemClick(View view, int position) {
                                 if(usuario.getTipo_usuario().equals("ADM")){
-                                    trabalhosFeitosSelecionado = listaTrabalhosFeitos.get(position);
+                                    trabalhosFeitosSelecionado = adapterTrabalhosFeitos.getTrabalhosFeitosList().get(position);
                                     Intent intent = new Intent(TrabalhosFeitosActivity.this, CadastrarTrabalhosFeitosActivity.class);
                                     intent.putExtra("trabalhoFeitoSelecionado", trabalhosFeitosSelecionado);
                                     startActivity(intent);
@@ -194,7 +194,7 @@ public class TrabalhosFeitosActivity extends AppCompatActivity {
     public void recuperarTrabalhosFeitos(){
         dialog = new SpotsDialog.Builder()
                 .setContext(this)
-                .setMessage("Recuperando Produtos")
+                .setMessage("Recuperando Trabalhos Feitos")
                 .setCancelable(false)
                 .build();
         dialog.show();
@@ -252,10 +252,10 @@ public class TrabalhosFeitosActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 int position = viewHolder.getAdapterPosition();
-                trabalhosFeitosSelecionado = listaTrabalhosFeitos.get(position);
+                trabalhosFeitosSelecionado = adapterTrabalhosFeitos.getTrabalhosFeitosList().get(position);
                 trabalhosFeitosSelecionado.deletar();
                 adapterTrabalhosFeitos.notifyItemRemoved(position);
-                listaTrabalhosFeitos.clear();
+                adapterTrabalhosFeitos.getTrabalhosFeitosList().clear();
                 adapterTrabalhosFeitos.notifyDataSetChanged();
             }
         });

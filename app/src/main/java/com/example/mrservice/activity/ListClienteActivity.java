@@ -94,7 +94,7 @@ public class ListClienteActivity extends AppCompatActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Cliente cliente = listaClientes.get(position);
+                        Cliente cliente = adapterClientes.getListaClientes().get(position);
                         Intent intent = new Intent(ListClienteActivity.this, DetalhesClienteActivity.class);
                         intent.putExtra("cliente", cliente);
                         startActivity(intent);
@@ -103,7 +103,7 @@ public class ListClienteActivity extends AppCompatActivity {
                     @Override
                     public void onLongItemClick(View view, int position) {
                         if(usuario.getTipo_usuario().equals("ADM")){
-                            Cliente cliente = listaClientes.get(position);
+                            Cliente cliente = adapterClientes.getListaClientes().get(position);
                             Intent intent = new Intent(ListClienteActivity.this, CadastrarClientesActivity.class);
                             intent.putExtra("cliente", cliente);
                             startActivity(intent);
@@ -231,18 +231,11 @@ public class ListClienteActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //Configurando o Grid
-                //int tamanhoGrid = getResources().getDisplayMetrics().widthPixels;
-                //int tamanhoImagem = tamanhoGrid/3;
-                //gridViewClientes.setColumnWidth(tamanhoImagem);
-
                 listaClientes.clear();
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     listaClientes.add(ds.getValue(Cliente.class));
                 }
                 adapterClientes.notifyDataSetChanged();
-                //Adapter Grid
-                //adapterGrid = new AdapterGrid(getApplicationContext(), R.layout.grid_foto_titulo, listaClientes);
-                //gridViewClientes.setAdapter(adapterGrid);
                 dialog.dismiss();
             }
 

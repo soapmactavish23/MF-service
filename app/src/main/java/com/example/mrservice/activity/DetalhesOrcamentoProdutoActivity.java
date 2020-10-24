@@ -64,14 +64,14 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
             produtoOrcamentoSelecionado = (ProdutoOrcamento) bundle.getSerializable("produtoOrcamentoSelecionado");
             tipoUsuario = bundle.getString("tipoUsuario");
             txtCliente.setText("Cliente: "+ produtoOrcamentoSelecionado.getCliente().getNome());
-            txtStatus.setText("Status: " + produtoOrcamentoSelecionado.getStatus());
+            //txtStatus.setText("Status: " + produtoOrcamentoSelecionado.getStatus());
 
             if(tipoUsuario.equals("ADM")){
-                if(!produtoOrcamentoSelecionado.getStatus().equals("FINALIZADO")){
+                /*if(!produtoOrcamentoSelecionado.getStatus().equals("FINALIZADO")){
                     fabSave.setVisibility(View.VISIBLE);
                 }else{
                     fabSave.setVisibility(View.GONE);
-                }
+                }*/
                 imgFotoCliente.setVisibility(View.VISIBLE);
                 if(!produtoOrcamentoSelecionado.getCliente().getFoto().equals("")){
                     Picasso.get().load(produtoOrcamentoSelecionado.getCliente().getFoto()).into(imgFotoCliente);
@@ -92,13 +92,13 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
                 imgFotoCliente.setVisibility(View.GONE);
             }
 
-            if(produtoOrcamentoSelecionado.getStatus().equals("FINALIZADO") || tipoUsuario.equals("ADM")){
+            /*if(produtoOrcamentoSelecionado.getStatus().equals("FINALIZADO") || tipoUsuario.equals("ADM")){
                 txtPreco.setVisibility(View.VISIBLE);
                 editPrecoFinal.setVisibility(View.VISIBLE);
             }else{
                 txtPreco.setVisibility(View.GONE);
                 editPrecoFinal.setVisibility(View.GONE);
-            }
+            }*/
 
             adapterOrcamento = new AdapterOrcamento(this, produtosList);
 
@@ -116,7 +116,7 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
     }
 
     public void finalizarOrcamento(View view){
-        produtoOrcamentoSelecionado.setStatus("FINALIZADO");
+        //produtoOrcamentoSelecionado.setStatus("FINALIZADO");
         produtoOrcamentoSelecionado.atualizar();
     }
 
