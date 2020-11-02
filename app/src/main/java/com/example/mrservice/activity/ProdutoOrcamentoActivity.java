@@ -14,10 +14,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.mrservice.R;
+import com.example.mrservice.adapter.AdapterItem;
 import com.example.mrservice.adapter.AdapterOrcamentoProduto;
 import com.example.mrservice.config.ConfiguracaoFirebase;
+import com.example.mrservice.config.UsuarioFirebase;
 import com.example.mrservice.helper.RecyclerItemClickListener;
 import com.example.mrservice.model.ProdutoOrcamento;
 import com.example.mrservice.model.Usuario;
@@ -30,18 +34,19 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
 
 public class ProdutoOrcamentoActivity extends AppCompatActivity {
 
+    private Usuario clienteSelecionado;
     private RecyclerView recyclerView;
-    private List<ProdutoOrcamento> listaOrcamento = new ArrayList<>();
-    private AdapterOrcamentoProduto adapterOrcamentoProduto;
-    private DatabaseReference produtoOrcamentoRef;
-    private ProdutoOrcamento produtoOrcamentoSelecionado;
-    private AlertDialog dialog;
-    private Usuario usuario;
-    private MaterialSearchView searchView;
+    private AdapterItem adapterItem;
+    private List<ProdutoOrcamento> listProdutoOrcamentos = new ArrayList<>();
+    private DatabaseReference produtosOrcamentosRef;
+    private ValueEventListener valueEventListener;
+    private CircleImageView foto;
+    private TextView txtNome, txtPrecoTotal, txtTotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,147 +57,85 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
-        //Configuracoes Iniciais
-        produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase().child("produtoOrcamento");
-        recyclerView = findViewById(R.id.recyclerOrcamentoProduto);
+        //Inicializar Componentes
+        foto = findViewById(R.id.imgFotoCliente);
+        txtNome = findViewById(R.id.txtNomeCliente);
+        txtTotal = findViewById(R.id.txtPrecoTotal);
+        txtPrecoTotal = findViewById(R.id.txtPrecoTotal);
+        recyclerView = findViewById(R.id.recyclerProdutosOrcamentos);
+
         Bundle bundle = getIntent().getExtras();
-        usuario = (Usuario) bundle.getSerializable("DadosUsuario");
-        searchView = findViewById(R.id.materialSearchProdutos);
+        if(bundle != null){
+            clienteSelecionado = (Usuario) bundle.getSerializable("clienteSelecionado");
+            Glide.with(getApplicationContext()).load(clienteSelecionado.getFoto()).into(foto);
+            txtNome.setText(clienteSelecionado.getNome());
 
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
+            produtosOrcamentosRef = ConfiguracaoFirebase.getFirebaseDatabase()
+                    .child("produtoOrcamento")
+                    .child(clienteSelecionado.getId());
+        }
 
-            }
-
-            @Override
-            public void onSearchViewClosed() {
-                /*ProdutosFragment produtosFragment = (ProdutosFragment) adapter.getPage(0);
-                produtosFragment.recarregarProdutos();
-
-                OrcamentoProdutoFragment orcamentoProdutoFragment = (OrcamentoProdutoFragment) adapter.getPage(1);*/
-                //orcamentoProdutoFragment.recarregarOrcamentos();
-            }
-        });
-
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText)
-            {
-                /*ProdutosFragment fragment = (ProdutosFragment) adapter.getPage(0);
-                OrcamentoProdutoFragment orcamentoProdutoFragment = (OrcamentoProdutoFragment) adapter.getPage(1);
-                if(newText != null && !newText.isEmpty()){
-                    fragment.pesquisarProduto(newText.toLowerCase());
-                }*/
-                return false;
-            }
-        });
-
-        //Configurar o RecyclerView
+        //Configurar O RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        adapterOrcamentoProduto = new AdapterOrcamentoProduto(this, listaOrcamento, usuario.getTipo_usuario());
-        recyclerView.setAdapter(adapterOrcamentoProduto);
-
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(
-                this,
-                recyclerView,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(ProdutoOrcamentoActivity.this, DetalhesOrcamentoProdutoActivity.class);
-                        intent.putExtra("produtoOrcamentoSelecionado", listaOrcamento.get(position));
-                        intent.putExtra("tipoUsuario", usuario.getTipo_usuario());
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-
-                    }
-
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                    }
-                }
-        ));
+        adapterItem = new AdapterItem(this, listProdutoOrcamentos);
+        recyclerView.setAdapter(adapterItem);
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        recuperar();
+        recuperarOrcamentos();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search_i, menu);
-
-        //Configurar o botao de pesquisa
-        MenuItem item = menu.findItem(R.id.menu_pesquisa);
-        searchView.setMenuItem(item);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    private void recuperar(){
-        dialog = new SpotsDialog.Builder()
-                .setContext(this)
-                .setMessage("Recuperando Orçamentos")
-                .setCancelable(false)
-                .build();
-        dialog.show();
-        if(usuario.getTipo_usuario().equals("ADM")){
-            produtoOrcamentoRef.child(usuario.getId()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    listaOrcamento.clear();
-                    for(DataSnapshot ds : dataSnapshot.getChildren()){
-                        listaOrcamento.add(ds.getValue(ProdutoOrcamento.class));
-                    }
-                    //Collections.reverse(listaOrcamento);
-                    adapterOrcamentoProduto.notifyDataSetChanged();
-                    dialog.dismiss();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }else{
-            produtoOrcamentoRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    listaOrcamento.clear();
-                    for(DataSnapshot usuarios: dataSnapshot.getChildren()){
-                        for(DataSnapshot ds : usuarios.getChildren()){
-                            listaOrcamento.add(ds.getValue(ProdutoOrcamento.class));
-                        }
-                    }
-                    //Collections.reverse(listaOrcamento);
-                    adapterOrcamentoProduto.notifyDataSetChanged();
-                    dialog.dismiss();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
+    protected void onStop() {
+        super.onStop();
+        produtosOrcamentosRef.removeEventListener(valueEventListener);
+        listProdutoOrcamentos.clear();
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }
+
+    public void recuperarOrcamentos(){
+        valueEventListener = produtosOrcamentosRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listProdutoOrcamentos.clear();
+                int total = 0;
+                String totalStr = "000";
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    ProdutoOrcamento produtoOrcamento = ds.getValue(ProdutoOrcamento.class);
+
+                    String valor1 = produtoOrcamento.getProduto().getPrecoVenda().replaceAll("[^0-9]", "");
+                    int valor = Integer.parseInt(valor1) * Integer.parseInt(produtoOrcamento.getQtd());
+
+                    total += valor;
+
+                    listProdutoOrcamentos.add(produtoOrcamento);
+
+                    if(produtoOrcamento != null){
+                        txtPrecoTotal.setVisibility(View.VISIBLE);
+                        txtTotal.setVisibility(View.VISIBLE);
+                        totalStr = Integer.toString(total);
+                    }
+                }
+
+                StringBuilder stringBuilder = new StringBuilder(Integer.toString(total));
+                stringBuilder.insert(totalStr.length() - 2, ",");
+                txtPrecoTotal.setText("R$ " + stringBuilder);
+                adapterItem.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

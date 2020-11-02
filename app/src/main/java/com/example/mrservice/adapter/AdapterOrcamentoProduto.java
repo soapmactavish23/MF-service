@@ -24,12 +24,10 @@ public class AdapterOrcamentoProduto extends RecyclerView.Adapter<AdapterOrcamen
 
     private Context context;
     private List<ProdutoOrcamento> listaOrcamento;
-    private String tipoUsuario;
 
-    public AdapterOrcamentoProduto(Context context, List<ProdutoOrcamento> listaOrcamento, String tipoUsuario) {
+    public AdapterOrcamentoProduto(Context context, List<ProdutoOrcamento> listaOrcamento) {
         this.context = context;
         this.listaOrcamento = listaOrcamento;
-        this.tipoUsuario = tipoUsuario;
     }
 
     @NonNull
@@ -50,7 +48,7 @@ public class AdapterOrcamentoProduto extends RecyclerView.Adapter<AdapterOrcamen
                 .applyDefaultRequestOptions(requestOptions)
                 .load(produtoOrcamento.getCliente().getFoto())
                 .into(holder.foto);
-        //holder.txtStatus.setText(produtoOrcamento.getStatus());
+        holder.txtStatus.setText(produtoOrcamento.getStatus());
     }
 
     @Override

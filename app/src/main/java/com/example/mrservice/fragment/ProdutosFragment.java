@@ -116,9 +116,11 @@ public class ProdutosFragment extends Fragment {
 
                     String valor1 = produtoOrcamento.getProduto().getPrecoVenda().replaceAll("[^0-9]", "");
                     int valor = Integer.parseInt(valor1) * Integer.parseInt(produtoOrcamento.getQtd());
+
                     total += valor;
 
                     listProdutoOrcamentos.add(produtoOrcamento);
+
                     if(produtoOrcamento != null){
                         txtPrecoTotal.setVisibility(View.VISIBLE);
                         txtTotal.setVisibility(View.VISIBLE);
@@ -129,7 +131,11 @@ public class ProdutosFragment extends Fragment {
 
                 StringBuilder stringBuilder = new StringBuilder(Integer.toString(total));
                 stringBuilder.insert(totalStr.length() - 2, ",");
-                txtPrecoTotal.setText("R$ " + stringBuilder);
+                if(listProdutoOrcamentos.get(0).getStatus().equals("PENDENTE")){
+                    txtPrecoTotal.setText("R$ 0,00");
+                }else{
+                    txtPrecoTotal.setText("R$ " + stringBuilder);
+                }
                 adapterItem.notifyDataSetChanged();
             }
 

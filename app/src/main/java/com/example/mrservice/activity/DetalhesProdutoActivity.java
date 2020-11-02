@@ -137,6 +137,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
                 produtoOrcamento.setQtd(qtdProdutos);
                 produtoOrcamento.setProduto(produtoSelecionado);
                 produtoOrcamento.setCliente(cliente);
+                produtoOrcamento.setStatus("PENDENTE");
                 produtoOrcamento.salvar();
                 exibirMensagem("Orçamento Enviado Com Sucesso!");
             }

@@ -14,6 +14,7 @@ public class ProdutoOrcamento implements Serializable {
     private Usuario cliente;
     private Produto produto;
     private String qtd;
+    private String status;
 
     public ProdutoOrcamento() {
         DatabaseReference databaseReference = ConfiguracaoFirebase.getFirebaseDatabase()
@@ -86,5 +87,13 @@ public class ProdutoOrcamento implements Serializable {
 
     public void setQtd(String qtd) {
         this.qtd = qtd;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

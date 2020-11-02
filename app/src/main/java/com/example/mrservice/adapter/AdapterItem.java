@@ -11,8 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mrservice.R;
+import com.example.mrservice.config.UsuarioFirebase;
 import com.example.mrservice.model.Produto;
 import com.example.mrservice.model.ProdutoOrcamento;
+import com.example.mrservice.model.Usuario;
 
 import java.util.List;
 
@@ -43,8 +45,16 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.MyViewHolder> 
         StringBuilder stringBuilder = new StringBuilder(valor + "");
         stringBuilder.insert(Integer.toString(valor).length() - 2, ",");
 
-        holder.txtTitulo.setText(produtoOrcamento.getProduto().getTitulo() + " (x " + produtoOrcamento.getQtd() + ")");
-        holder.txtPreco.setText("R$ "+ stringBuilder);
+        if(Integer.parseInt(produtoOrcamento.getQtd()) > 1){
+            holder.txtTitulo.setText(produtoOrcamento.getProduto().getTitulo() + " (x " + produtoOrcamento.getQtd() + ")");
+        }else{
+            holder.txtTitulo.setText(produtoOrcamento.getProduto().getTitulo());
+        }
+        if(produtoOrcamento.getStatus().equals("FINALIZADO") || UsuarioFirebase.getUsuarioLogado().getTipo_usuario().equals("ADM")){
+            holder.txtPreco.setText("R$ "+ stringBuilder);
+        }else{
+            holder.txtPreco.setText("");
+        }
     }
 
     @Override

@@ -5,7 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.mrservice.adapter.AdapterClientesSatisfeitos;
+import com.example.mrservice.adapter.AdapterUsuarios;
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.helper.RecyclerItemClickListener;
 import com.example.mrservice.model.ClientesSatisfeitos;
@@ -40,7 +40,7 @@ public class ClientesSatisfeitosActivity extends AppCompatActivity {
     private List<ClientesSatisfeitos>  clientesSatisfeitosList = new ArrayList<>();
     private DatabaseReference clientesSatisfeitosRef;
     private ClientesSatisfeitos clientesSatisfeitos;
-    private AdapterClientesSatisfeitos adapterClientesSatisfeitos;
+    private AdapterUsuarios adapterUsuarios;
     private AlertDialog dialog;
     private Usuario usuario;
 
@@ -61,8 +61,8 @@ public class ClientesSatisfeitosActivity extends AppCompatActivity {
         recyclerViewClientes = findViewById(R.id.recyclerViewClientesSatisfeitos);
         recyclerViewClientes.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewClientes.setHasFixedSize(true);
-        adapterClientesSatisfeitos = new AdapterClientesSatisfeitos(clientesSatisfeitosList, this);
-        recyclerViewClientes.setAdapter(adapterClientesSatisfeitos);
+        //adapterUsuarios = new AdapterUsuarios(clientesSatisfeitosList, this);
+        recyclerViewClientes.setAdapter(adapterUsuarios);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +128,7 @@ public class ClientesSatisfeitosActivity extends AppCompatActivity {
                     clientesSatisfeitosList.add(ds.getValue(ClientesSatisfeitos.class));
                 }
                 Collections.reverse(clientesSatisfeitosList);
-                adapterClientesSatisfeitos.notifyDataSetChanged();
+                adapterUsuarios.notifyDataSetChanged();
                 dialog.dismiss();
 
             }
@@ -175,15 +175,15 @@ public class ClientesSatisfeitosActivity extends AppCompatActivity {
                 int position = viewHolder.getAdapterPosition();
                 clientesSatisfeitos = clientesSatisfeitosList.get(position);
                 clientesSatisfeitos.deletar();
-                adapterClientesSatisfeitos.notifyItemRemoved(position);
+                adapterUsuarios.notifyItemRemoved(position);
                 clientesSatisfeitosList.clear();
-                adapterClientesSatisfeitos.notifyDataSetChanged();
+                adapterUsuarios.notifyDataSetChanged();
             }
         });
         alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                adapterClientesSatisfeitos.notifyDataSetChanged();
+                adapterUsuarios.notifyDataSetChanged();
             }
         });
         AlertDialog alert = alertDialog.create();
