@@ -7,14 +7,19 @@ import androidx.appcompat.widget.Toolbar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.JsonWriter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.mrservice.R;
 import com.example.mrservice.config.ConfiguracaoFirebase;
 import com.example.mrservice.config.UsuarioFirebase;
+import com.example.mrservice.model.Cliente;
 import com.example.mrservice.model.Produto;
 import com.example.mrservice.model.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,10 +28,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.example.mrservice.activity.GaleryActivity;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth autenticacao;
+    private EditText txtJson;
     private String[] activits = {
             "PRODUTOS",
             "SERVICOS",
@@ -46,9 +61,33 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("MF service");
+        txtJson = findViewById(R.id.txtJson);
 
         //Configurações Iniciais
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+
+        DatabaseReference databaseReference = ConfiguracaoFirebase.getFirebaseDatabase();
+        databaseReference.child("clientes").child("Condomínio").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.i("Dados", dataSnapshot.getValue().toString());
+                List<Cliente> clientes = new ArrayList<>();
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    clientes.add(ds.getValue(Cliente.class));
+                }
+                Gson gson = new Gson();
+                String txt = "";
+                for(int i = 0; i < clientes.size() ; i++){
+                    txt += gson.toJson(clientes.get(i));
+                }
+                //txtJson.setText(txt);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 

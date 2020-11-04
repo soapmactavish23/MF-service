@@ -31,7 +31,6 @@ public class Cliente implements Serializable {
                 .child(getCategoria())
                 .child(getId());
         clienteRef.removeValue();
-
     }
 
     public void atualizar(){

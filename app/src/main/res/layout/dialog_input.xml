@@ -12,14 +12,14 @@
         android:textColorHint="@android:color/darker_gray">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editEmail"
+            android:id="@+id/editLocal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_email"
+            android:drawableLeft="@drawable/ic_location"
             android:drawablePadding="6dp"
             android:inputType="textEmailAddress"
-            android:drawableTint="@android:color/darker_gray"
-            android:hint="Digite seu email"
+            android:drawableTint="@color/colorPrimaryDark"
+            android:hint="Confirme seu endereço"
             android:textColorHint="@android:color/darker_gray" />
 
     </com.google.android.material.textfield.TextInputLayout>

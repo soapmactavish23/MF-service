@@ -6,6 +6,13 @@
         android:orderInCategory="100"
         android:title="Configuração"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/endereco"
+        android:orderInCategory="100"
+        android:title="Endereço"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/sair"
         android:orderInCategory="100"
