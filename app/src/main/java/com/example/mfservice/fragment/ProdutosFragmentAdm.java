@@ -75,24 +75,6 @@ public class ProdutosFragmentAdm extends Fragment {
         adapterUsuarios = new AdapterUsuarios(clientes, orcamentos, getActivity());
         recyclerView.setAdapter(adapterUsuarios);
 
-        produtosOrcamentosRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds: dataSnapshot.getChildren()){
-                    recuperarOrcamentos(ds.getKey());
-                    for(DataSnapshot dataSnapshot1 : ds.getChildren()){
-                        ProdutoOrcamento produtoOrcamento = dataSnapshot1.getValue(ProdutoOrcamento.class);
-                        orcamentos.add(produtoOrcamento);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
         //Toque do Recycler
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(
                 getActivity(),
@@ -126,6 +108,23 @@ public class ProdutosFragmentAdm extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        produtosOrcamentosRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    recuperarOrcamentos(ds.getKey());
+                    for(DataSnapshot dataSnapshot1 : ds.getChildren()){
+                        ProdutoOrcamento produtoOrcamento = dataSnapshot1.getValue(ProdutoOrcamento.class);
+                        orcamentos.add(produtoOrcamento);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -136,14 +135,14 @@ public class ProdutosFragmentAdm extends Fragment {
     }
 
     private void recuperarOrcamentos(String idUsuario){
+        clientes.clear();
         valueEventListener = usuariosRef.child(idUsuario).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue(Usuario.class) != null){
                     txtNone.setVisibility(View.GONE);
                     clientes.add(dataSnapshot.getValue(Usuario.class));
-
-                    //adapterUsuarios.notifyDataSetChanged();
+                    adapterUsuarios.notifyDataSetChanged();
                 }
             }
 

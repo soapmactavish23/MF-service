@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:orientation="horizontal">
+    android:background="@drawable/border_list_item"
+    android:orientation="horizontal"
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/txtTitulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="Título"
         android:textColor="@android:color/white"
         android:textSize="14sp"
-        android:layout_weight="1"
         android:textStyle="bold" />
 
-    <TextView
+    <com.blackcat.currencyedittext.CurrencyEditText
         android:id="@+id/txtPreco"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,6 +24,17 @@
         android:textAlignment="textEnd"
         android:textColor="#FFFF00"
         android:textSize="14sp"
-        android:textStyle="bold"
-        />
+        android:enabled="false"
+        android:background="@android:color/transparent"
+        android:textStyle="bold"/>
+
+    <!--TextView
+        android:id="@+id/txtPreco"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:textAlignment="textEnd"
+        android:textColor="#FFFF00"
+        android:textSize="14sp"
+        android:textStyle="bold" /-->
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.mfservice.model;
 
 import com.example.mfservice.config.ConfiguracaoFirebase;
+import com.example.mfservice.config.UsuarioFirebase;
 import com.google.firebase.database.DatabaseReference;
 
 import java.io.Serializable;
@@ -33,6 +34,7 @@ public class ProdutoOrcamento implements Serializable {
     public void deletar(){
         DatabaseReference produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase()
                 .child("produtoOrcamento")
+                .child(getCliente().getId())
                 .child(getProduto().getId());
         produtoOrcamentoRef.removeValue();
     }

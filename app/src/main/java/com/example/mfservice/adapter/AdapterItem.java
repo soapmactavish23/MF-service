@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blackcat.currencyedittext.CurrencyEditText;
 import com.example.mfservice.R;
 import com.example.mfservice.config.UsuarioFirebase;
 import com.example.mfservice.model.Produto;
@@ -39,19 +40,13 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.MyViewHolder> 
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ProdutoOrcamento produtoOrcamento = produtoOrcamentos.get(position);
 
-        String valor1 = produtoOrcamento.getProduto().getPrecoVenda().replaceAll("[^0-9]", "");
-        int valor = Integer.parseInt(valor1) * Integer.parseInt(produtoOrcamento.getQtd());
-
-        StringBuilder stringBuilder = new StringBuilder(valor + "");
-        stringBuilder.insert(Integer.toString(valor).length() - 2, ",");
-
         if(Integer.parseInt(produtoOrcamento.getQtd()) > 1){
             holder.txtTitulo.setText(produtoOrcamento.getProduto().getTitulo() + " (x " + produtoOrcamento.getQtd() + ")");
         }else{
             holder.txtTitulo.setText(produtoOrcamento.getProduto().getTitulo());
         }
-        if(produtoOrcamento.getStatus().equals("FINALIZADO") || UsuarioFirebase.getUsuarioLogado().getTipo_usuario().equals("ADM")){
-           holder.txtPreco.setText("R$ "+ stringBuilder);
+        if(produtoOrcamento.getStatus().equals("FINALIZADO")){
+           holder.txtPreco.setText(produtoOrcamento.getProduto().getPrecoVenda());
         }else{
             holder.txtPreco.setText("");
         }
@@ -63,7 +58,8 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.MyViewHolder> 
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView txtTitulo, txtPreco;
+        TextView txtTitulo;
+        CurrencyEditText txtPreco;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             txtTitulo = itemView.findViewById(R.id.txtTitulo);

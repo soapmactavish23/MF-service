@@ -86,11 +86,8 @@ public class UsuarioFirebase {
     }
 
     public static Usuario getUsuarioLogado(){
-
         final FirebaseUser firebaseUser = getUsuarioAtual();
-
         final Usuario usuario = new Usuario();
-
         usuario.setEmail(firebaseUser.getEmail());
         usuario.setNome(firebaseUser.getDisplayName());
         usuario.setId(Base64Custom.codificarBase64(usuario.getEmail()));

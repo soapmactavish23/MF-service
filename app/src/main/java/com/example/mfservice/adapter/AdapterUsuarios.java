@@ -42,9 +42,15 @@ public class AdapterUsuarios extends RecyclerView.Adapter<AdapterUsuarios.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Usuario cliente = clientes.get(position);
-        ProdutoOrcamento produtoOrcamento = orcamentos.get(position);
 
-        holder.txtDepoimento.setText(produtoOrcamento.getStatus());
+        for(int i = 0; i < orcamentos.size(); i++){
+            if(orcamentos.get(i).getStatus().equals("PENDENTE")){
+                holder.txtDepoimento.setText("PENDENTE");
+            }else{
+                holder.txtDepoimento.setText("FINALIZADO");
+            }
+        }
+
         holder.txtNome.setText(cliente.getNome());
 
         RequestOptions requestOptions = new RequestOptions();

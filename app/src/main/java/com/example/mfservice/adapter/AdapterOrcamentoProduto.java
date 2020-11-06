@@ -39,16 +39,17 @@ public class AdapterOrcamentoProduto extends RecyclerView.Adapter<AdapterOrcamen
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
         ProdutoOrcamento produtoOrcamento = listaOrcamento.get(position);
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.padrao);
-        requestOptions.fitCenter();
         holder.txtTitulo.setText(produtoOrcamento.getCliente().getNome());
-        Glide.with(context)
-                .applyDefaultRequestOptions(requestOptions)
+        holder.txtStatus.setText(produtoOrcamento.getStatus());
+
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.galery_padrao);
+        requestOptions.fitCenter();
+        Glide.with(context).applyDefaultRequestOptions(requestOptions)
                 .load(produtoOrcamento.getCliente().getFoto())
                 .into(holder.foto);
-        holder.txtStatus.setText(produtoOrcamento.getStatus());
     }
 
     @Override
