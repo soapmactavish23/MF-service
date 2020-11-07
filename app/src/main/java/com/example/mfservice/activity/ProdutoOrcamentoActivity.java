@@ -26,9 +26,11 @@ import com.example.mfservice.adapter.AdapterOrcamentoProduto;
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.config.UsuarioFirebase;
 import com.example.mfservice.helper.RecyclerItemClickListener;
+import com.example.mfservice.model.Item;
 import com.example.mfservice.model.Produto;
 import com.example.mfservice.model.ProdutoOrcamento;
 import com.example.mfservice.model.Usuario;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,15 +48,18 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private AdapterItem adapterItem;
-    private List<ProdutoOrcamento> listProdutoOrcamentos = new ArrayList<>();
-    private DatabaseReference produtosOrcamentosRef;
-    private DatabaseReference usuarioRef;
+    private List<Item> items = new ArrayList<>();
+    private DatabaseReference itemRef;
     private Usuario cliente;
     private ValueEventListener valueEventListener;
     private CircleImageView foto;
-    private TextView txtNome, txtNoneProduto, txtTotal, txtEndereco, txtEmail, txtTelefone;
+    private TextView txtNome, txtNoneProduto, txtTotal, txtEndereco, txtEmail, txtTelefone, txtFormaPagamento,
+            txtPrazoEntrega, txtValidade, txtObs;
+    private FloatingActionMenu floatingActionMenu;
     private CurrencyEditText txtPrecoTotal;
-    private ProdutoOrcamento produtoOrcamentoSelecionado;
+    private ProdutoOrcamento orcamentoSelecionado;
+    private Item itemSelecionado;
+    private int valorTotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,26 +79,42 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.txtEmail);
         txtTelefone = findViewById(R.id.txtTelefone);
         txtTotal = findViewById(R.id.txtTotal);
+        txtPrecoTotal = findViewById(R.id.txtPrecoTotal);
         recyclerView = findViewById(R.id.recyclerProdutosOrcamentos);
-
-        //Recuperar o usuario
+        txtFormaPagamento = findViewById(R.id.txtFormaPagamento);
+        txtPrazoEntrega = findViewById(R.id.txtPrazoEntrega);
+        txtValidade = findViewById(R.id.txtValidade);
+        floatingActionMenu = findViewById(R.id.floatingActionMenu);
+        txtObs = findViewById(R.id.txtObs);
         Bundle bundle = getIntent().getExtras();
-        cliente = (Usuario) bundle.getSerializable("clienteSelecionado");
 
-        produtosOrcamentosRef = ConfiguracaoFirebase.getFirebaseDatabase()
-                .child("produtoOrcamento")
-                .child(cliente.getId());
+        //Recuperar o orcamento
+        orcamentoSelecionado = (ProdutoOrcamento) bundle.getSerializable("orcamento");
+        cliente = orcamentoSelecionado.getCliente();
+        itemRef = ConfiguracaoFirebase.getFirebaseDatabase().child("itens").child(cliente.getId());
+        toolbar.setTitle(orcamentoSelecionado.getStatus());
 
+        //Configurando informações do cliente
         Glide.with(this).load(cliente.getFoto()).into(foto);
         txtNome.setText(cliente.getNome());
         txtEmail.setText("E-mail: " + cliente.getEmail());
         txtEndereco.setText("Endereço: " + cliente.getEndereco());
         txtTelefone.setText("Contato: " + cliente.getContato());
 
+        //Configurando o footer
+        txtFormaPagamento.setText("Forma de Pagamento: "+ orcamentoSelecionado.getFormaPagamento());
+        txtPrazoEntrega.setText("Prazo de Entrega: " + orcamentoSelecionado.getPrazoEntrega());
+        txtValidade.setText("Validade: " + orcamentoSelecionado.getValidade());
+        txtObs.setText("Obs: " + orcamentoSelecionado.getObs());
+
+        if(orcamentoSelecionado.getStatus().equals("FINALIZADO")){
+            floatingActionMenu.setVisibility(View.GONE);
+        }
+
         //Configurar O RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        adapterItem = new AdapterItem(this, listProdutoOrcamentos);
+        adapterItem = new AdapterItem(this, items, orcamentoSelecionado, "ADM");
         recyclerView.setAdapter(adapterItem);
 
         //Toque no Recycler
@@ -103,13 +124,14 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        produtoOrcamentoSelecionado = listProdutoOrcamentos.get(position);
-                        editarValorProduto();
+                        if(orcamentoSelecionado.getStatus().equals("PENDENTE")){
+                            itemSelecionado = items.get(position);
+                            editarValorItem();
+                        }
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
-                        produtoOrcamentoSelecionado = listProdutoOrcamentos.get(position);
                     }
 
                     @Override
@@ -123,14 +145,15 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        recuperarOrcamentos();
+        recuperarItens();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        listProdutoOrcamentos.clear();
-        produtosOrcamentosRef.removeEventListener(valueEventListener);
+        valorTotal = 0;
+        items.clear();
+        itemRef.removeEventListener(valueEventListener);
     }
 
     @Override
@@ -139,14 +162,17 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
-    public void recuperarOrcamentos(){
-        valueEventListener = produtosOrcamentosRef.addValueEventListener(new ValueEventListener() {
+    public void recuperarItens(){
+        items.clear();
+        valueEventListener = itemRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listProdutoOrcamentos.clear();
                 for(DataSnapshot ds: snapshot.getChildren()){
-                    listProdutoOrcamentos.add(ds.getValue(ProdutoOrcamento.class));
+                    Item item = ds.getValue(Item.class);
+                    valorTotal += Integer.parseInt(item.getValorTotal());
+                    items.add(item);
                 }
+                txtPrecoTotal.setText(valorTotal + "");
                 adapterItem.notifyDataSetChanged();
             }
 
@@ -157,30 +183,38 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         });
     }
 
-    private void editarValorProduto(){
+    private void editarValorItem(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("Editar o valor do produto");
-        alertDialog.setMessage(
-                "Valor Atual: " + produtoOrcamentoSelecionado.getProduto().getPrecoVenda()
-                + "\nQuantidade: " + produtoOrcamentoSelecionado.getQtd()
-                + "\nDigite o Valor unitário do produto"
-        );
-        alertDialog.setCancelable(true);
+        alertDialog.setTitle("Editar o valor do item");
 
-        View viewQtd = getLayoutInflater().inflate(R.layout.dialog_preco, null);
-        final CurrencyEditText editPreco = viewQtd.findViewById(R.id.editPreco);
-        editPreco.setText(produtoOrcamentoSelecionado.getProduto().getPrecoVenda());
+        View viewPrecos = getLayoutInflater().inflate(R.layout.dialog_preco, null);
+        alertDialog.setView(viewPrecos);
 
-        alertDialog.setView(viewQtd);
+        final TextView txtQtd = viewPrecos.findViewById(R.id.txtQtd);
+        final CurrencyEditText editValorUnitario = viewPrecos.findViewById(R.id.editValorUnitario);
+        final CurrencyEditText editValorTotal = viewPrecos.findViewById(R.id.editValorTotal);
+        final CurrencyEditText editValorDesconto = viewPrecos.findViewById(R.id.editValorDesconto);
 
-        alertDialog.setPositiveButton("Finalizar", new DialogInterface.OnClickListener() {
+        txtQtd.setText(itemSelecionado.getQtd());
+        editValorUnitario.setText(itemSelecionado.getValorUnitario());
+        editValorTotal.setText(itemSelecionado.getValorTotal());
+        editValorDesconto.setText(itemSelecionado.getValorDesconto());
+
+        alertDialog.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, final int i) {
-                String preco = editPreco.getText().toString();
-                produtoOrcamentoSelecionado.getProduto().setPrecoVenda(preco);
-                produtoOrcamentoSelecionado.setStatus("FINALIZADO");
-                produtoOrcamentoSelecionado.salvar();
-                adapterItem.notifyDataSetChanged();
+                //Calcular o valor total
+                int valorDesconto = Integer.parseInt(String.valueOf(editValorDesconto.getRawValue()));
+                int qtd = Integer.parseInt(itemSelecionado.getQtd());
+                int vTotal = valorDesconto * qtd;
+
+                //Salvar registros
+                itemSelecionado.setValorDesconto(valorDesconto + "");
+                itemSelecionado.setValorTotal(vTotal + "");
+                itemSelecionado.salvar();
+                valorTotal = 0;
+                items.clear();
+
             }
         });
         alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -191,6 +225,18 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         });
         AlertDialog alert = alertDialog.create();
         alert.show();
+    }
+
+    public void editar(View view){
+        Intent intent = new Intent(this, EditarProdutoOrcamentoActivity.class);
+        intent.putExtra("orcamentoSelecionado", orcamentoSelecionado);
+        startActivity(intent);
+    }
+
+    public void finalizar(View view){
+        orcamentoSelecionado.setStatus("FINALIZADO");
+        orcamentoSelecionado.salvar();
+        finish();
     }
 
 }

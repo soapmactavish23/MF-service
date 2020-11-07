@@ -91,7 +91,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
 
         //Carregar Spinner de linha
         String[] linha = getResources().getStringArray(R.array.linhas);
-        ArrayAdapter<String> adapterLinha = new ArrayAdapter<String>(
+        final ArrayAdapter<String> adapterLinha = new ArrayAdapter<String>(
                 this, R.layout.simple_pinner_item_white, linha
         );
         adapterLinha.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -99,11 +99,11 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
 
         //Carregar Spinner de categoria
         String[] categoria = getResources().getStringArray(R.array.categorias);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+        final ArrayAdapter<String> adapterCategoria = new ArrayAdapter<String>(
                 this, R.layout.simple_pinner_item_white, categoria
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategoria.setAdapter(adapter);
+        adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategoria.setAdapter(adapterCategoria);
 
         //Carregar Spinner de Tipo Produto
         spinnerCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -143,6 +143,9 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                     editTitulo.setText(produtoSelecionado.getTitulo());
                     editDescricao.setText(produtoSelecionado.getDescricao());
                     editPrecoVenda.setText(produtoSelecionado.getPrecoVenda());
+                    spinnerLinha.setSelection(adapterLinha.getPosition(produtoSelecionado.getLinha()));
+                    spinnerCategoria.setSelection(adapterCategoria.getPosition(produtoSelecionado.getCategoria()));
+                    spinnerTipoProduto.setSelection(adapterProduto.getPosition(produtoSelecionado.getProduto()));
                     btnExcluir.setVisibility(View.VISIBLE);
                     //Foto de Produto
                     for(int index = 0; index < produtoSelecionado.getFotos().size(); index ++){
@@ -174,7 +177,8 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     public void validarDadosProduto(View view){
         String titulo = editTitulo.getText().toString();
         String descricao = editDescricao.getText().toString();
-        String precoVenda = editPrecoVenda.getText().toString();
+        //String precoVenda = editPrecoVenda.getText().toString();
+        String precoVenda = String.valueOf(editPrecoVenda.getRawValue());
         String linha = "";
         if(!spinnerLinha.getSelectedItem().toString().equals("NENHUM")){
             linha = spinnerLinha.getSelectedItem().toString();

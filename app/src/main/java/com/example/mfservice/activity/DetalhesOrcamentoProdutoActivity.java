@@ -115,11 +115,6 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    public void finalizarOrcamento(View view){
-        //produtoOrcamentoSelecionado.setStatus("FINALIZADO");
-        produtoOrcamentoSelecionado.atualizar();
-    }
-
     @Override
     public boolean onSupportNavigateUp() {
         finish();

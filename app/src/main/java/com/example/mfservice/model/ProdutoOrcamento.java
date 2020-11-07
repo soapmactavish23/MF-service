@@ -10,32 +10,28 @@ import java.util.List;
 import java.util.Map;
 
 public class ProdutoOrcamento implements Serializable {
-
-    private String id;
     private Usuario cliente;
-    private Produto produto;
-    private String qtd;
+    private String formaPagamento;
     private String status;
+    private String prazoEntrega;
+    private String validade;
+    private String obs;
+    private String precoFinal;
 
     public ProdutoOrcamento() {
-        DatabaseReference databaseReference = ConfiguracaoFirebase.getFirebaseDatabase()
-                .child("produtoOrcamento");
-        setId(databaseReference.push().getKey());
     }
 
     public void salvar(){
         DatabaseReference produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase()
                 .child("produtoOrcamento")
-                .child(getCliente().getId())
-                .child(getProduto().getId());
+                .child(getCliente().getId());
         produtoOrcamentoRef.setValue(this);
     }
 
     public void deletar(){
         DatabaseReference produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase()
                 .child("produtoOrcamento")
-                .child(getCliente().getId())
-                .child(getProduto().getId());
+                .child(getCliente().getId());
         produtoOrcamentoRef.removeValue();
     }
 
@@ -43,8 +39,7 @@ public class ProdutoOrcamento implements Serializable {
         DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
         DatabaseReference produtosRef = firebaseRef
                 .child("produtoOrcamento")
-                .child(getCliente().getId())
-                .child(getProduto().getId());
+                .child(getCliente().getId());
         Map<String, Object> valoresProdutosOrcamento = converterParaMap();
         produtosRef.updateChildren(valoresProdutosOrcamento);
     }
@@ -52,20 +47,13 @@ public class ProdutoOrcamento implements Serializable {
     public Map<String, Object> converterParaMap(){
         HashMap<String, Object> produtoOrcamentoMap = new HashMap<>();
         produtoOrcamentoMap.put("cliente", getCliente());
-        produtoOrcamentoMap.put("id", getId());
-        produtoOrcamentoMap.put("produto", getProduto());
-        produtoOrcamentoMap.put("qtd", getQtd());
+        produtoOrcamentoMap.put("status", getStatus());
+        produtoOrcamentoMap.put("formaPagamento", getFormaPagamento());
+        produtoOrcamentoMap.put("prazoEntrega", getPrazoEntrega());
+        produtoOrcamentoMap.put("validade", getValidade());
+        produtoOrcamentoMap.put("obs", getObs());
         return produtoOrcamentoMap;
     }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
 
     public Usuario getCliente() {
         return cliente;
@@ -75,27 +63,51 @@ public class ProdutoOrcamento implements Serializable {
         this.cliente = cliente;
     }
 
-    public Produto getProduto() {
-        return produto;
-    }
-
-    public void setProduto(Produto produto) {
-        this.produto = produto;
-    }
-
-    public String getQtd() {
-        return qtd;
-    }
-
-    public void setQtd(String qtd) {
-        this.qtd = qtd;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getFormaPagamento() {
+        return formaPagamento;
+    }
+
+    public void setFormaPagamento(String formaPagamento) {
+        this.formaPagamento = formaPagamento;
+    }
+
+    public String getPrazoEntrega() {
+        return prazoEntrega;
+    }
+
+    public void setPrazoEntrega(String prazoEntrega) {
+        this.prazoEntrega = prazoEntrega;
+    }
+
+    public String getValidade() {
+        return validade;
+    }
+
+    public void setValidade(String validade) {
+        this.validade = validade;
+    }
+
+    public String getObs() {
+        return obs;
+    }
+
+    public void setObs(String obs) {
+        this.obs = obs;
+    }
+
+    public String getPrecoFinal() {
+        return precoFinal;
+    }
+
+    public void setPrecoFinal(String precoFinal) {
+        this.precoFinal = precoFinal;
     }
 }

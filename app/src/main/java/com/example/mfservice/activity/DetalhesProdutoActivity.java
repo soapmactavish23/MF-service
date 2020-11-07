@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +53,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
     private TextView txtTitulo, txtDescricao, txtCategoria, txtTipoProduto, txtLinha;
     private CarouselView carouselView;
     private Usuario cliente;
-    private TextView txtPreco;
+    private CurrencyEditText txtPreco;
     private ProdutoOrcamento produtoOrcamentoSelecionado;
     private List<Item> items = new ArrayList<>();
     private Boolean orcamentoPendente = false;
@@ -124,6 +125,8 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         alertDialog.setCancelable(true);
 
         View viewQtd = getLayoutInflater().inflate(R.layout.dialog_qtd, null);
+        final LinearLayout linearLayout = viewQtd.findViewById(R.id.linearView);
+        linearLayout.setVisibility(View.GONE);
         final TextInputEditText qtd = viewQtd.findViewById(R.id.editQtd);
 
         alertDialog.setView(viewQtd);
@@ -133,13 +136,34 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, final int i) {
                 String qtdProdutos = qtd.getText().toString();
 
+                //Salvar o ProdutoOrcamento
                 produtoOrcamento = new ProdutoOrcamento();
-                produtoOrcamento.setQtd(qtdProdutos);
-                produtoOrcamento.setProduto(produtoSelecionado);
                 produtoOrcamento.setCliente(cliente);
+                produtoOrcamento.setFormaPagamento("A COMBINAR");
+                produtoOrcamento.setPrazoEntrega("EQUIPAMENTOS: 50 A 70 DIAS / CÁRDIO PISOS E ACESSÓRIOS: 30 A 45 DIAS");
+                produtoOrcamento.setValidade("10 DIAS");
+                produtoOrcamento.setObs("FRETE FOB - POR CONTA DO CLIENTE / INSTALAÇÃO GRÁTIS !");
                 produtoOrcamento.setStatus("PENDENTE");
+                produtoOrcamento.setPrecoFinal("0");
                 produtoOrcamento.salvar();
-                exibirMensagem("Orçamento Enviado Com Sucesso!");
+
+                //Salvar o Item
+                Item item = new Item();
+                item.setIdCliente(cliente.getId());
+                item.setIdProduto(produtoSelecionado.getId());
+                item.setProduto(produtoSelecionado.getTitulo());
+                item.setValorUnitario(produtoSelecionado.getPrecoVenda());
+                item.setValorDesconto("0");
+                item.setQtd(qtdProdutos);
+                int valorTotal;
+                if(!qtdProdutos.equals("") || !qtdProdutos.isEmpty()){
+                    valorTotal = Integer.parseInt(produtoSelecionado.getPrecoVenda()) * Integer.parseInt(qtdProdutos);
+                    item.setValorTotal(valorTotal + "");
+                    item.salvar();
+                    exibirMensagem("Orçamento Enviado Com Sucesso!");
+                }else{
+                    exibirMensagem("Preencha o campo de quantidade");
+                }
             }
         });
         alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

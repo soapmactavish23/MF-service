@@ -1,15 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical">
 
-    <com.blackcat.currencyedittext.CurrencyEditText
-        android:id="@+id/editPreco"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Valor Unitário: "
+            android:layout_weight="1"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+
+        <com.blackcat.currencyedittext.CurrencyEditText
+            android:id="@+id/editValorUnitario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:layout_weight="1"
+            android:textAlignment="textEnd"
+            android:drawableTint="@android:color/black"
+            android:textColor="@android:color/black"
+            android:hint="Digite o preço de venda"
+            android:background="@android:color/white"
+            android:textColorHint="@android:color/black" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtQtd1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quantidade:"
+            android:layout_weight="1"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/txtQtd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textAlignment="textEnd"
+            android:layout_weight="1"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/valorTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Valor Total: "
+            android:layout_weight="1"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+
+        <com.blackcat.currencyedittext.CurrencyEditText
+            android:id="@+id/editValorTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:layout_weight="1"
+            android:textAlignment="textEnd"
+            android:drawableTint="@android:color/black"
+            android:textColor="@android:color/black"
+            android:hint="Digite o preço de venda"
+            android:background="@android:color/white"
+            android:textColorHint="@android:color/black" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Valor C/ Desconto:"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"/>
+
+    <com.blackcat.currencyedittext.CurrencyEditText
+        android:id="@+id/editValorDesconto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_money"
         android:drawablePadding="6dp"
         android:drawableTint="@android:color/black"

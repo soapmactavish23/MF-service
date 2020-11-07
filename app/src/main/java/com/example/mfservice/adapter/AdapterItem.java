@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blackcat.currencyedittext.CurrencyEditText;
 import com.example.mfservice.R;
 import com.example.mfservice.config.UsuarioFirebase;
+import com.example.mfservice.model.Item;
 import com.example.mfservice.model.Produto;
 import com.example.mfservice.model.ProdutoOrcamento;
 import com.example.mfservice.model.Usuario;
@@ -22,11 +23,15 @@ import java.util.List;
 public class AdapterItem extends RecyclerView.Adapter<AdapterItem.MyViewHolder> {
 
     private Context context;
-    private List<ProdutoOrcamento> produtoOrcamentos;
+    private List<Item> items;
+    private ProdutoOrcamento produtoOrcamento;
+    private String tipoUsuario;
 
-    public AdapterItem(Context context, List<ProdutoOrcamento> produtoOrcamentos) {
+    public AdapterItem(Context context, List<Item> items, ProdutoOrcamento produtoOrcamento, String tipoUsuario) {
         this.context = context;
-        this.produtoOrcamentos = produtoOrcamentos;
+        this.items = items;
+        this.produtoOrcamento = produtoOrcamento;
+        this.tipoUsuario = tipoUsuario;
     }
 
     @NonNull
@@ -38,23 +43,18 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        ProdutoOrcamento produtoOrcamento = produtoOrcamentos.get(position);
-
-        if(Integer.parseInt(produtoOrcamento.getQtd()) > 1){
-            holder.txtTitulo.setText(produtoOrcamento.getProduto().getTitulo() + " (x " + produtoOrcamento.getQtd() + ")");
+        Item item = items.get(position);
+        holder.txtTitulo.setText(item.getProduto() + "(x" + item.getQtd() + ")");
+        if(produtoOrcamento.getStatus().equals("FINALIZADO") || tipoUsuario.equals("ADM")){
+            holder.txtPreco.setText(item.getValorTotal());
         }else{
-            holder.txtTitulo.setText(produtoOrcamento.getProduto().getTitulo());
-        }
-        if(produtoOrcamento.getStatus().equals("FINALIZADO")){
-           holder.txtPreco.setText(produtoOrcamento.getProduto().getPrecoVenda());
-        }else{
-            holder.txtPreco.setText("");
+            holder.txtPreco.setVisibility(View.GONE);
         }
     }
 
     @Override
     public int getItemCount() {
-        return produtoOrcamentos.size();
+        return items.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{

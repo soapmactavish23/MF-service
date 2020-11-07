@@ -16,7 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blackcat.currencyedittext.CurrencyEditText;
 import com.bumptech.glide.Glide;
@@ -32,9 +34,12 @@ import com.example.mfservice.adapter.AdapterProdutos;
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.config.UsuarioFirebase;
 import com.example.mfservice.helper.RecyclerItemClickListener;
+import com.example.mfservice.model.Item;
 import com.example.mfservice.model.Produto;
 import com.example.mfservice.model.ProdutoOrcamento;
 import com.example.mfservice.model.Usuario;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -57,15 +62,18 @@ public class ProdutosFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private AdapterItem adapterItem;
-    private List<ProdutoOrcamento> listProdutoOrcamentos = new ArrayList<>();
-    private DatabaseReference produtosOrcamentosRef;
-    private DatabaseReference usuarioRef;
-    private Usuario usuarioLogado;
+    private List<Item> items = new ArrayList<>();
+    private DatabaseReference itemRef, produtoOrcamentoRef, usuarioRef;
     private ValueEventListener valueEventListener;
     private CircleImageView foto;
-    private TextView txtNome, txtNoneProduto, txtTotal, txtEndereco, txtEmail, txtTelefone;
+    private TextView txtNome, txtNoneProduto, txtTotal, txtEndereco, txtEmail, txtTelefone,
+            txtFormaPagamento, txtPrazoEntrega, txtValidade, txtObs;
     private CurrencyEditText txtPrecoTotal;
-    private ProdutoOrcamento produtoOrcamentoSelecionado;
+    private ProdutoOrcamento orcamentoSelecionado;
+    private Usuario cliente;
+    private Item itemSelecionado;
+    private FloatingActionButton btnExportarPdf;
+    private int valorTotal;
 
     public ProdutosFragment() {
     }
@@ -76,35 +84,40 @@ public class ProdutosFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_produtos, container, false);
 
-        //Inicializar Componentes
+        //Inicializar componentes
         foto = view.findViewById(R.id.imgFotoCliente);
-        txtNome = view.findViewById(R.id.txtNomeCliente);
-        txtPrecoTotal = view.findViewById(R.id.txtPrecoTotal);
+        txtNome = view.findViewById(R.id.txtNome);
         txtNoneProduto = view.findViewById(R.id.txtNoneProduto);
         txtEndereco = view.findViewById(R.id.txtEndereco);
         txtEmail = view.findViewById(R.id.txtEmail);
         txtTelefone = view.findViewById(R.id.txtTelefone);
+        txtFormaPagamento = view.findViewById(R.id.txtFormaPagamento);
+        txtPrazoEntrega = view.findViewById(R.id.txtPrazoEntrega);
+        txtValidade = view.findViewById(R.id.txtValidade);
+        txtObs = view.findViewById(R.id.txtObs);
+        txtPrecoTotal = view.findViewById(R.id.txtPrecoTotal);
         txtTotal = view.findViewById(R.id.txtTotal);
-        recyclerView = view.findViewById(R.id.recyclerProdutosOrcamentos);
+        recyclerView = view.findViewById(R.id.recyclerItems);
+        btnExportarPdf = view.findViewById(R.id.btnExportarPdf);
 
-        produtosOrcamentosRef = ConfiguracaoFirebase.getFirebaseDatabase()
-                .child("produtoOrcamento")
-                .child(UsuarioFirebase.getIdentificadorUsuario());
-
-        Glide.with(getActivity()).load(UsuarioFirebase.getUsuarioLogado().getFoto()).into(foto);
-        txtNome.setText(UsuarioFirebase.getUsuarioLogado().getNome());
-        txtEmail.setText("E-mail: " + UsuarioFirebase.getUsuarioLogado().getEmail());
-
+        //DatabasesReferences
+        produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase()
+                .child("produtoOrcamento").child(UsuarioFirebase.getIdentificadorUsuario());
         usuarioRef = ConfiguracaoFirebase.getFirebaseDatabase()
-                .child("usuarios")
-                .child(UsuarioFirebase.getIdentificadorUsuario());
+                .child("usuarios").child(UsuarioFirebase.getIdentificadorUsuario());
+        itemRef = ConfiguracaoFirebase.getFirebaseDatabase()
+                .child("itens").child(UsuarioFirebase.getIdentificadorUsuario());
 
         usuarioRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                usuarioLogado = snapshot.getValue(Usuario.class);
-                txtEndereco.setText("Endereço: " + usuarioLogado.getEndereco());
-                txtTelefone.setText("Contato: " + usuarioLogado.getContato());
+                //Iniciaizando dados cliente
+                cliente = snapshot.getValue(Usuario.class);
+                Glide.with(getActivity()).load(cliente.getFoto()).into(foto);
+                txtNome.setText(cliente.getNome());
+                txtEndereco.setText("Endereço: "+ cliente.getEndereco());
+                txtEmail.setText("E-mail: " + cliente.getEmail());
+                txtTelefone.setText("Contato: " + cliente.getContato());
             }
 
             @Override
@@ -113,90 +126,102 @@ public class ProdutosFragment extends Fragment {
             }
         });
 
-        //Configurar O RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
-        adapterItem = new AdapterItem(getActivity(), listProdutoOrcamentos);
-        recyclerView.setAdapter(adapterItem);
-
-        //Toque no Recycler
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(
-                getActivity(),
-                recyclerView,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        produtoOrcamentoSelecionado = listProdutoOrcamentos.get(position);
-                        editar();
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        produtoOrcamentoSelecionado = listProdutoOrcamentos.get(position);
-                        remover();
-                    }
-
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                    }
+        produtoOrcamentoRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //Inicializar dados do orcamento
+                orcamentoSelecionado = snapshot.getValue(ProdutoOrcamento.class);
+                txtFormaPagamento.setText("Forma de Pagamento: " + orcamentoSelecionado.getFormaPagamento());
+                txtPrazoEntrega.setText("Prazo de Entrega: " + orcamentoSelecionado.getPrazoEntrega());
+                txtValidade.setText("Validade: " + orcamentoSelecionado.getValidade());
+                txtObs.setText("Observação: " + orcamentoSelecionado.getObs());
+                if(orcamentoSelecionado.getStatus().equals("PENDENTE")){
+                    txtTotal.setText("Aguarde a resposta do orçamento");
+                    txtPrecoTotal.setVisibility(View.GONE);
+                    btnExportarPdf.setVisibility(View.GONE);
+                }else{
+                    txtPrecoTotal.setVisibility(View.GONE);
+                    btnExportarPdf.setVisibility(View.GONE);
                 }
-        ));
+
+                //Configurando Recycler
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                recyclerView.setHasFixedSize(true);
+                adapterItem = new AdapterItem(getActivity(), items, orcamentoSelecionado, "CLIENTE");
+                recyclerView.setAdapter(adapterItem);
+
+                //Toque no Recycler
+                recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(
+                        getActivity(),
+                        recyclerView,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                itemSelecionado = items.get(position);
+                                editar();
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+                            }
+
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            }
+                        }
+                ));
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         swipe();
+
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        recuperarOrcamentos();
+        recuperarItens();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        produtosOrcamentosRef.removeEventListener(valueEventListener);
-        listProdutoOrcamentos.clear();
+        valorTotal = 0;
+        items.clear();
+        itemRef.removeEventListener(valueEventListener);
     }
 
-    public void recuperarOrcamentos(){
-        valueEventListener = produtosOrcamentosRef.addValueEventListener(new ValueEventListener() {
+    private void recuperarItens(){
+        items.clear();
+        valueEventListener = itemRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listProdutoOrcamentos.clear();
-                int total = 0;
-                for (DataSnapshot ds : dataSnapshot.getChildren()){
-                    ProdutoOrcamento produtoOrcamento = ds.getValue(ProdutoOrcamento.class);
-                    String valor1 = produtoOrcamento.getProduto().getPrecoVenda().replaceAll("[^0-9]", "");
-                    int valor = Integer.parseInt(valor1) * Integer.parseInt(produtoOrcamento.getQtd());
-                    if(produtoOrcamento.getStatus().equals("PENDENTE")){
-                        total += 0;
-                    }else{
-                        total += valor;
-                    }
-                    listProdutoOrcamentos.add(produtoOrcamento);
-                    if(listProdutoOrcamentos.size() > 0){
-                        txtPrecoTotal.setVisibility(View.VISIBLE);
-                        txtTotal.setVisibility(View.VISIBLE);
-                        txtNoneProduto.setVisibility(View.GONE);
-                    }
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds: snapshot.getChildren()){
+                    Item item = ds.getValue(Item.class);
+                    valorTotal += Integer.parseInt(item.getValorTotal());
+                    items.add(item);
                 }
-                if(listProdutoOrcamentos.size() > 0){
-                    if(listProdutoOrcamentos.get(0).getStatus().equals("PENDENTE")){
-                        txtPrecoTotal.setText("");
-                    }else{
-                        txtPrecoTotal.setText(total + "");
-                    }
+                if(items.size() > 0){
+                    txtNoneProduto.setVisibility(View.GONE);
                 }else{
-                    txtPrecoTotal.setVisibility(View.GONE);
-                    txtTotal.setVisibility(View.GONE);
                     txtNoneProduto.setVisibility(View.VISIBLE);
+                    txtTotal.setVisibility(View.GONE);
+                    txtPrecoTotal.setVisibility(View.GONE);
                 }
+                txtPrecoTotal.setText(valorTotal + "");
                 adapterItem.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
@@ -218,7 +243,7 @@ public class ProdutosFragment extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                produtoOrcamentoSelecionado = listProdutoOrcamentos.get(viewHolder.getAdapterPosition());
+                itemSelecionado = items.get(viewHolder.getAdapterPosition());
                 remover();
             }
         };
@@ -230,29 +255,64 @@ public class ProdutosFragment extends Fragment {
     private void editar(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle("Editar a quantidade do produto");
-        alertDialog.setMessage("Digite a nova quantidade");
         alertDialog.setCancelable(true);
 
         View viewQtd = getLayoutInflater().inflate(R.layout.dialog_qtd, null);
-        final TextInputEditText qtd = viewQtd.findViewById(R.id.editQtd);
+        final LinearLayout linearLayout = viewQtd.findViewById(R.id.linearView);
+        final TextInputEditText txtQtd = viewQtd.findViewById(R.id.editQtd);
+        final CurrencyEditText editValorUnitario = viewQtd.findViewById(R.id.editValorUnitario);
+        final CurrencyEditText editValorTotal = viewQtd.findViewById(R.id.editValorTotal);
+        final CurrencyEditText editValorDesconto = viewQtd.findViewById(R.id.editValorDesconto);
 
+        editValorUnitario.setText(itemSelecionado.getValorUnitario());
+        editValorTotal.setText(itemSelecionado.getValorTotal());
+        editValorDesconto.setText(itemSelecionado.getValorDesconto());
+
+        txtQtd.setText(itemSelecionado.getQtd());
         alertDialog.setView(viewQtd);
 
-        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, final int i) {
-                String qtdProdutos = qtd.getText().toString();
-                produtoOrcamentoSelecionado.setQtd(qtdProdutos);
-                produtoOrcamentoSelecionado.atualizar();
-                recuperarOrcamentos();
-            }
-        });
-        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        if(orcamentoSelecionado.getStatus().equals("PENDENTE")){
+            linearLayout.setVisibility(View.GONE);
+            alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, final int i) {
+                    if(!txtQtd.getText().toString().equals("") && txtQtd.getText().toString() != null && !txtQtd.getText().toString().equals(itemSelecionado.getQtd())){
+                        //Calcular o valor total
+                        int valorDesconto = Integer.parseInt(itemSelecionado.getValorDesconto());
+                        int valorUnitario = Integer.parseInt(itemSelecionado.getValorUnitario());
+                        int qtd = Integer.parseInt(txtQtd.getText().toString());
+                        int vTotal;
+                        if(qtd != 0){
+                            if(valorDesconto == 0){
+                                vTotal = valorUnitario * qtd;
+                            }else{
+                                vTotal = valorDesconto * qtd;
+                            }
+                            //Salvar registros
+                            itemSelecionado.setQtd(qtd + "");
+                            itemSelecionado.setValorTotal(vTotal + "");
+                            itemSelecionado.salvar();
 
-            }
-        });
+                            valorTotal = 0;
+                            items.clear();
+                            adapterItem.notifyDataSetChanged();
+                        }else{
+                            exibitMensagem("Digite um valor inteiro!");
+                        }
+                    }else{
+                        exibitMensagem("Preencha o campo quantidade");
+                    }
+                }
+            });
+            alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    adapterItem.notifyDataSetChanged();
+                }
+            });
+        }else{
+            txtQtd.setEnabled(false);
+        }
         AlertDialog alert = alertDialog.create();
         alert.show();
     }
@@ -265,8 +325,12 @@ public class ProdutosFragment extends Fragment {
         alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                produtoOrcamentoSelecionado.deletar();
-                recuperarOrcamentos();
+                if(orcamentoSelecionado.getStatus().equals("PENDENTE")){
+                    itemSelecionado.deletar();
+                    valorTotal = 0;
+                    items.clear();
+                }
+                adapterItem.notifyDataSetChanged();
             }
         });
         alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -277,6 +341,14 @@ public class ProdutosFragment extends Fragment {
         });
         AlertDialog alert = alertDialog.create();
         alert.show();
+    }
+
+    private void exibitMensagem(String msg){
+        Toast.makeText(
+                getActivity(),
+                msg,
+                Toast.LENGTH_SHORT
+        ).show();
     }
 
 }

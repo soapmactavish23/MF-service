@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Orçamentos dos Produtos" >
+            app:title="Orçamentos dos Produtos">
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -102,6 +102,12 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="8dp"
+                android:background="#ffffff"/>
+
             <TextView
                 android:id="@+id/txtL"
                 android:layout_width="wrap_content"
@@ -121,6 +127,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="8dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -131,20 +138,7 @@
                     android:text="Total"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-                <!--TextView
-                    android:id="@+id/txtPrecoTotal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="R$ 00.00"
-                    android:textAlignment="textEnd"
-                    android:textColor="#FFFF00"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" /-->
+                    android:textStyle="bold" />
 
                 <com.blackcat.currencyedittext.CurrencyEditText
                     android:id="@+id/txtPrecoTotal"
@@ -156,11 +150,100 @@
                     android:textAlignment="textEnd"
                     android:textColor="#FFFF00"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:textStyle="bold" />
+
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="8dp"
+                android:background="#ffffff"/>
+
+            <TextView
+                android:id="@+id/txtFormaPagamento"
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Forma de Pagamento"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtPrazoEntrega"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Prazo de Entrega:"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtValidade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Validade:"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtObs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Obs:"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floatingActionMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="10dp"
+        app:menu_icon="@drawable/ic_add"
+        app:menu_colorNormal="@color/colorPrimary"
+        app:menu_colorPressed="@color/colorAccent"
+        >
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/btnEditar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit"
+            app:fab_colorNormal="@color/warning"
+            app:fab_label="Editar"
+            android:onClick="editar"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/btnFinalizar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check"
+            app:fab_colorNormal="@color/success"
+            app:fab_label="Finalizar"
+            android:onClick="finalizar"
+            />
+
+    </com.github.clans.fab.FloatingActionMenu>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
