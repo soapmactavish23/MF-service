@@ -1,15 +1,20 @@
 package com.example.mfservice.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.example.mfservice.R;
 import com.example.mfservice.adapter.AdapterItem;
@@ -28,6 +33,7 @@ public class OrcamentoActivity extends AppCompatActivity {
 
     private Usuario usuarioLogado;
     private MaterialSearchView searchView;
+    private FragmentPagerItemAdapter adapterAdm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +43,7 @@ public class OrcamentoActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        searchView = findViewById(R.id.materialSearchProdutos);
+        searchView = findViewById(R.id.materialSearch);
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
@@ -45,14 +51,14 @@ public class OrcamentoActivity extends AppCompatActivity {
         }
 
         if(usuarioLogado.getTipo_usuario().equals("ADM")){
-            final FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
+            adapterAdm = new FragmentPagerItemAdapter(
                     getSupportFragmentManager(), FragmentPagerItems.with(this)
                     .add("Produtos", ProdutosFragmentAdm.class)
                     .add("Serviços", ServicosFragmentAdm.class)
                     .create());
 
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-            viewPager.setAdapter(adapter);
+            viewPager.setAdapter(adapterAdm);
 
             SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
             viewPagerTab.setViewPager(viewPager);
@@ -67,7 +73,8 @@ public class OrcamentoActivity extends AppCompatActivity {
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     if(newText != null && !newText.isEmpty()){
-                        //pesquisarProdutos(newText.toLowerCase());
+                        ProdutosFragmentAdm fragmentAdm = (ProdutosFragmentAdm) adapterAdm.getPage(0);
+                        fragmentAdm.pesquisarOrcamentos(newText.toLowerCase());
                     }
                     return true;
                 }
@@ -81,7 +88,8 @@ public class OrcamentoActivity extends AppCompatActivity {
 
                 @Override
                 public void onSearchViewClosed() {
-                    //recarregarProdutos();
+                    ProdutosFragmentAdm fragmentAdm = (ProdutosFragmentAdm) adapterAdm.getPage(0);
+                    fragmentAdm.recarregarOrcamentos();
                 }
             });
 
@@ -103,12 +111,26 @@ public class OrcamentoActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search_i, menu);
+        if(usuarioLogado.getTipo_usuario().equals("ADM")){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_search_filter, menu);
 
-        //Configurar botao pesquisa
-        MenuItem item = menu.findItem(R.id.menu_pesquisa);
-        searchView.setMenuItem(item);
+            //Configurar botao pesquisa
+            MenuItem item = menu.findItem(R.id.menu_pesquisa);
+            searchView.setMenuItem(item);
+        }
         return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_filtro:
+                ProdutosFragmentAdm fragmentAdm = (ProdutosFragmentAdm) adapterAdm.getPage(0);
+                fragmentAdm.selectStatus();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.example.mfservice.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -13,12 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.mfservice.R;
 import com.example.mfservice.activity.ProdutoOrcamentoActivity;
 import com.example.mfservice.adapter.AdapterClientes;
 import com.example.mfservice.adapter.AdapterOrcamentoProduto;
+import com.example.mfservice.adapter.AdapterProdutos;
 import com.example.mfservice.adapter.AdapterUsuarios;
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.helper.RecyclerItemClickListener;
@@ -128,4 +133,76 @@ public class ProdutosFragmentAdm extends Fragment {
             }
         });
     }
+
+    private void recuperarPorStatus(String s){
+        List<ProdutoOrcamento> listOrcamentoStatus = new ArrayList<>();
+        for(ProdutoOrcamento orcamentoStatus: orcamentos){
+            String status = orcamentoStatus.getStatus();
+            if(status.contains(s)){
+                listOrcamentoStatus.add(orcamentoStatus);
+            }
+        }
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoStatus);
+        recyclerView.setAdapter(adapterOrcamentoProduto);
+        adapterOrcamentoProduto.notifyDataSetChanged();
+    }
+
+    public void pesquisarOrcamentos(String texto){
+        List<ProdutoOrcamento> listOrcamentoBusca = new ArrayList<>();
+        for(ProdutoOrcamento orcamento : orcamentos){
+            String nome = orcamento.getCliente().getNome().toLowerCase();
+            if(nome.contains(texto)){
+                listOrcamentoBusca.add(orcamento);
+            }
+        }
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoBusca);
+        recyclerView.setAdapter(adapterOrcamentoProduto);
+        adapterOrcamentoProduto.notifyDataSetChanged();
+    }
+
+    public void recarregarOrcamentos(){
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), orcamentos);
+        recyclerView.setAdapter(adapterOrcamentoProduto);
+        adapterOrcamentoProduto.notifyDataSetChanged();
+    }
+
+    public void selectStatus(){
+        AlertDialog.Builder dialogCategoria = new AlertDialog.Builder(getActivity());
+        dialogCategoria.setTitle("Escolher Status");
+
+        //Configurar spinner
+        View viewSpinner = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+        final Spinner spinner = viewSpinner.findViewById(R.id.spinnerFiltro);
+
+        final String[] linha = getResources().getStringArray(R.array.status);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                getActivity(), android.R.layout.simple_spinner_item, linha
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        dialogCategoria.setView(viewSpinner);
+
+        dialogCategoria.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String s = spinner.getSelectedItem().toString();
+                if(s.equals("TODOS")){
+                    recuperarPorStatus("");
+                }else{
+                    recuperarPorStatus(s);
+                }
+            }
+        });
+        dialogCategoria.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog dialog = dialogCategoria.create();
+        dialog.show();
+    }
+
 }

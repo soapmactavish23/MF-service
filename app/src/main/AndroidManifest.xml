@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.EditarProdutoOrcamentoActivity"></activity>
+
+    <activity android:name=".activity.EditarProdutoOrcamentoActivity"></activity>
         <activity
             android:name=".activity.EnderecoActivity"
             android:label="@string/title_activity_endereco"
@@ -36,6 +37,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
 
         <activity
             android:name=".activity.MapsActivity"

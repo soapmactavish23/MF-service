@@ -29,7 +29,7 @@
         </androidx.appcompat.widget.Toolbar>
 
         <com.miguelcatalan.materialsearchview.MaterialSearchView
-            android:id="@+id/materialSearchProdutos"
+            android:id="@+id/materialSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

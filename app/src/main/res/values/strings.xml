@@ -32,6 +32,12 @@
         <item>NENHUM</item>
     </string-array>
 
+    <string-array name="status">
+        <item>PENDENTE</item>
+        <item>FINALIZADO</item>
+        <item>TODOS</item>
+    </string-array>
+
     <string-array name="categorias">
         <item>EQUIPAMENTOS</item>
         <item>CÁRDIO</item>

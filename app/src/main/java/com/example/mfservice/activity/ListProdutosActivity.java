@@ -44,7 +44,7 @@ import java.util.List;
 import dmax.dialog.SpotsDialog;
 
 public class ListProdutosActivity extends AppCompatActivity {
-    private Button btnSelectLinha;
+    //private Button btnSelectLinha;
     private RecyclerView recyclerViewProdutos;
     private List<Produto> listaProdutos = new ArrayList<>();
     private AdapterProdutos adapterProdutos;
@@ -74,7 +74,7 @@ public class ListProdutosActivity extends AppCompatActivity {
         filtroCategoria = bundle.getString("categoria");
         filtroTipoProduto = bundle.getString("tipo_produto");
         searchView = findViewById(R.id.materialSearchProdutos);
-        btnSelectLinha = findViewById(R.id.btnSelectLinha);
+        //btnSelectLinha = findViewById(R.id.btnSelectLinha);
 
         //Configurar o SearchView
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
@@ -153,12 +153,22 @@ public class ListProdutosActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search_i, menu);
+        inflater.inflate(R.menu.menu_search_filter, menu);
 
         //Configurar botao pesquisa
         MenuItem item = menu.findItem(R.id.menu_pesquisa);
         searchView.setMenuItem(item);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_filtro:
+                selectLinha();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void exibirMensagem(String msg){
@@ -206,7 +216,7 @@ public class ListProdutosActivity extends AppCompatActivity {
         swipe();
     }
 
-    public void selectLinha(View view){
+    public void selectLinha(){
         AlertDialog.Builder dialogCategoria = new AlertDialog.Builder(this);
         dialogCategoria.setTitle("Escolha sua linha:");
 

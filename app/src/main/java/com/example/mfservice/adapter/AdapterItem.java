@@ -45,10 +45,11 @@ public class AdapterItem extends RecyclerView.Adapter<AdapterItem.MyViewHolder> 
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Item item = items.get(position);
         holder.txtTitulo.setText(item.getProduto() + "(x" + item.getQtd() + ")");
-        if(produtoOrcamento.getStatus().equals("FINALIZADO") || tipoUsuario.equals("ADM")){
-            holder.txtPreco.setText(item.getValorTotal());
-        }else{
-            holder.txtPreco.setVisibility(View.GONE);
+        if(produtoOrcamento != null){
+            if(produtoOrcamento.getStatus().equals("FINALIZADO") || tipoUsuario.equals("ADM")){
+                holder.txtPreco.setText(item.getValorTotal());
+                holder.txtPreco.setVisibility(View.VISIBLE);
+            }
         }
     }
 

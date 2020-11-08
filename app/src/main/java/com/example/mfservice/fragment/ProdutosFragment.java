@@ -72,8 +72,8 @@ public class ProdutosFragment extends Fragment {
     private ProdutoOrcamento orcamentoSelecionado;
     private Usuario cliente;
     private Item itemSelecionado;
-    private FloatingActionButton btnExportarPdf;
     private int valorTotal;
+    private FloatingActionButton btnExcluir, btnExportarPdf;
 
     public ProdutosFragment() {
     }
@@ -98,7 +98,9 @@ public class ProdutosFragment extends Fragment {
         txtPrecoTotal = view.findViewById(R.id.txtPrecoTotal);
         txtTotal = view.findViewById(R.id.txtTotal);
         recyclerView = view.findViewById(R.id.recyclerItems);
+        btnExcluir = view.findViewById(R.id.btnExcluir);
         btnExportarPdf = view.findViewById(R.id.btnExportarPdf);
+        adapterItem = new AdapterItem(getActivity(), items, orcamentoSelecionado, "CLIENTE");
 
         //DatabasesReferences
         produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase()
@@ -129,49 +131,51 @@ public class ProdutosFragment extends Fragment {
         produtoOrcamentoRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //Inicializar dados do orcamento
-                orcamentoSelecionado = snapshot.getValue(ProdutoOrcamento.class);
-                txtFormaPagamento.setText("Forma de Pagamento: " + orcamentoSelecionado.getFormaPagamento());
-                txtPrazoEntrega.setText("Prazo de Entrega: " + orcamentoSelecionado.getPrazoEntrega());
-                txtValidade.setText("Validade: " + orcamentoSelecionado.getValidade());
-                txtObs.setText("Observação: " + orcamentoSelecionado.getObs());
-                if(orcamentoSelecionado.getStatus().equals("PENDENTE")){
-                    txtTotal.setText("Aguarde a resposta do orçamento");
-                    txtPrecoTotal.setVisibility(View.GONE);
-                    btnExportarPdf.setVisibility(View.GONE);
-                }else{
-                    txtPrecoTotal.setVisibility(View.GONE);
-                    btnExportarPdf.setVisibility(View.GONE);
+                try{
+                    //Inicializar dados do orcamento
+                    orcamentoSelecionado = snapshot.getValue(ProdutoOrcamento.class);
+                    txtFormaPagamento.setText("Forma de Pagamento: " + orcamentoSelecionado.getFormaPagamento());
+                    txtPrazoEntrega.setText("Prazo de Entrega: " + orcamentoSelecionado.getPrazoEntrega());
+                    txtValidade.setText("Validade: " + orcamentoSelecionado.getValidade());
+                    txtObs.setText("Observação: " + orcamentoSelecionado.getObs());
+                    if(orcamentoSelecionado.getStatus().equals("PENDENTE")){
+                        txtTotal.setText("Aguarde a resposta do orçamento");
+                        txtPrecoTotal.setVisibility(View.GONE);
+                    }else{
+                        txtPrecoTotal.setVisibility(View.VISIBLE);
+                    }
+
+                    //Configurando Recycler
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    recyclerView.setHasFixedSize(true);
+                    adapterItem = new AdapterItem(getActivity(), items, orcamentoSelecionado, "CLIENTE");
+                    recyclerView.setAdapter(adapterItem);
+
+                    //Toque no Recycler
+                    recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(
+                            getActivity(),
+                            recyclerView,
+                            new RecyclerItemClickListener.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    itemSelecionado = items.get(position);
+                                    editar();
+                                }
+
+                                @Override
+                                public void onLongItemClick(View view, int position) {
+                                }
+
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                                }
+                            }
+                    ));
+
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-
-                //Configurando Recycler
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                recyclerView.setHasFixedSize(true);
-                adapterItem = new AdapterItem(getActivity(), items, orcamentoSelecionado, "CLIENTE");
-                recyclerView.setAdapter(adapterItem);
-
-                //Toque no Recycler
-                recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(
-                        getActivity(),
-                        recyclerView,
-                        new RecyclerItemClickListener.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(View view, int position) {
-                                itemSelecionado = items.get(position);
-                                editar();
-                            }
-
-                            @Override
-                            public void onLongItemClick(View view, int position) {
-                            }
-
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                            }
-                        }
-                ));
-
             }
 
             @Override
@@ -181,6 +185,21 @@ public class ProdutosFragment extends Fragment {
         });
 
         swipe();
+
+        btnExcluir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                excluirOrcamento();
+            }
+        });
+
+
+        btnExportarPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         return view;
     }
@@ -349,6 +368,15 @@ public class ProdutosFragment extends Fragment {
                 msg,
                 Toast.LENGTH_SHORT
         ).show();
+    }
+
+    public void excluirOrcamento(){
+        DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
+        DatabaseReference itensRef = firebaseRef.child("itens").child(UsuarioFirebase.getIdentificadorUsuario());
+        DatabaseReference produtoOrcamento = firebaseRef.child("produtoOrcamento").child(UsuarioFirebase.getIdentificadorUsuario());
+        itensRef.removeValue();
+        produtoOrcamento.removeValue();
+        getActivity().finish();
     }
 
 }
