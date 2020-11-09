@@ -12,6 +12,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.mfservice.R;
+import com.example.mfservice.config.UsuarioFirebase;
+import com.example.mfservice.model.ItemServico;
 import com.example.mfservice.model.ServicoOrcamento;
 import com.example.mfservice.model.Usuario;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,6 +24,7 @@ public class ServicosActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     private Usuario usuario;
     private ServicoOrcamento servicoOrcamento;
+    private ItemServico itemServico;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,33 +42,34 @@ public class ServicosActivity extends AppCompatActivity {
         usuario = (Usuario) bundle.getSerializable("DadosUsuario");
         servicoOrcamento = new ServicoOrcamento();
         servicoOrcamento.setCliente(usuario);
+        itemServico = new ItemServico();
     }
 
     public void onClick(View view){
         switch (view.getId()){
             case R.id.imgAssessoria:
-                servicoOrcamento.setTitulo("ASSESSORIA PARA IMPLEMENTAÇÃO DE PROJETOS");
+                itemServico.setTitulo("ASSESSORIA PARA IMPLEMENTAÇÃO DE PROJETOS");
                 break;
             case R.id.imgServicos:
-                servicoOrcamento.setTitulo("SERVIÇOS DE ENGENHARIA");
+                itemServico.setTitulo("SERVIÇOS DE ENGENHARIA");
                 break;
             case R.id.imgManutencao:
-                servicoOrcamento.setTitulo("MANUTENÇÃO PREVENTIVA E CORRETIVA");
+                itemServico.setTitulo("MANUTENÇÃO PREVENTIVA E CORRETIVA");
                 break;
             case R.id.imgInstalacaoEquipamentos:
-                servicoOrcamento.setTitulo("INSTALAÇÃO EQUIPAMENTOS");
+                itemServico.setTitulo("INSTALAÇÃO EQUIPAMENTOS");
                 break;
             case R.id.imgInstalacaoPisosEsportivos:
-                servicoOrcamento.setTitulo("INSTALAÇÃO PISOS ESPORTIVOS");
+                itemServico.setTitulo("INSTALAÇÃO PISOS ESPORTIVOS");
                 break;
             case R.id.imgInstalacaoGramadoSintetico:
-                servicoOrcamento.setTitulo("INSTALAÇÃO GRAMADO SINTÉTICO");
+                itemServico.setTitulo("INSTALAÇÃO GRAMADO SINTÉTICO");
                 break;
         }
-        //addOrcamento(view);
+        addServico();
     }
 
-    public void addOrcamento(View view){
+    public void addServico(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ServicosActivity.this);
         alertDialog.setTitle("Solicitar Orçamento");
         alertDialog.setMessage("Deseja solicitar o orçamento desse serviço?");
@@ -76,15 +80,17 @@ public class ServicosActivity extends AppCompatActivity {
 
         alertDialog.setView(viewQtd);
 
-        alertDialog.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                servicoOrcamento.setDescricao(descricao.getText().toString());
+                itemServico.setDescricao(descricao.getText().toString());
+                itemServico.salvar();
+
                 servicoOrcamento.salvar();
                 exibirMensagem("Orçamento enviado com sucesso!");
             }
         });
-        alertDialog.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 

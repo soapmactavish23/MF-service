@@ -8,18 +8,6 @@
     android:orientation="vertical"
     tools:context=".activity.ServicosActivity">
 
-    <!-- com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addServico"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
-        android:onClick="onClick"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add" /-->
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"
         android:layout_width="match_parent"
@@ -156,9 +144,10 @@
                     android:id="@+id/imgInstalacaoEquipamentos"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:onClick="onClick"
                     android:layout_marginTop="27dp"
-                    app:srcCompat="@drawable/galery_padrao" />
+                    android:onClick="onClick"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/instalacao_equipamentos" />
 
                 <TextView
                     android:id="@+id/textView9"

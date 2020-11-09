@@ -77,8 +77,6 @@ public class ListClienteActivity extends AppCompatActivity {
 
         //Configuracoes Iniciais
         clientesCategoriaRef = ConfiguracaoFirebase.getFirebaseDatabase().child("clientes").child(categoria);
-        //clientesCategoriaRef = ConfiguracaoFirebase.getFirebaseDatabase().child("clientes");
-        //gridViewClientes = findViewById(R.id.gridViewClientes);
         recyclerViewClientes = findViewById(R.id.recyclerClientes);
         searchView = findViewById(R.id.materialSearchClientes);
         inicializarImageLoader();
@@ -117,30 +115,6 @@ public class ListClienteActivity extends AppCompatActivity {
 
                     }
                 }));
-
-        /*if(usuario.getTipo_usuario().equals("ADM")){
-            gridViewClientes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Cliente cliente = listaClientes.get(i);
-                    Intent intent = new Intent(ListClienteActivity.this, CadastrarClientesActivity.class);
-                    intent.putExtra("cliente", cliente);
-                    startActivity(intent);
-                    return false;
-                }
-            });
-        }*/
-
-
-        /*gridViewClientes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Cliente cliente = listaClientes.get(i);
-                Intent intent = new Intent(ListClienteActivity.this, DetalhesClienteActivity.class);
-                intent.putExtra("cliente", cliente);
-                startActivity(intent);
-            }
-        });*/
 
                 //Configurar o SearchView
                 searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
@@ -200,7 +174,6 @@ public class ListClienteActivity extends AppCompatActivity {
         adapterClientes = new AdapterClientes(listClienteBusca, getApplicationContext());
         recyclerViewClientes.setAdapter(adapterClientes);
         adapterClientes.notifyDataSetChanged();
-        //adapterGrid = new AdapterProdutos(listClienteBusca, getApplicationContext());
     }
 
     private void recarregarClientes(){
@@ -229,19 +202,24 @@ public class ListClienteActivity extends AppCompatActivity {
                 .build();
         dialog.show();
         Query query = clientesCategoriaRef.orderByChild("nome");
+        //clientesCategoriaRef = ConfiguracaoFirebase.getFirebaseDatabase().child("clientes").child("clientes");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //Configurando o Grid
-                listaClientes.clear();
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    //Cliente cliente = ds.getValue(Cliente.class);
-                    //cliente.atualizar();
-                    listaClientes.add(ds.getValue(Cliente.class));
+                try{
+                    //Configurando o Grid
+                    listaClientes.clear();
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        //Cliente cliente = ds.getValue(Cliente.class);
+                        //cliente.salvar();
+                        listaClientes.add(ds.getValue(Cliente.class));
 
+                    }
+                    adapterClientes.notifyDataSetChanged();
+                    dialog.dismiss();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-                adapterClientes.notifyDataSetChanged();
-                dialog.dismiss();
             }
 
             @Override

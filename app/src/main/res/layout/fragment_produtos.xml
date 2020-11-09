@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:text="Lista de Orçamentos"
+                android:text="Orçamentos"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -108,9 +108,11 @@
                 android:layout_height="match_parent" />
 
             <LinearLayout
+                android:id="@+id/linearValor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <TextView

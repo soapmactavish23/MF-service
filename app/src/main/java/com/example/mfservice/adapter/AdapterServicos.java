@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mfservice.R;
+import com.example.mfservice.model.ItemServico;
 import com.example.mfservice.model.ServicoOrcamento;
 
 import java.util.List;
@@ -17,11 +19,11 @@ import java.util.List;
 public class AdapterServicos extends RecyclerView.Adapter<AdapterServicos.MyViewHolder> {
 
     private Context context;
-    private List<ServicoOrcamento> listaServicoOrcamentos;
+    private List<ItemServico> listaItem;
 
-    public AdapterServicos(Context context, List<ServicoOrcamento> listaServicoOrcamentos) {
+    public AdapterServicos(Context context, List<ItemServico> listaServicoOrcamentos) {
         this.context = context;
-        this.listaServicoOrcamentos = listaServicoOrcamentos;
+        this.listaItem = listaServicoOrcamentos;
     }
 
     @NonNull
@@ -34,28 +36,25 @@ public class AdapterServicos extends RecyclerView.Adapter<AdapterServicos.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        ServicoOrcamento servicoOrcamento = listaServicoOrcamentos.get(position);
-        holder.checkBox.setText(servicoOrcamento.getTitulo());
-
-    }
-
-
-    public void onCheckboxClicked(View view){
+        ItemServico item = listaItem.get(position);
+        holder.txtTitulo.setText(item.getTitulo());
+        holder.txtDescricao.setText(item.getDescricao());
 
     }
 
     @Override
     public int getItemCount() {
-        return listaServicoOrcamentos.size();
+        return listaItem.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        CheckBox checkBox;
+        TextView txtTitulo, txtDescricao;
 
         public MyViewHolder(View itemView){
             super(itemView);
-            checkBox = itemView.findViewById(R.id.checkServico);
+            txtTitulo = itemView.findViewById(R.id.txtTitulo);
+            txtDescricao = itemView.findViewById(R.id.txtDescricao);
         }
     }
 }

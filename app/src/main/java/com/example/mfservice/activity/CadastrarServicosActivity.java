@@ -62,12 +62,7 @@ public class CadastrarServicosActivity extends AppCompatActivity {
                     .build();
             dialog.show();
             ServicoOrcamento servicoOrcamento = new ServicoOrcamento();
-            servicoOrcamento.setTitulo(titulo);
-            //servicoOrcamento.setCategoria(categoria);
-            if(servicoOrcamento.salvar()){
-                dialog.dismiss();
-                finish();
-            }
+
         }else{
             exibirMsg("Preencha o campo Título");
         }

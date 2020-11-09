@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.mfservice.R;
 import com.example.mfservice.model.ClientesSatisfeitos;
 import com.example.mfservice.model.ProdutoOrcamento;
+import com.example.mfservice.model.ServicoOrcamento;
 import com.example.mfservice.model.Usuario;
 import com.squareup.picasso.Picasso;
 
@@ -22,13 +23,11 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AdapterUsuarios extends RecyclerView.Adapter<AdapterUsuarios.MyViewHolder> {
-    private List<Usuario> clientes;
-    private List<ProdutoOrcamento> orcamentos;
+    private List<ServicoOrcamento> orcamentosServicos;
     private Context context;
 
-    public AdapterUsuarios(List<Usuario> clientes, List<ProdutoOrcamento> orcamentos, Context context) {
-        this.clientes = clientes;
-        this.orcamentos = orcamentos;
+    public AdapterUsuarios(List<ServicoOrcamento> orcamentosServicos, Context context) {
+        this.orcamentosServicos = orcamentosServicos;
         this.context = context;
     }
 
@@ -41,27 +40,20 @@ public class AdapterUsuarios extends RecyclerView.Adapter<AdapterUsuarios.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Usuario cliente = clientes.get(position);
-
-        for(int i = 0; i < orcamentos.size(); i++){
-            if(orcamentos.get(i).getStatus().equals("PENDENTE")){
-                holder.txtDepoimento.setText("PENDENTE");
-            }else{
-                holder.txtDepoimento.setText("FINALIZADO");
-            }
-        }
-
-        holder.txtNome.setText(cliente.getNome());
-
+        ServicoOrcamento servicoOrcamento = orcamentosServicos.get(position);
+        holder.txtNome.setText(servicoOrcamento.getCliente().getNome());
+        holder.txtDepoimento.setText(servicoOrcamento.getStatus());
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.padrao);
-        Glide.with(context).applyDefaultRequestOptions(requestOptions).load(cliente.getFoto()).into(holder.foto);
+        Glide.with(context).applyDefaultRequestOptions(requestOptions)
+                .load(servicoOrcamento.getCliente().getFoto())
+                .into(holder.foto);
 
     }
 
     @Override
     public int getItemCount() {
-        return clientes.size();
+        return orcamentosServicos.size();
     }
 
     public class MyViewHolder  extends RecyclerView.ViewHolder {

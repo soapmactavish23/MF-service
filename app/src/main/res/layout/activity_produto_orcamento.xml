@@ -235,6 +235,16 @@
             />
 
         <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/btnExcluir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete"
+            app:fab_colorNormal="@color/danger"
+            app:fab_label="Excluir Orçamentos"
+            android:onClick="excluirOrcamento"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/btnFinalizar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

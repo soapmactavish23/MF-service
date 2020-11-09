@@ -263,22 +263,26 @@ public class ListProdutosActivity extends AppCompatActivity {
                 .build();
         dialog.show();
         //Configura nó por categoria
-        produtosCategoriaRef = ConfiguracaoFirebase.getFirebaseDatabase()
-                .child("produtos").child(filtroCategoria).child(filtroTipoProduto);
+        produtosCategoriaRef = ConfiguracaoFirebase.getFirebaseDatabase().child("produtos").child(filtroCategoria).child(filtroTipoProduto);
+        //produtosCategoriaRef = ConfiguracaoFirebase.getFirebaseDatabase().child("produtos").child("produtos");
 
         Query produtoPesquisa = produtosCategoriaRef.orderByChild("titulo");
 
         produtoPesquisa.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listaProdutos.clear();
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    listaProdutos.add(ds.getValue(Produto.class));
-                    Produto produto = ds.getValue(Produto.class);
-                    produto.salvar();
+                try{
+                    listaProdutos.clear();
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        listaProdutos.add(ds.getValue(Produto.class));
+                        //Produto produto = ds.getValue(Produto.class);
+                        //produto.salvar();
+                    }
+                    adapterProdutos.notifyDataSetChanged();
+                    dialog.dismiss();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-                adapterProdutos.notifyDataSetChanged();
-                dialog.dismiss();
             }
 
             @Override

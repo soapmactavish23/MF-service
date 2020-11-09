@@ -73,6 +73,7 @@ public class ProdutosFragment extends Fragment {
     private Usuario cliente;
     private Item itemSelecionado;
     private int valorTotal;
+    private LinearLayout linearValor;
     private FloatingActionButton btnExcluir, btnExportarPdf;
 
     public ProdutosFragment() {
@@ -101,6 +102,7 @@ public class ProdutosFragment extends Fragment {
         btnExcluir = view.findViewById(R.id.btnExcluir);
         btnExportarPdf = view.findViewById(R.id.btnExportarPdf);
         adapterItem = new AdapterItem(getActivity(), items, orcamentoSelecionado, "CLIENTE");
+        linearValor = view.findViewById(R.id.linearValor);
 
         //DatabasesReferences
         produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase()
@@ -115,7 +117,9 @@ public class ProdutosFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //Iniciaizando dados cliente
                 cliente = snapshot.getValue(Usuario.class);
-                Glide.with(getActivity()).load(cliente.getFoto()).into(foto);
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.placeholder(R.drawable.padrao);
+                Glide.with(getActivity()).applyDefaultRequestOptions(requestOptions).load(cliente.getFoto()).into(foto);
                 txtNome.setText(cliente.getNome());
                 txtEndereco.setText("Endereço: "+ cliente.getEndereco());
                 txtEmail.setText("E-mail: " + cliente.getEmail());
@@ -138,6 +142,7 @@ public class ProdutosFragment extends Fragment {
                     txtPrazoEntrega.setText("Prazo de Entrega: " + orcamentoSelecionado.getPrazoEntrega());
                     txtValidade.setText("Validade: " + orcamentoSelecionado.getValidade());
                     txtObs.setText("Observação: " + orcamentoSelecionado.getObs());
+                    linearValor.setVisibility(View.VISIBLE);
                     if(orcamentoSelecionado.getStatus().equals("PENDENTE")){
                         txtTotal.setText("Aguarde a resposta do orçamento");
                         txtPrecoTotal.setVisibility(View.GONE);
@@ -371,12 +376,29 @@ public class ProdutosFragment extends Fragment {
     }
 
     public void excluirOrcamento(){
-        DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
-        DatabaseReference itensRef = firebaseRef.child("itens").child(UsuarioFirebase.getIdentificadorUsuario());
-        DatabaseReference produtoOrcamento = firebaseRef.child("produtoOrcamento").child(UsuarioFirebase.getIdentificadorUsuario());
-        itensRef.removeValue();
-        produtoOrcamento.removeValue();
-        getActivity().finish();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle("Excluir");
+        alertDialog.setMessage("Tem certeza que deseja excluir esse orçamento? Após isso não todos os itens serão removidos");
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
+                DatabaseReference itensRef = firebaseRef.child("itens").child(UsuarioFirebase.getIdentificadorUsuario());
+                DatabaseReference produtoOrcamento = firebaseRef.child("produtoOrcamento").child(UsuarioFirebase.getIdentificadorUsuario());
+                itensRef.removeValue();
+                produtoOrcamento.removeValue();
+                getActivity().finish();
+            }
+        });
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog alert = alertDialog.create();
+        alert.show();
     }
 
 }

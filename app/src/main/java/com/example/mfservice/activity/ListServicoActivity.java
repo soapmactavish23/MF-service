@@ -17,6 +17,7 @@ import com.example.mfservice.R;
 import com.example.mfservice.adapter.AdapterServicos;
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.helper.RecyclerItemClickListener;
+import com.example.mfservice.model.ItemServico;
 import com.example.mfservice.model.ServicoOrcamento;
 import com.example.mfservice.model.Usuario;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,7 +36,7 @@ public class ListServicoActivity extends AppCompatActivity {
 
     private String categoria;
     private AdapterServicos adapterServicos;
-    private List<ServicoOrcamento> listaServicoOrcamentos = new ArrayList<>();
+    private List<ItemServico> itemServicos = new ArrayList<>();
     private RecyclerView recyclerView;
     private AlertDialog dialog;
     private DatabaseReference servicosRef;
@@ -65,7 +66,7 @@ public class ListServicoActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewServicos);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        adapterServicos = new AdapterServicos(this, listaServicoOrcamentos);
+        adapterServicos = new AdapterServicos(this, itemServicos);
         recyclerView.setAdapter(adapterServicos);
     }
 
@@ -90,9 +91,9 @@ public class ListServicoActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listaServicoOrcamentos.clear();
+                itemServicos.clear();
                 for (DataSnapshot ds : dataSnapshot.getChildren()){
-                    listaServicoOrcamentos.add(ds.getValue(ServicoOrcamento.class));
+                    //itemServicos.add(ds.getValue(ServicoOrcamento.class));
                 }
                 adapterServicos.notifyDataSetChanged();
                 dialog.dismiss();
@@ -160,10 +161,10 @@ public class ListServicoActivity extends AppCompatActivity {
         alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                servicoOrcamentoSelecionado = listaServicoOrcamentos.get(position);
+                //servicoOrcamentoSelecionado = listaServicoOrcamentos.get(position);
                 servicoOrcamentoSelecionado.deletar();
                 adapterServicos.notifyItemRemoved(position);
-                listaServicoOrcamentos.clear();
+                //listaServicoOrcamentos.clear();
                 adapterServicos.notifyDataSetChanged();
             }
         });

@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.blackcat.currencyedittext.CurrencyEditText;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mfservice.R;
 import com.example.mfservice.adapter.AdapterItem;
 import com.example.mfservice.adapter.AdapterOrcamentoProduto;
@@ -95,10 +96,16 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         toolbar.setTitle(orcamentoSelecionado.getStatus());
 
         //Configurando informações do cliente
-        Glide.with(this).load(cliente.getFoto()).into(foto);
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.padrao);
+        Glide.with(this).applyDefaultRequestOptions(requestOptions).load(cliente.getFoto()).into(foto);
         txtNome.setText(cliente.getNome());
+        if(cliente.getEndereco().equals("")){
+            txtEndereco.setText("Endereço: SEM ENDEREÇO CADASTRADO");
+        }else{
+            txtEndereco.setText("Endereço: " + cliente.getEndereco());
+        }
         txtEmail.setText("E-mail: " + cliente.getEmail());
-        txtEndereco.setText("Endereço: " + cliente.getEndereco());
         txtTelefone.setText("Contato: " + cliente.getContato());
 
         //Configurando o footer
@@ -106,10 +113,6 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         txtPrazoEntrega.setText("Prazo de Entrega: " + orcamentoSelecionado.getPrazoEntrega());
         txtValidade.setText("Validade: " + orcamentoSelecionado.getValidade());
         txtObs.setText("Obs: " + orcamentoSelecionado.getObs());
-
-        if(orcamentoSelecionado.getStatus().equals("FINALIZADO")){
-            floatingActionMenu.setVisibility(View.GONE);
-        }
 
         //Configurar O RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -237,6 +240,32 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         orcamentoSelecionado.setStatus("FINALIZADO");
         orcamentoSelecionado.salvar();
         finish();
+    }
+
+    public void excluirOrcamento(View view){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Excluir");
+        alertDialog.setMessage("Tem certeza que deseja excluir esse orçamento? Após isso não todos os itens serão removidos");
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
+                DatabaseReference itensRef = firebaseRef.child("itens").child(UsuarioFirebase.getIdentificadorUsuario());
+                DatabaseReference produtoOrcamento = firebaseRef.child("produtoOrcamento").child(UsuarioFirebase.getIdentificadorUsuario());
+                itensRef.removeValue();
+                produtoOrcamento.removeValue();
+                finish();
+            }
+        });
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog alert = alertDialog.create();
+        alert.show();
     }
 
 }

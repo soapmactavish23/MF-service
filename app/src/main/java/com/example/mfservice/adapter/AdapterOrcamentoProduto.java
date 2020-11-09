@@ -40,7 +40,6 @@ public class AdapterOrcamentoProduto extends RecyclerView.Adapter<AdapterOrcamen
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
         ProdutoOrcamento produtoOrcamento = listaOrcamento.get(position);
         holder.txtTitulo.setText(produtoOrcamento.getCliente().getNome());
         holder.txtStatus.setText(produtoOrcamento.getStatus());

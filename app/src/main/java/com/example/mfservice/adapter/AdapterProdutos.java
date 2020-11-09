@@ -1,10 +1,13 @@
 package com.example.mfservice.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +18,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mfservice.R;
 import com.example.mfservice.model.Produto;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -47,7 +54,7 @@ public class AdapterProdutos extends RecyclerView.Adapter<AdapterProdutos.MyView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
 
         Produto produto = produtos.get(position);
         holder.titulo.setText(produto.getTitulo());
@@ -68,10 +75,9 @@ public class AdapterProdutos extends RecyclerView.Adapter<AdapterProdutos.MyView
         String urlCapa = urlFotos.get(0);
 
         RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.padrao);
+        requestOptions.placeholder(R.drawable.galery_padrao);
         requestOptions.fitCenter();
         Glide.with(context).load(urlCapa).apply(requestOptions).into(holder.fotoProduto);
-
 
     }
 
