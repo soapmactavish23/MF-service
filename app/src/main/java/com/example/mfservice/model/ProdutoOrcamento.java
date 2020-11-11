@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ProdutoOrcamento implements Serializable {
-    private Usuario cliente;
+    private String idCliente;
     private String formaPagamento;
     private String status;
     private String prazoEntrega;
@@ -24,14 +24,14 @@ public class ProdutoOrcamento implements Serializable {
     public void salvar(){
         DatabaseReference produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase()
                 .child("produtoOrcamento")
-                .child(getCliente().getId());
+                .child(getIdCliente());
         produtoOrcamentoRef.setValue(this);
     }
 
     public void deletar(){
         DatabaseReference produtoOrcamentoRef = ConfiguracaoFirebase.getFirebaseDatabase()
                 .child("produtoOrcamento")
-                .child(getCliente().getId());
+                .child(getIdCliente());
         produtoOrcamentoRef.removeValue();
     }
 
@@ -39,14 +39,14 @@ public class ProdutoOrcamento implements Serializable {
         DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
         DatabaseReference produtosRef = firebaseRef
                 .child("produtoOrcamento")
-                .child(getCliente().getId());
+                .child(getIdCliente());
         Map<String, Object> valoresProdutosOrcamento = converterParaMap();
         produtosRef.updateChildren(valoresProdutosOrcamento);
     }
 
     public Map<String, Object> converterParaMap(){
         HashMap<String, Object> produtoOrcamentoMap = new HashMap<>();
-        produtoOrcamentoMap.put("cliente", getCliente());
+        produtoOrcamentoMap.put("idcliente", getIdCliente());
         produtoOrcamentoMap.put("status", getStatus());
         produtoOrcamentoMap.put("formaPagamento", getFormaPagamento());
         produtoOrcamentoMap.put("prazoEntrega", getPrazoEntrega());
@@ -55,12 +55,12 @@ public class ProdutoOrcamento implements Serializable {
         return produtoOrcamentoMap;
     }
 
-    public Usuario getCliente() {
-        return cliente;
+    public String getIdCliente() {
+        return idCliente;
     }
 
-    public void setCliente(Usuario cliente) {
-        this.cliente = cliente;
+    public void setIdCliente(String idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getStatus() {

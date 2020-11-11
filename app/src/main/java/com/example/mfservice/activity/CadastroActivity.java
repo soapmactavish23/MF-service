@@ -85,6 +85,7 @@ public class CadastroActivity extends AppCompatActivity {
             usuario.setSenha(senha);
             usuario.setContato(contato);
             usuario.setCpf(cpf);
+            usuario.setEndereco("");
 
             cadastrar(usuario);
         }

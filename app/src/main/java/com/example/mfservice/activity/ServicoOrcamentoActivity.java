@@ -76,17 +76,22 @@ public class ServicoOrcamentoActivity extends AppCompatActivity {
         itensServicoRef = firebaseRef.child("itensServico").child(cliente.getId());
 
         //Inicializar dados do cliente
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.padrao);
-        Glide.with(this).applyDefaultRequestOptions(requestOptions).load(cliente.getFoto()).into(foto);
-        txtNome.setText(cliente.getNome());
-        if(cliente.getEndereco().equals("")){
-            txtEndereco.setText("Endereço: ENDEREÇO NÃO SALVO");
-        }else{
+        try{
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.placeholder(R.drawable.padrao);
+            Glide.with(this).applyDefaultRequestOptions(requestOptions).load(cliente.getFoto()).into(foto);
+            txtNome.setText(cliente.getNome());
             txtEndereco.setText("Endereço: "+ cliente.getEndereco());
+            /*if(cliente.getEndereco().equals("")){
+                txtEndereco.setText("Endereço: ENDEREÇO NÃO SALVO");
+            }else{
+                txtEndereco.setText("Endereço: "+ cliente.getEndereco());
+            }*/
+            txtEmail.setText("E-mail: " + cliente.getEmail());
+            txtContato.setText("Contato: "+ cliente.getContato());
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        txtEmail.setText("E-mail: " + cliente.getEmail());
-        txtContato.setText("Contato: "+ cliente.getContato());
 
         recyclerServicos.setLayoutManager(new LinearLayoutManager(this));
         recyclerServicos.setHasFixedSize(true);
@@ -99,7 +104,11 @@ public class ServicoOrcamentoActivity extends AppCompatActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-
+                        itemSelecionado = items.get(position);
+                        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                        intent.putExtra("cliente", cliente);
+                        intent.putExtra("item", itemSelecionado);
+                        startActivity(intent);
                     }
 
                     @Override

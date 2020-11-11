@@ -138,7 +138,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
 
                 //Salvar o ProdutoOrcamento
                 produtoOrcamento = new ProdutoOrcamento();
-                produtoOrcamento.setCliente(cliente);
+                produtoOrcamento.setIdCliente(cliente.getId());
                 produtoOrcamento.setFormaPagamento("A COMBINAR");
                 produtoOrcamento.setPrazoEntrega("EQUIPAMENTOS: 50 A 70 DIAS / CÁRDIO PISOS E ACESSÓRIOS: 30 A 45 DIAS");
                 produtoOrcamento.setValidade("10 DIAS");

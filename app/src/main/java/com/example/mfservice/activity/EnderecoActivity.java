@@ -86,17 +86,21 @@ public class EnderecoActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     public void salvarEndereco(View view){
-        String txtEndereco = editEndereco.getText().toString();
-        if(!txtEndereco.isEmpty() || !txtEndereco.equals("")){
-            Address endereco = recuperarEndereco(txtEndereco);
-            if(endereco != null){
-                alertar(endereco);
+        try{
+            String txtEndereco = editEndereco.getText().toString();
+            if(!txtEndereco.isEmpty() || !txtEndereco.equals("")){
+                Address endereco = recuperarEndereco(txtEndereco);
+                if(endereco != null){
+                    alertar(endereco);
+                }
+            }else{
+                Address endereco = recuperarMeuEndereco();
+                if(endereco != null){
+                    alertar(endereco);
+                }
             }
-        }else{
-            Address endereco = recuperarMeuEndereco();
-            if(endereco != null){
-                alertar(endereco);
-            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

@@ -55,29 +55,31 @@ public class AdapterProdutos extends RecyclerView.Adapter<AdapterProdutos.MyView
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
+        try{
+            Produto produto = produtos.get(position);
+            holder.titulo.setText(produto.getTitulo());
+            holder.categoria.setText(produto.getCategoria());
+            if(produto.getLinha().equals("")){
+                holder.produto.setText(produto.getProduto());
+            }else{
+                holder.produto.setText(produto.getLinha());
+            }
+            if(tipoUsuario.equals("ADM")){
+                holder.preco.setText( produto.getPrecoVenda());
+            }else{
+                holder.preco.setVisibility(View.GONE);
+            }
+            //Pega a primira imagem da lista
+            List<String> urlFotos = produto.getFotos();
+            String urlCapa = urlFotos.get(0);
 
-        Produto produto = produtos.get(position);
-        holder.titulo.setText(produto.getTitulo());
-        holder.categoria.setText(produto.getCategoria());
-        if(produto.getLinha().equals("")){
-            holder.produto.setText(produto.getProduto());
-        }else{
-            holder.produto.setText(produto.getLinha());
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.placeholder(R.drawable.galery_padrao);
+            requestOptions.fitCenter();
+            Glide.with(context).load(urlCapa).apply(requestOptions).into(holder.fotoProduto);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        if(tipoUsuario.equals("ADM")){
-            holder.preco.setText( produto.getPrecoVenda());
-        }else{
-            holder.preco.setVisibility(View.GONE);
-        }
-
-        //Pega a primira imagem da lista
-        List<String> urlFotos = produto.getFotos();
-        String urlCapa = urlFotos.get(0);
-
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.galery_padrao);
-        requestOptions.fitCenter();
-        Glide.with(context).load(urlCapa).apply(requestOptions).into(holder.fotoProduto);
 
     }
 

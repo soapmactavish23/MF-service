@@ -2,6 +2,7 @@ package com.example.mfservice.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,7 +12,11 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -37,6 +42,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +66,12 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private StorageReference storage;
     private Produto produto1;
     private Produto produtoSelecionado;
-
+    private Uri foto1;
+    private Uri foto2;
+    private Uri foto3;
+    private Uri foto4;
+    private Uri foto5;
+    private Uri foto6;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,15 +158,34 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                     spinnerCategoria.setSelection(adapterCategoria.getPosition(produtoSelecionado.getCategoria()));
                     spinnerTipoProduto.setSelection(adapterProduto.getPosition(produtoSelecionado.getProduto()));
                     btnExcluir.setVisibility(View.VISIBLE);
-                    //Foto de Produto
-                    for(int index = 0; index < produtoSelecionado.getFotos().size(); index ++){
-                        String foto = produtoSelecionado.getFotos().get(index);
-                        Uri uri = Uri.parse(foto);
-                        String img = "imagem" + index;
-                        if(uri != null){
-                            Glide.with(CadastrarProdutoActivity.this).load(uri).into(imagem1);
-                        }else{
-                            imagem1.setImageResource(R.drawable.galery_padrao);
+
+                    int totalFotos = produtoSelecionado.getFotos().size();
+                    if(totalFotos > 0){
+                        try{
+                            if(!produtoSelecionado.getFotos().get(0).equals("") && !produtoSelecionado.getFotos().get(0).isEmpty()){
+                                Glide.with(CadastrarProdutoActivity.this).load(produtoSelecionado.getFotos().get(0))
+                                        .into(imagem1);
+                                imagem1.setDrawingCacheEnabled(true);
+                                imagem1.buildDrawingCache();
+
+                            }else if(produtoSelecionado.getFotos().get(1) != null && !produtoSelecionado.getFotos().get(1).isEmpty()){
+                                Glide.with(CadastrarProdutoActivity.this).load(produtoSelecionado.getFotos().get(1))
+                                        .into(imagem2);
+                            }else if(produtoSelecionado.getFotos().get(2) != null && !produtoSelecionado.getFotos().get(2).isEmpty()){
+                                Glide.with(CadastrarProdutoActivity.this).load(produtoSelecionado.getFotos().get(2))
+                                        .into(imagem3);
+                            }else if(produtoSelecionado.getFotos().get(3) != null && !produtoSelecionado.getFotos().get(3).isEmpty()){
+                                Glide.with(CadastrarProdutoActivity.this).load(produtoSelecionado.getFotos().get(3))
+                                        .into(imagem4);
+                            }else if(produtoSelecionado.getFotos().get(4) != null && !produtoSelecionado.getFotos().get(4).isEmpty()){
+                                Glide.with(CadastrarProdutoActivity.this).load(produtoSelecionado.getFotos().get(4))
+                                        .into(imagem5);
+                            }else if(produtoSelecionado.getFotos().get(5) != null && !produtoSelecionado.getFotos().get(5).isEmpty()){
+                                Glide.with(CadastrarProdutoActivity.this).load(produtoSelecionado.getFotos().get(6))
+                                        .into(imagem6);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -190,22 +220,16 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                 if (!precoVenda.isEmpty()) {
                     if (produtoSelecionado != null) {
                         produto1 = produtoSelecionado;
-                        produto1.setTitulo(titulo);
-                        produto1.setDescricao(descricao);
-                        produto1.setPrecoVenda(precoVenda);
-                        produto1.setLinha(linha);
-                        produto1.atualizar();
-                        finish();
                     } else {
                         produto1 = new Produto();
-                        produto1.setTitulo(titulo);
-                        produto1.setDescricao(descricao);
-                        produto1.setPrecoVenda(precoVenda);
-                        produto1.setCategoria(categoria);
-                        produto1.setLinha(linha);
-                        produto1.setProduto(produto);
-                        salvarProduto();
                     }
+                    produto1.setTitulo(titulo.toUpperCase());
+                    produto1.setDescricao(descricao);
+                    produto1.setPrecoVenda(precoVenda);
+                    produto1.setCategoria(categoria);
+                    produto1.setLinha(linha);
+                    produto1.setProduto(produto);
+                    salvarProduto();
                 } else {
                     exibirMensagem("Preencha o Campo Preço de Venda");
                 }
@@ -253,34 +277,16 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                 listaUrlFotos.add(urlConvertida);
                 if(totFotos == listaUrlFotos.size()){
                     produto1.setFotos(listaUrlFotos);
-                    if(produtoSelecionado == null){
-                        produto1.salvar();
-                        dialog.dismiss();
-                        finish();
-                    }else{
+                    produto1.salvar();
+                    /*if(produtoSelecionado != null){
                         produto1.atualizar();
-                        dialog.dismiss();
-                        finish();
-                    }
+                    }else{
+                        produto1.setFotos(listaUrlFotos);
+                        produto1.salvar();
+                    }*/
+                    dialog.dismiss();
+                    finish();
                 }
-                /*storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        listaUrlFotos.add(urlConvertida);
-                        if(totFotos == listaUrlFotos.size()){
-                            produto1.setFotos(listaUrlFotos);
-                            if(produtoSelecionado == null){
-                                produto1.salvar();
-                                dialog.dismiss();
-                                finish();
-                            }else{
-                                produto1.atualizar();
-                                dialog.dismiss();
-                                finish();
-                            }
-                        }
-                    }
-                });*/
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -290,6 +296,27 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void atualizarFotoStorage(byte[] data, int contador){
+        //Criar nó no storage
+        StorageReference imagemProduto = storage.child("imagens")
+                .child("produtos")
+                .child(produto1.getId())
+                .child("imagem" + contador);
+
+        UploadTask uploadTask = imagemProduto.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+            }
+        });
     }
 
     public void onClick(View view){
@@ -320,10 +347,17 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         startActivityForResult(i, requestCode);
     }
 
+    public byte[] escolherFotoExistente(View view){
+        Bitmap bitmap = ((BitmapDrawable) imagem1.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        return data;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if(resultCode == Activity.RESULT_OK){
             //Recuperar Imagem
             Uri imagemSelecionada = data.getData();

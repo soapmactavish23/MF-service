@@ -50,7 +50,7 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AdapterItem adapterItem;
     private List<Item> items = new ArrayList<>();
-    private DatabaseReference itemRef;
+    private DatabaseReference itemRef, usuarioRef;
     private Usuario cliente;
     private ValueEventListener valueEventListener;
     private CircleImageView foto;
@@ -60,6 +60,7 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
     private CurrencyEditText txtPrecoTotal;
     private ProdutoOrcamento orcamentoSelecionado;
     private Item itemSelecionado;
+    private String idCliente;
     private int valorTotal;
 
     @Override
@@ -91,22 +92,37 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
 
         //Recuperar o orcamento
         orcamentoSelecionado = (ProdutoOrcamento) bundle.getSerializable("orcamento");
-        cliente = orcamentoSelecionado.getCliente();
-        itemRef = ConfiguracaoFirebase.getFirebaseDatabase().child("itens").child(cliente.getId());
+        idCliente = orcamentoSelecionado.getIdCliente();
         toolbar.setTitle(orcamentoSelecionado.getStatus());
 
-        //Configurando informações do cliente
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.padrao);
-        Glide.with(this).applyDefaultRequestOptions(requestOptions).load(cliente.getFoto()).into(foto);
-        txtNome.setText(cliente.getNome());
-        if(cliente.getEndereco().equals("")){
-            txtEndereco.setText("Endereço: SEM ENDEREÇO CADASTRADO");
-        }else{
-            txtEndereco.setText("Endereço: " + cliente.getEndereco());
-        }
-        txtEmail.setText("E-mail: " + cliente.getEmail());
-        txtTelefone.setText("Contato: " + cliente.getContato());
+        //Firebase
+        usuarioRef = ConfiguracaoFirebase.getFirebaseDatabase().child("usuarios").child(idCliente);
+        itemRef = ConfiguracaoFirebase.getFirebaseDatabase().child("itens").child(idCliente);
+
+        usuarioRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                cliente = snapshot.getValue(Usuario.class);
+
+                //Configurando informações do cliente
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.placeholder(R.drawable.padrao);
+                Glide.with(getApplicationContext()).applyDefaultRequestOptions(requestOptions).load(cliente.getFoto()).into(foto);
+                txtNome.setText(cliente.getNome());
+                if(cliente.getEndereco().equals("")){
+                    txtEndereco.setText("Endereço: SEM ENDEREÇO CADASTRADO");
+                }else{
+                    txtEndereco.setText("Endereço: " + cliente.getEndereco());
+                }
+                txtEmail.setText("E-mail: " + cliente.getEmail());
+                txtTelefone.setText("Contato: " + cliente.getContato());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         //Configurando o footer
         txtFormaPagamento.setText("Forma de Pagamento: "+ orcamentoSelecionado.getFormaPagamento());
@@ -149,6 +165,7 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         recuperarItens();
+        recuperarCliente();
     }
 
     @Override
@@ -157,6 +174,10 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         valorTotal = 0;
         items.clear();
         itemRef.removeEventListener(valueEventListener);
+    }
+
+    private void recuperarCliente(){
+
     }
 
     @Override

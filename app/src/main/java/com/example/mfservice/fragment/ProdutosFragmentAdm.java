@@ -48,6 +48,7 @@ public class ProdutosFragmentAdm extends Fragment {
 
     private RecyclerView recyclerView;
     private List<ProdutoOrcamento> orcamentos = new ArrayList<>();
+    private List<Usuario> clientes = new ArrayList<>();
     private DatabaseReference produtosOrcamentosRef;
     private ValueEventListener valueEventListener;
     private AdapterOrcamentoProduto adapterOrcamentoProduto;
@@ -71,7 +72,8 @@ public class ProdutosFragmentAdm extends Fragment {
         //Configurar o RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
-        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), orcamentos);
+
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), orcamentos, clientes);
         recyclerView.setAdapter(adapterOrcamentoProduto);
 
         //Toque do Recycler
@@ -119,7 +121,9 @@ public class ProdutosFragmentAdm extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot ds: snapshot.getChildren()){
-                    orcamentos.add(ds.getValue(ProdutoOrcamento.class));
+                    ProdutoOrcamento produtoOrcamento = ds.getValue(ProdutoOrcamento.class);
+                    recuperarClientes(produtoOrcamento.getIdCliente());
+                    orcamentos.add(produtoOrcamento);
                 }
                 if(orcamentos.size() > 0){
                     txtNone.setVisibility(View.GONE);
@@ -134,6 +138,10 @@ public class ProdutosFragmentAdm extends Fragment {
         });
     }
 
+    private void recuperarClientes(String id){
+
+    }
+
     private void recuperarPorStatus(String s){
         List<ProdutoOrcamento> listOrcamentoStatus = new ArrayList<>();
         for(ProdutoOrcamento orcamentoStatus: orcamentos){
@@ -142,7 +150,7 @@ public class ProdutosFragmentAdm extends Fragment {
                 listOrcamentoStatus.add(orcamentoStatus);
             }
         }
-        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoStatus);
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoStatus, clientes);
         recyclerView.setAdapter(adapterOrcamentoProduto);
         adapterOrcamentoProduto.notifyDataSetChanged();
     }
@@ -150,18 +158,18 @@ public class ProdutosFragmentAdm extends Fragment {
     public void pesquisarOrcamentos(String texto){
         List<ProdutoOrcamento> listOrcamentoBusca = new ArrayList<>();
         for(ProdutoOrcamento orcamento : orcamentos){
-            String nome = orcamento.getCliente().getNome().toLowerCase();
+            /*String nome = orcamento.getIdCliente().getNome().toLowerCase();
             if(nome.contains(texto)){
                 listOrcamentoBusca.add(orcamento);
-            }
+            }*/
         }
-        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoBusca);
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoBusca, clientes);
         recyclerView.setAdapter(adapterOrcamentoProduto);
         adapterOrcamentoProduto.notifyDataSetChanged();
     }
 
     public void recarregarOrcamentos(){
-        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), orcamentos);
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), orcamentos, clientes);
         recyclerView.setAdapter(adapterOrcamentoProduto);
         adapterOrcamentoProduto.notifyDataSetChanged();
     }

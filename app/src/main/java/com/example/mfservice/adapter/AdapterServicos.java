@@ -35,11 +35,9 @@ public class AdapterServicos extends RecyclerView.Adapter<AdapterServicos.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
         ItemServico item = listaItem.get(position);
         holder.txtTitulo.setText(item.getTitulo());
         holder.txtDescricao.setText(item.getDescricao());
-
     }
 
     @Override
@@ -48,9 +46,7 @@ public class AdapterServicos extends RecyclerView.Adapter<AdapterServicos.MyView
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-
         TextView txtTitulo, txtDescricao;
-
         public MyViewHolder(View itemView){
             super(itemView);
             txtTitulo = itemView.findViewById(R.id.txtTitulo);

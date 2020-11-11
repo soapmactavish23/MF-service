@@ -44,14 +44,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ConfiguracaoActivity extends AppCompatActivity {
 
-    private TextInputEditText txtNome, txtEmail, txtCpf, txtContato;
+    private TextInputEditText txtNome, txtEmail, txtCpf, txtContato, txtEndereco;
     private CircleImageView imgEditarPerfil;
     private Usuario usuarioLogado;
-    private Usuario usuarioAtual;
+    private FirebaseUser usuarioPerfil;
     private StorageReference storageReference;
     private String idUsuario;
-    private FirebaseUser usuarioPerfil;
-    private Button btnAlterar, btnMudarSenha, btnExcluirConta, btnAlterarFoto;
 
     private String[] permissoesNecessarias = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -59,6 +57,7 @@ public class ConfiguracaoActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION
     };
 
+    private static final int SELECAO_CAMERA = 100;
     private static final int SELECAO_GALERIA = 200;
 
     @Override
@@ -81,12 +80,42 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.editEmail);
         txtCpf = findViewById(R.id.editCpf);
         txtContato = findViewById(R.id.editContato);
+        txtEndereco = findViewById(R.id.editEndereco);
         imgEditarPerfil = findViewById(R.id.imgFotoCliente);
-        btnAlterar = findViewById(R.id.btnAlterar);
-        btnMudarSenha = findViewById(R.id.btnMudarSenha);
-        btnExcluirConta = findViewById(R.id.btnExcluirConta);
-        btnAlterarFoto = findViewById(R.id.btnAlterarFoto);
 
+        //Configuacao Firebase
+        storageReference = ConfiguracaoFirebase.getStorageReference();
+        idUsuario = UsuarioFirebase.getIdentificadorUsuario();
+
+        //Dados usuario
+        Bundle bundle = this.getIntent().getExtras();
+        usuarioLogado = (Usuario) bundle.getSerializable("DadosUsuario");
+
+        //Ajustando mascaras
+        ajustarMascaras();
+
+        //Carregar dados do usuario
+        txtNome.setText(usuarioLogado.getNome());
+        txtEmail.setText(usuarioLogado.getEmail());
+        txtContato.setText(usuarioLogado.getContato());
+        txtCpf.setText(usuarioLogado.getCpf());
+        txtEndereco.setText(usuarioLogado.getEndereco());
+
+        //Foto do usuario
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.fitCenter();
+        requestOptions.placeholder(R.drawable.padrao);
+        Glide.with(this).applyDefaultRequestOptions(requestOptions).load(usuarioLogado.getFoto()).into(imgEditarPerfil);
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
+    }
+
+    private void ajustarMascaras(){
         //Criando Formato da Mascara
         SimpleMaskFormatter simpleMaskFormatterCPF = new SimpleMaskFormatter("NNN.NNN.NNN-NN");
         SimpleMaskFormatter simpleMaskFormatterContato = new SimpleMaskFormatter("(NN) NNNNN-NNNN");
@@ -98,78 +127,13 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         //Aplicando Mascaras
         txtCpf.addTextChangedListener(maskTextWatcherCPF);
         txtContato.addTextChangedListener(maskTextWatcherContato);
-
-        //Configuacao Firebase
-        usuarioLogado = UsuarioFirebase.getUsuarioLogado();
-        usuarioPerfil = UsuarioFirebase.getUsuarioAtual();
-        storageReference = ConfiguracaoFirebase.getStorageReference();
-        idUsuario = UsuarioFirebase.getIdentificadorUsuario();
-        usuarioLogado.setId(idUsuario);
-
-        //Dados usuario
-        Bundle bundle = this.getIntent().getExtras();
-        usuarioAtual = (Usuario) bundle.getSerializable("DadosUsuario");
-
-        //Carregar dados do usuario
-        txtNome.setText(usuarioAtual.getNome());
-        txtEmail.setText(usuarioPerfil.getEmail());
-        txtContato.setText(usuarioAtual.getContato());
-        txtCpf.setText(usuarioAtual.getCpf());
-
-        //Foto de usuario
-        Uri url = usuarioPerfil.getPhotoUrl();
-        if(url != null){
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.fitCenter();
-            requestOptions.placeholder(R.drawable.padrao);
-            Glide.with(this).applyDefaultRequestOptions(requestOptions).load(url).into(imgEditarPerfil);
-        }else{
-            imgEditarPerfil.setImageResource(R.drawable.padrao);
-        }
-
-        //Alterar Foto
-        btnAlterarFoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alterarFoto();
-            }
-        });
-
-        //Atualizar Nome
-        btnAlterar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                atualizarNome();
-            }
-        });
-
-        //Mudar Senha
-        btnMudarSenha.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mudarSenha();
-            }
-        });
-
-        //Excluir Conta
-        btnExcluirConta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                excluirConta();
-            }
-        });
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return false;
-    }
-
-    public void atualizarNome(){
+    public void atualizar(View view){
         String nome = txtNome.getText().toString();
         String cpf = txtCpf.getText().toString();
         String contato = txtContato.getText().toString();
+        String endereco = txtEndereco.getText().toString();
         if(!nome.isEmpty() && !cpf.isEmpty() && !contato.isEmpty()){
             //Atualizar o nome no perfil
             UsuarioFirebase.atualizarNomeUsuario(nome);
@@ -178,6 +142,7 @@ public class ConfiguracaoActivity extends AppCompatActivity {
             usuarioLogado.setNome(nome);
             usuarioLogado.setCpf(cpf);
             usuarioLogado.setContato(contato);
+            usuarioLogado.setEndereco(endereco);
             usuarioLogado.atualizar();
 
             Toast.makeText(
@@ -198,8 +163,6 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         boolean retorno = UsuarioFirebase.atualizarFotoUsuario(url);
         if(retorno){
             usuarioLogado.setFoto(url.toString());
-            usuarioLogado.setCpf(usuarioAtual.getCpf());
-            usuarioLogado.setContato(usuarioAtual.getContato());
             usuarioLogado.atualizar();
             Toast.makeText(
                     ConfiguracaoActivity.this,
@@ -209,7 +172,7 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         }
     }
 
-    public void mudarSenha(){
+    public void mudarSenha(View view){
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String emailAddress = usuarioLogado.getEmail();
 
@@ -227,7 +190,7 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         });
     }
 
-    public void excluirConta(){
+    public void excluirConta(View view){
         AlertDialog.Builder builder = new AlertDialog.Builder(ConfiguracaoActivity.this);
         builder.setTitle("Excluir Conta");
         builder.setMessage("Tem certeza que deseja excluir sua conta? Após isso você só poderá acessar o app se criar outra conta");
@@ -262,10 +225,20 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void alterarFoto(){
-        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if( i.resolveActivity(ConfiguracaoActivity.this.getPackageManager()) != null){
-            startActivityForResult(i, SELECAO_GALERIA);
+    public void alterarFoto(View view){
+        switch (view.getId()){
+            case R.id.btnCamera:
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if ( intent.resolveActivity(getPackageManager()) != null ){
+                    startActivityForResult(intent, SELECAO_CAMERA );
+                }
+                break;
+            case R.id.btnGaleria:
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                if( i.resolveActivity(ConfiguracaoActivity.this.getPackageManager()) != null){
+                    startActivityForResult(i, SELECAO_GALERIA);
+                }
+                break;
         }
     }
 
@@ -277,6 +250,9 @@ public class ConfiguracaoActivity extends AppCompatActivity {
             try{
                 //Selecao apenas da galeria
                 switch (requestCode){
+                    case SELECAO_CAMERA:
+                        imagem = (Bitmap) data.getExtras().get("data");
+                        break;
                     case SELECAO_GALERIA:
                         Uri localImagemSelecionada = data.getData();
                         imagem = MediaStore.Images.Media.getBitmap(ConfiguracaoActivity.this.getContentResolver(), localImagemSelecionada);
@@ -324,7 +300,6 @@ public class ConfiguracaoActivity extends AppCompatActivity {
                     });
 
                 }
-
             }catch (Exception e){
                 e.printStackTrace();
             }

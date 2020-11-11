@@ -1,5 +1,6 @@
 package com.example.mfservice.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,11 +15,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blackcat.currencyedittext.CurrencyEditText;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mfservice.R;
 import com.example.mfservice.adapter.AdapterOrcamento;
+import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.model.Produto;
 import com.example.mfservice.model.ProdutoOrcamento;
+import com.example.mfservice.model.Usuario;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageClickListener;
@@ -40,6 +49,8 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
     private List<Produto> produtosList = new ArrayList<>();
     private AdapterOrcamento adapterOrcamento;
     private RecyclerView recyclerView;
+    private DatabaseReference usuarioRef;
+    private Usuario cliente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,52 +71,57 @@ public class DetalhesOrcamentoProdutoActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerProdutos);
         Bundle bundle = getIntent().getExtras();
 
+        //Firebase
+        usuarioRef = ConfiguracaoFirebase.getFirebaseDatabase().child("usuarios");
+
         if(bundle != null){
             produtoOrcamentoSelecionado = (ProdutoOrcamento) bundle.getSerializable("produtoOrcamentoSelecionado");
-            tipoUsuario = bundle.getString("tipoUsuario");
-            txtCliente.setText("Cliente: "+ produtoOrcamentoSelecionado.getCliente().getNome());
-            //txtStatus.setText("Status: " + produtoOrcamentoSelecionado.getStatus());
 
-            if(tipoUsuario.equals("ADM")){
-                /*if(!produtoOrcamentoSelecionado.getStatus().equals("FINALIZADO")){
-                    fabSave.setVisibility(View.VISIBLE);
-                }else{
-                    fabSave.setVisibility(View.GONE);
-                }*/
-                imgFotoCliente.setVisibility(View.VISIBLE);
-                if(!produtoOrcamentoSelecionado.getCliente().getFoto().equals("")){
-                    Picasso.get().load(produtoOrcamentoSelecionado.getCliente().getFoto()).into(imgFotoCliente);
-                }else{
-                    imgFotoCliente.setImageResource(R.drawable.padrao);
-                }
-                imgFotoCliente.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(DetalhesOrcamentoProdutoActivity.this, GaleryActivity.class);
-                        intent.putExtra("foto", produtoOrcamentoSelecionado.getCliente().getFoto());
-                        intent.putExtra("titulo", produtoOrcamentoSelecionado.getCliente().getNome());
-                        startActivity(intent);
+            usuarioRef.child(produtoOrcamentoSelecionado.getIdCliente()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    cliente = snapshot.getValue(Usuario.class);
+                    tipoUsuario = cliente.getTipo_usuario();
+                    txtCliente.setText("Cliente: "+ cliente.getNome());
+
+                    if(tipoUsuario.equals("ADM")){
+                        imgFotoCliente.setVisibility(View.VISIBLE);
+
+                        RequestOptions requestOptions = new RequestOptions();
+                        requestOptions.placeholder(R.drawable.padrao);
+
+                        Glide.with(getApplicationContext())
+                                .applyDefaultRequestOptions(requestOptions)
+                                .load(cliente.getFoto())
+                                .into(imgFotoCliente);
+                        imgFotoCliente.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(DetalhesOrcamentoProdutoActivity.this, GaleryActivity.class);
+                                intent.putExtra("foto", cliente.getFoto());
+                                intent.putExtra("titulo", cliente.getNome());
+                                startActivity(intent);
+                            }
+                        });
+                    }else{
+                        fabSave.setVisibility(View.GONE);
+                        imgFotoCliente.setVisibility(View.GONE);
                     }
-                });
-            }else{
-                fabSave.setVisibility(View.GONE);
-                imgFotoCliente.setVisibility(View.GONE);
-            }
 
-            /*if(produtoOrcamentoSelecionado.getStatus().equals("FINALIZADO") || tipoUsuario.equals("ADM")){
-                txtPreco.setVisibility(View.VISIBLE);
-                editPrecoFinal.setVisibility(View.VISIBLE);
-            }else{
-                txtPreco.setVisibility(View.GONE);
-                editPrecoFinal.setVisibility(View.GONE);
-            }*/
+                    adapterOrcamento = new AdapterOrcamento(getApplicationContext(), produtosList);
 
-            adapterOrcamento = new AdapterOrcamento(this, produtosList);
+                    //Configurar o RecyclerView
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    recyclerView.setHasFixedSize(true);
+                    recyclerView.setAdapter(adapterOrcamento);
 
-            //Configurar o RecyclerView
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(adapterOrcamento);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
     }
