@@ -24,6 +24,8 @@ import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.config.UsuarioFirebase;
 import com.example.mfservice.helper.Base64Custom;
 import com.example.mfservice.helper.Permissao;
+import com.example.mfservice.model.ProdutoOrcamento;
+import com.example.mfservice.model.ServicoOrcamento;
 import com.example.mfservice.model.Usuario;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
@@ -34,7 +36,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -47,6 +52,8 @@ public class ConfiguracaoActivity extends AppCompatActivity {
     private TextInputEditText txtNome, txtEmail, txtCpf, txtContato, txtEndereco;
     private CircleImageView imgEditarPerfil;
     private Usuario usuarioLogado;
+    private ProdutoOrcamento produtoOrcamento;
+    private ServicoOrcamento servicoOrcamento;
     private FirebaseUser usuarioPerfil;
     private StorageReference storageReference;
     private String idUsuario;
@@ -59,6 +66,7 @@ public class ConfiguracaoActivity extends AppCompatActivity {
 
     private static final int SELECAO_CAMERA = 100;
     private static final int SELECAO_GALERIA = 200;
+    private DatabaseReference firebaseRef, usuarioRef, produtoOrcamentoRef, servicoOrcamentoRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +95,12 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         storageReference = ConfiguracaoFirebase.getStorageReference();
         idUsuario = UsuarioFirebase.getIdentificadorUsuario();
 
+        //Firebase
+        firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
+        usuarioRef = firebaseRef.child("usuarios").child(idUsuario);
+        produtoOrcamentoRef = firebaseRef.child("produtoOrcamento").child(idUsuario);
+        servicoOrcamentoRef = firebaseRef.child("servicoOrcamento").child(idUsuario);
+
         //Dados usuario
         Bundle bundle = this.getIntent().getExtras();
         usuarioLogado = (Usuario) bundle.getSerializable("DadosUsuario");
@@ -106,6 +120,10 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         requestOptions.fitCenter();
         requestOptions.placeholder(R.drawable.padrao);
         Glide.with(this).applyDefaultRequestOptions(requestOptions).load(usuarioLogado.getFoto()).into(imgEditarPerfil);
+
+        //Recuperar orcamentos
+        recuperarProdutoOrcamento();
+        recupererServicoOrcamento();
 
     }
 
@@ -145,6 +163,8 @@ public class ConfiguracaoActivity extends AppCompatActivity {
             usuarioLogado.setEndereco(endereco);
             usuarioLogado.atualizar();
 
+            atualizarOrcamentos();
+
             Toast.makeText(
                     ConfiguracaoActivity.this,
                     "Nome de usuário atualizado com sucesso!",
@@ -159,6 +179,34 @@ public class ConfiguracaoActivity extends AppCompatActivity {
         }
     }
 
+    private void recuperarProdutoOrcamento(){
+        produtoOrcamentoRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                produtoOrcamento = snapshot.getValue(ProdutoOrcamento.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void recupererServicoOrcamento(){
+        servicoOrcamentoRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                servicoOrcamento = snapshot.getValue(ServicoOrcamento.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void atualizaFotoUsuario(Uri url){
         boolean retorno = UsuarioFirebase.atualizarFotoUsuario(url);
         if(retorno){
@@ -169,6 +217,7 @@ public class ConfiguracaoActivity extends AppCompatActivity {
                     "Sua foto foi atualizada",
                     Toast.LENGTH_SHORT
             ).show();
+            atualizarOrcamentos();
         }
     }
 
@@ -304,6 +353,16 @@ public class ConfiguracaoActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void atualizarOrcamentos(){
+        produtoOrcamento.setNomeCliente(usuarioLogado.getNome());
+        produtoOrcamento.setFotoCliente(usuarioLogado.getFoto());
+        produtoOrcamento.atualizar();
+
+        servicoOrcamento.setNomeCliente(usuarioLogado.getNome());
+        servicoOrcamento.setFotoCliente(usuarioLogado.getFoto());
+        servicoOrcamento.salvar();
     }
 
 }

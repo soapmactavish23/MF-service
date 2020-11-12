@@ -50,27 +50,15 @@ public class AdapterOrcamentoProduto extends RecyclerView.Adapter<AdapterOrcamen
         ProdutoOrcamento produtoOrcamento = listaOrcamento.get(position);
 
         holder.txtStatus.setText(produtoOrcamento.getStatus());
+        holder.txtTitulo.setText(produtoOrcamento.getNomeCliente());
+        holder.txtPreco.setVisibility(View.GONE);
 
-        DatabaseReference usuarioRef = ConfiguracaoFirebase.getFirebaseDatabase().child("usuarios");
-        usuarioRef.child(produtoOrcamento.getIdCliente()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Usuario cliente = snapshot.getValue(Usuario.class);
-                holder.txtTitulo.setText(cliente.getNome());
-                holder.txtPreco.setVisibility(View.GONE);
-                RequestOptions requestOptions = new RequestOptions();
-                requestOptions.placeholder(R.drawable.padrao);
-                requestOptions.fitCenter();
-                Glide.with(context).applyDefaultRequestOptions(requestOptions)
-                        .load(cliente.getFoto())
-                        .into(holder.foto);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.padrao);
+        requestOptions.fitCenter();
+        Glide.with(context).applyDefaultRequestOptions(requestOptions)
+                .load(produtoOrcamento.getFotoCliente())
+                .into(holder.foto);
     }
 
     @Override

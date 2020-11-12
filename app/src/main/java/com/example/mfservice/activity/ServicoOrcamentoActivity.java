@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dmax.dialog.SpotsDialog;
 
 public class ServicoOrcamentoActivity extends AppCompatActivity {
 
@@ -52,6 +53,7 @@ public class ServicoOrcamentoActivity extends AppCompatActivity {
     private DatabaseReference firebaseRef, itensServicoRef, servicoOrcamentoRef;
     private ValueEventListener valueEventListener;
     private ItemServico itemSelecionado;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +141,12 @@ public class ServicoOrcamentoActivity extends AppCompatActivity {
     }
 
     private void recuperarItems(){
+        dialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Recuperando Orçamentos")
+                .setCancelable(false)
+                .build();
+        dialog.show();
         items.clear();
         valueEventListener = itensServicoRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -147,6 +155,7 @@ public class ServicoOrcamentoActivity extends AppCompatActivity {
                     items.add(ds.getValue(ItemServico.class));
                 }
                 adapterServicos.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override

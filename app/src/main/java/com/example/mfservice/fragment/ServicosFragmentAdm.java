@@ -1,5 +1,6 @@
 package com.example.mfservice.fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -17,9 +18,11 @@ import android.widget.TextView;
 
 import com.example.mfservice.R;
 import com.example.mfservice.activity.ServicoOrcamentoActivity;
+import com.example.mfservice.adapter.AdapterOrcamentoProduto;
 import com.example.mfservice.adapter.AdapterUsuarios;
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.helper.RecyclerItemClickListener;
+import com.example.mfservice.model.ProdutoOrcamento;
 import com.example.mfservice.model.ServicoOrcamento;
 import com.example.mfservice.model.Usuario;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dmax.dialog.SpotsDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +47,7 @@ public class ServicosFragmentAdm extends Fragment {
     private ValueEventListener valueEventListener;
     private AdapterUsuarios adapterUsuarios;
     private TextView txtNoneServico;
+    private AlertDialog dialog;
 
     public ServicosFragmentAdm() {
         // Required empty public constructor
@@ -110,6 +116,12 @@ public class ServicosFragmentAdm extends Fragment {
     }
 
     private void recuperarOrcamentos(){
+        dialog = new SpotsDialog.Builder()
+                .setContext(getActivity())
+                .setMessage("Recuperando Orçamentos")
+                .setCancelable(false)
+                .build();
+        dialog.show();
         orcamentos.clear();
         valueEventListener = servicosRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -118,12 +130,12 @@ public class ServicosFragmentAdm extends Fragment {
                     ServicoOrcamento servicoOrcamento = ds.getValue(ServicoOrcamento.class);
                     recuperarUsuarios(servicoOrcamento.getIdCliente());
                     orcamentos.add(servicoOrcamento);
-
                 }
                 if(orcamentos.size() > 0){
                     txtNoneServico.setVisibility(View.GONE);
                 }
                 adapterUsuarios.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override
@@ -131,6 +143,32 @@ public class ServicosFragmentAdm extends Fragment {
 
             }
         });
+    }
+
+    public void pesquisarOrcamentos(String texto){
+        List<ServicoOrcamento> listOrcamentoBusca = new ArrayList<>();
+        for(ServicoOrcamento orcamento : orcamentos){
+            String nome = orcamento.getNomeCliente().toLowerCase();
+            if(nome.contains(texto)) {
+                listOrcamentoBusca.add(orcamento);
+            }
+        }
+        adapterUsuarios = new AdapterUsuarios(listOrcamentoBusca, getActivity());
+        recyclerView.setAdapter(adapterUsuarios);
+        adapterUsuarios.notifyDataSetChanged();
+    }
+
+    public void recuperarStatus(String s){
+        List<ServicoOrcamento> listOrcamentoStatus = new ArrayList<>();
+        for(ServicoOrcamento orcamentoStatus: orcamentos){
+            String status = orcamentoStatus.getStatus();
+            if(status.contains(s)){
+                listOrcamentoStatus.add(orcamentoStatus);
+            }
+        }
+        adapterUsuarios = new AdapterUsuarios(listOrcamentoStatus, getActivity());
+        recyclerView.setAdapter(adapterUsuarios);
+        adapterUsuarios.notifyDataSetChanged();
     }
 
     private void recuperarUsuarios(String idUsuario){

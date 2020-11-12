@@ -11,6 +11,8 @@ import java.util.Map;
 
 public class ProdutoOrcamento implements Serializable {
     private String idCliente;
+    private String nomeCliente;
+    private String fotoCliente;
     private String formaPagamento;
     private String status;
     private String prazoEntrega;
@@ -46,7 +48,9 @@ public class ProdutoOrcamento implements Serializable {
 
     public Map<String, Object> converterParaMap(){
         HashMap<String, Object> produtoOrcamentoMap = new HashMap<>();
-        produtoOrcamentoMap.put("idcliente", getIdCliente());
+        produtoOrcamentoMap.put("idCliente", getIdCliente());
+        produtoOrcamentoMap.put("nomeCliente", getNomeCliente());
+        produtoOrcamentoMap.put("fotoCliente", getFotoCliente());
         produtoOrcamentoMap.put("status", getStatus());
         produtoOrcamentoMap.put("formaPagamento", getFormaPagamento());
         produtoOrcamentoMap.put("prazoEntrega", getPrazoEntrega());
@@ -109,5 +113,21 @@ public class ProdutoOrcamento implements Serializable {
 
     public void setPrecoFinal(String precoFinal) {
         this.precoFinal = precoFinal;
+    }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
+    }
+
+    public String getFotoCliente() {
+        return fotoCliente;
+    }
+
+    public void setFotoCliente(String fotoCliente) {
+        this.fotoCliente = fotoCliente;
     }
 }

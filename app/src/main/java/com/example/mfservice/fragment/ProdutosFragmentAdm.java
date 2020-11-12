@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dmax.dialog.SpotsDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,10 +50,11 @@ public class ProdutosFragmentAdm extends Fragment {
     private RecyclerView recyclerView;
     private List<ProdutoOrcamento> orcamentos = new ArrayList<>();
     private List<Usuario> clientes = new ArrayList<>();
-    private DatabaseReference produtosOrcamentosRef;
+    private DatabaseReference produtosOrcamentosRef, usuarioRef;
     private ValueEventListener valueEventListener;
     private AdapterOrcamentoProduto adapterOrcamentoProduto;
     private TextView txtNone;
+    private AlertDialog dialog;
 
     public ProdutosFragmentAdm() {
         // Required empty public constructor
@@ -68,6 +70,7 @@ public class ProdutosFragmentAdm extends Fragment {
         txtNone = view.findViewById(R.id.txtNoneProduto);
         recyclerView = view.findViewById(R.id.recyclerProdutosOrcamentos);
         produtosOrcamentosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("produtoOrcamento");
+        usuarioRef = ConfiguracaoFirebase.getFirebaseDatabase().child("usuarios");
 
         //Configurar o RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -116,18 +119,24 @@ public class ProdutosFragmentAdm extends Fragment {
     }
 
     private void recuperarOrcamentos(){
+        dialog = new SpotsDialog.Builder()
+                .setContext(getActivity())
+                .setMessage("Recuperando Orçamentos")
+                .setCancelable(false)
+                .build();
+        dialog.show();
         orcamentos.clear();
         valueEventListener = produtosOrcamentosRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot ds: snapshot.getChildren()){
                     ProdutoOrcamento produtoOrcamento = ds.getValue(ProdutoOrcamento.class);
-                    recuperarClientes(produtoOrcamento.getIdCliente());
                     orcamentos.add(produtoOrcamento);
                 }
                 if(orcamentos.size() > 0){
                     txtNone.setVisibility(View.GONE);
                 }
+                dialog.dismiss();
                 adapterOrcamentoProduto.notifyDataSetChanged();
             }
 
@@ -138,11 +147,7 @@ public class ProdutosFragmentAdm extends Fragment {
         });
     }
 
-    private void recuperarClientes(String id){
-
-    }
-
-    private void recuperarPorStatus(String s){
+    public void recuperarPorStatus(String s){
         List<ProdutoOrcamento> listOrcamentoStatus = new ArrayList<>();
         for(ProdutoOrcamento orcamentoStatus: orcamentos){
             String status = orcamentoStatus.getStatus();
@@ -158,10 +163,10 @@ public class ProdutosFragmentAdm extends Fragment {
     public void pesquisarOrcamentos(String texto){
         List<ProdutoOrcamento> listOrcamentoBusca = new ArrayList<>();
         for(ProdutoOrcamento orcamento : orcamentos){
-            /*String nome = orcamento.getIdCliente().getNome().toLowerCase();
-            if(nome.contains(texto)){
+            String nome = orcamento.getNomeCliente().toLowerCase();
+            if(nome.contains(texto)) {
                 listOrcamentoBusca.add(orcamento);
-            }*/
+            }
         }
         adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoBusca);
         recyclerView.setAdapter(adapterOrcamentoProduto);
@@ -172,45 +177,6 @@ public class ProdutosFragmentAdm extends Fragment {
         adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), orcamentos);
         recyclerView.setAdapter(adapterOrcamentoProduto);
         adapterOrcamentoProduto.notifyDataSetChanged();
-    }
-
-    public void selectStatus(){
-        AlertDialog.Builder dialogCategoria = new AlertDialog.Builder(getActivity());
-        dialogCategoria.setTitle("Escolher Status");
-
-        //Configurar spinner
-        View viewSpinner = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
-        final Spinner spinner = viewSpinner.findViewById(R.id.spinnerFiltro);
-
-        final String[] linha = getResources().getStringArray(R.array.status);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                getActivity(), android.R.layout.simple_spinner_item, linha
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-        dialogCategoria.setView(viewSpinner);
-
-        dialogCategoria.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String s = spinner.getSelectedItem().toString();
-                if(s.equals("TODOS")){
-                    recuperarPorStatus("");
-                }else{
-                    recuperarPorStatus(s);
-                }
-            }
-        });
-        dialogCategoria.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        AlertDialog dialog = dialogCategoria.create();
-        dialog.show();
     }
 
 }

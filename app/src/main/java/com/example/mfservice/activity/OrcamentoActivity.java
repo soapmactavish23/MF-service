@@ -75,6 +75,9 @@ public class OrcamentoActivity extends AppCompatActivity {
                     if(newText != null && !newText.isEmpty()){
                         ProdutosFragmentAdm fragmentAdm = (ProdutosFragmentAdm) adapterAdm.getPage(0);
                         fragmentAdm.pesquisarOrcamentos(newText.toLowerCase());
+
+                        ServicosFragmentAdm fragmentServico = (ServicosFragmentAdm) adapterAdm.getPage(1);
+                        fragmentServico.pesquisarOrcamentos(newText.toLowerCase());
                     }
                     return true;
                 }
@@ -126,11 +129,56 @@ public class OrcamentoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_filtro:
-                ProdutosFragmentAdm fragmentAdm = (ProdutosFragmentAdm) adapterAdm.getPage(0);
-                fragmentAdm.selectStatus();
+                selectStatus();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void selectStatus(){
+        android.app.AlertDialog.Builder dialogCategoria = new android.app.AlertDialog.Builder(OrcamentoActivity.this);
+        dialogCategoria.setTitle("Escolher Status");
+
+        //Configurar spinner
+        View viewSpinner = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+        final Spinner spinner = viewSpinner.findViewById(R.id.spinnerFiltro);
+
+        final String[] linha = getResources().getStringArray(R.array.status);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                getApplicationContext(), android.R.layout.simple_spinner_item, linha
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        dialogCategoria.setView(viewSpinner);
+
+        dialogCategoria.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String s = spinner.getSelectedItem().toString();
+                //Produtos
+                ProdutosFragmentAdm produtosFragmentAdm = (ProdutosFragmentAdm) adapterAdm.getPage(0);
+
+                //Servicos
+                ServicosFragmentAdm servicosFragmentAdm = (ServicosFragmentAdm) adapterAdm.getPage(1);
+                if(s.equals("TODOS")){
+                    produtosFragmentAdm.recuperarPorStatus("");
+                    servicosFragmentAdm.recuperarStatus("");
+                }else{
+                    produtosFragmentAdm.recuperarPorStatus(s);
+                    servicosFragmentAdm.recuperarStatus(s);
+                }
+            }
+        });
+        dialogCategoria.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog alertDialog = dialogCategoria.create();
+        alertDialog.show();
     }
 
 }

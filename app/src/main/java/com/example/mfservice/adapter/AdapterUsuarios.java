@@ -46,28 +46,14 @@ public class AdapterUsuarios extends RecyclerView.Adapter<AdapterUsuarios.MyView
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
-        final ServicoOrcamento servicoOrcamento = orcamentosServicos.get(position);
-
-        DatabaseReference usuarioRef = ConfiguracaoFirebase.getFirebaseDatabase().child("usuarios");
-        usuarioRef.child(servicoOrcamento.getIdCliente()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Usuario cliente = snapshot.getValue(Usuario.class);
-                holder.txtNome.setText(cliente.getNome());
-                holder.txtDepoimento.setText(servicoOrcamento.getStatus());
-                RequestOptions requestOptions = new RequestOptions();
-                requestOptions.placeholder(R.drawable.padrao);
-                Glide.with(context).applyDefaultRequestOptions(requestOptions)
-                        .load(cliente.getFoto())
-                        .into(holder.foto);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+        ServicoOrcamento servicoOrcamento = orcamentosServicos.get(position);
+        holder.txtNome.setText(servicoOrcamento.getNomeCliente());
+        holder.txtDepoimento.setText(servicoOrcamento.getStatus());
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.padrao);
+        Glide.with(context).applyDefaultRequestOptions(requestOptions)
+                .load(servicoOrcamento.getFotoCliente())
+                .into(holder.foto);
     }
 
     @Override

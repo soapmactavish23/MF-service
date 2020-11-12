@@ -62,6 +62,7 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
     private Item itemSelecionado;
     private String idCliente;
     private int valorTotal;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,6 +188,12 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
     }
 
     public void recuperarItens(){
+        dialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Recuperando Orçamentos")
+                .setCancelable(false)
+                .build();
+        dialog.show();
         items.clear();
         valueEventListener = itemRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -198,6 +205,7 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
                 }
                 txtPrecoTotal.setText(valorTotal + "");
                 adapterItem.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override

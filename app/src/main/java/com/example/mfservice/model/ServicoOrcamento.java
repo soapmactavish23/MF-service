@@ -8,6 +8,8 @@ import java.io.Serializable;
 public class ServicoOrcamento implements Serializable {
 
     private String idCliente;
+    private String fotoCliente;
+    private String nomeCliente;
     private String status;
 
     public ServicoOrcamento() {
@@ -42,5 +44,21 @@ public class ServicoOrcamento implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getFotoCliente() {
+        return fotoCliente;
+    }
+
+    public void setFotoCliente(String fotoCliente) {
+        this.fotoCliente = fotoCliente;
+    }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
     }
 }

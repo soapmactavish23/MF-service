@@ -42,6 +42,8 @@ public class ServicosActivity extends AppCompatActivity {
         usuario = (Usuario) bundle.getSerializable("DadosUsuario");
         servicoOrcamento = new ServicoOrcamento();
         servicoOrcamento.setIdCliente(usuario.getId());
+        servicoOrcamento.setFotoCliente(usuario.getFoto());
+        servicoOrcamento.setNomeCliente(usuario.getNome());
         itemServico = new ItemServico();
     }
 
