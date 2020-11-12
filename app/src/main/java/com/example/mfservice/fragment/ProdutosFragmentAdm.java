@@ -73,7 +73,7 @@ public class ProdutosFragmentAdm extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), orcamentos, clientes);
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), orcamentos);
         recyclerView.setAdapter(adapterOrcamentoProduto);
 
         //Toque do Recycler
@@ -150,7 +150,7 @@ public class ProdutosFragmentAdm extends Fragment {
                 listOrcamentoStatus.add(orcamentoStatus);
             }
         }
-        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoStatus, clientes);
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoStatus);
         recyclerView.setAdapter(adapterOrcamentoProduto);
         adapterOrcamentoProduto.notifyDataSetChanged();
     }
@@ -163,13 +163,13 @@ public class ProdutosFragmentAdm extends Fragment {
                 listOrcamentoBusca.add(orcamento);
             }*/
         }
-        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoBusca, clientes);
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), listOrcamentoBusca);
         recyclerView.setAdapter(adapterOrcamentoProduto);
         adapterOrcamentoProduto.notifyDataSetChanged();
     }
 
     public void recarregarOrcamentos(){
-        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), orcamentos, clientes);
+        adapterOrcamentoProduto = new AdapterOrcamentoProduto(getActivity(), orcamentos);
         recyclerView.setAdapter(adapterOrcamentoProduto);
         adapterOrcamentoProduto.notifyDataSetChanged();
     }

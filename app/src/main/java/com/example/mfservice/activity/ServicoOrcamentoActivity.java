@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -22,9 +23,12 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.mfservice.R;
 import com.example.mfservice.adapter.AdapterServicos;
 import com.example.mfservice.config.ConfiguracaoFirebase;
+import com.example.mfservice.config.UsuarioFirebase;
 import com.example.mfservice.helper.RecyclerItemClickListener;
 import com.example.mfservice.model.ItemServico;
+import com.example.mfservice.model.ServicoOrcamento;
 import com.example.mfservice.model.Usuario;
+import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,10 +45,11 @@ public class ServicoOrcamentoActivity extends AppCompatActivity {
     private Usuario cliente;
     private CircleImageView foto;
     private TextView txtNome, txtEndereco, txtEmail, txtContato;
+    private ServicoOrcamento servicoOrcamentoSelecionado;
     private List<ItemServico> items = new ArrayList<>();
     private AdapterServicos adapterServicos;
     private RecyclerView recyclerServicos;
-    private DatabaseReference firebaseRef, itensServicoRef;
+    private DatabaseReference firebaseRef, itensServicoRef, servicoOrcamentoRef;
     private ValueEventListener valueEventListener;
     private ItemServico itemSelecionado;
 
@@ -68,12 +73,13 @@ public class ServicoOrcamentoActivity extends AppCompatActivity {
         //Recuperando Cliente
         Bundle bundle = getIntent().getExtras();
         cliente = (Usuario) bundle.getSerializable("cliente");
-        String status = bundle.getString("status");
-        toolbar.setTitle(status);
+        servicoOrcamentoSelecionado = (ServicoOrcamento) bundle.getSerializable("servicoOrcamentoSelecionado");
+        toolbar.setTitle(servicoOrcamentoSelecionado.getStatus());
 
         //Firebase
         firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
         itensServicoRef = firebaseRef.child("itensServico").child(cliente.getId());
+        servicoOrcamentoRef = firebaseRef.child("servicoOrcamento").child(cliente.getId());
 
         //Inicializar dados do cliente
         try{
@@ -82,11 +88,6 @@ public class ServicoOrcamentoActivity extends AppCompatActivity {
             Glide.with(this).applyDefaultRequestOptions(requestOptions).load(cliente.getFoto()).into(foto);
             txtNome.setText(cliente.getNome());
             txtEndereco.setText("Endereço: "+ cliente.getEndereco());
-            /*if(cliente.getEndereco().equals("")){
-                txtEndereco.setText("Endereço: ENDEREÇO NÃO SALVO");
-            }else{
-                txtEndereco.setText("Endereço: "+ cliente.getEndereco());
-            }*/
             txtEmail.setText("E-mail: " + cliente.getEmail());
             txtContato.setText("Contato: "+ cliente.getContato());
         }catch (Exception e){
@@ -159,6 +160,35 @@ public class ServicoOrcamentoActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }
+
+    public void excluirOrcamento(View view){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Excluir");
+        alertDialog.setMessage("Tem certeza que deseja excluir esse orçamento? Após isso não todos os itens serão removidos");
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                itensServicoRef.removeValue();
+                servicoOrcamentoRef.removeValue();
+                finish();
+            }
+        });
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog alert = alertDialog.create();
+        alert.show();
+    }
+
+    public void finalizar(View view){
+        servicoOrcamentoSelecionado.setStatus("FINALIZADO");
+        servicoOrcamentoSelecionado.salvar();
+        finish();
     }
 
 }

@@ -1,5 +1,7 @@
 package com.example.mfservice.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.service.controls.actions.FloatAction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,7 @@ import com.example.mfservice.helper.RecyclerItemClickListener;
 import com.example.mfservice.model.ItemServico;
 import com.example.mfservice.model.ServicoOrcamento;
 import com.example.mfservice.model.Usuario;
+import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,11 +47,12 @@ public class ServicosFragment extends Fragment {
     private CircleImageView foto;
     private TextView txtNome, txtEndereco, txtEmail, txtContato, txtL, txtNoneServico;
     private Usuario usuarioLogado;
-    private DatabaseReference usuarioRef, servicosRef, firebaseRef;
+    private DatabaseReference usuarioRef, servicosRef, firebaseRef, servicoOrcamentoRef;
     private ValueEventListener valueEventListener;
     private List<ItemServico> itemServicos = new ArrayList<>();
     private AdapterServicos adapterServicos;
     private RecyclerView recyclerView;
+    private FloatingActionButton btnExcluir;
 
     public ServicosFragment() {
         // Required empty public constructor
@@ -68,11 +73,13 @@ public class ServicosFragment extends Fragment {
         txtContato = view.findViewById(R.id.txtContato);
         txtNoneServico = view.findViewById(R.id.txtNoneServico);
         recyclerView = view.findViewById(R.id.recyclerServicos);
+        btnExcluir = view.findViewById(R.id.btnExcluir);
 
         //Inicializando componentes firebase
         firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
         usuarioRef = firebaseRef.child("usuarios").child(UsuarioFirebase.getIdentificadorUsuario());
         servicosRef = firebaseRef.child("itensServico").child(UsuarioFirebase.getIdentificadorUsuario());
+        servicoOrcamentoRef = firebaseRef.child("servicoOrcamento").child(UsuarioFirebase.getIdentificadorUsuario());
 
         //Carregar dados do usuario
         usuarioRef.addValueEventListener(new ValueEventListener() {
@@ -126,6 +133,13 @@ public class ServicosFragment extends Fragment {
                 }
         ));
 
+        btnExcluir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                excluirOrcamento();
+            }
+        });
+
         return view;
     }
 
@@ -163,4 +177,28 @@ public class ServicosFragment extends Fragment {
             }
         });
     }
+
+    public void excluirOrcamento(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle("Excluir");
+        alertDialog.setMessage("Tem certeza que deseja excluir esse orçamento? Após isso não todos os itens serão removidos");
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                servicosRef.removeValue();
+                servicoOrcamentoRef.removeValue();
+                getActivity().finish();
+            }
+        });
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog alert = alertDialog.create();
+        alert.show();
+    }
+
 }

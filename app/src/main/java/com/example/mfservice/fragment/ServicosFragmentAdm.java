@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,8 @@ public class ServicosFragmentAdm extends Fragment {
 
     private RecyclerView recyclerView;
     private List<ServicoOrcamento> orcamentos = new ArrayList<>();
-    private DatabaseReference servicosRef;
+    private List<Usuario> clientes = new ArrayList<>();
+    private DatabaseReference firebaseRef, servicosRef, usuarioRef;
     private ValueEventListener valueEventListener;
     private AdapterUsuarios adapterUsuarios;
     private TextView txtNoneServico;
@@ -55,7 +57,9 @@ public class ServicosFragmentAdm extends Fragment {
         //Inicializar Componentes
         txtNoneServico = view.findViewById(R.id.txtNoneServico);
         recyclerView = view.findViewById(R.id.recyclerServicos);
-        servicosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("servicoOrcamento");
+        firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
+        servicosRef = firebaseRef.child("servicoOrcamento");
+        usuarioRef = firebaseRef.child("usuarios");
 
         //Configurar o Recycler
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -69,10 +73,10 @@ public class ServicosFragmentAdm extends Fragment {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Usuario cliente = orcamentos.get(position).getCliente();
-                        String status = orcamentos.get(position).getStatus();
+                        Usuario cliente = clientes.get(position);
+                        ServicoOrcamento servicoOrcamentoSelecionado = orcamentos.get(position);
                         Intent intent = new Intent(getActivity(), ServicoOrcamentoActivity.class);
-                        intent.putExtra("status", status);
+                        intent.putExtra("servicoOrcamentoSelecionado", servicoOrcamentoSelecionado);
                         intent.putExtra("cliente", cliente);
                         startActivity(intent);
                     }
@@ -111,12 +115,29 @@ public class ServicosFragmentAdm extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot ds : snapshot.getChildren()){
-                    orcamentos.add(ds.getValue(ServicoOrcamento.class));
+                    ServicoOrcamento servicoOrcamento = ds.getValue(ServicoOrcamento.class);
+                    recuperarUsuarios(servicoOrcamento.getIdCliente());
+                    orcamentos.add(servicoOrcamento);
+
                 }
                 if(orcamentos.size() > 0){
                     txtNoneServico.setVisibility(View.GONE);
                 }
                 adapterUsuarios.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void recuperarUsuarios(String idUsuario){
+        usuarioRef.child(idUsuario).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                clientes.add(snapshot.getValue(Usuario.class));
             }
 
             @Override

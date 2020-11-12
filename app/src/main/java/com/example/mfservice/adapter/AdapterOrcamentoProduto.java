@@ -32,12 +32,10 @@ public class AdapterOrcamentoProduto extends RecyclerView.Adapter<AdapterOrcamen
 
     private Context context;
     private List<ProdutoOrcamento> listaOrcamento;
-    private List<Usuario> clientes;
 
-    public AdapterOrcamentoProduto(Context context, List<ProdutoOrcamento> listaOrcamento, List<Usuario> clientes) {
+    public AdapterOrcamentoProduto(Context context, List<ProdutoOrcamento> listaOrcamento) {
         this.context = context;
         this.listaOrcamento = listaOrcamento;
-        this.clientes = clientes;
     }
 
     @NonNull

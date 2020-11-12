@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 public class ServicoOrcamento implements Serializable {
 
-    private Usuario cliente;
+    private String idCliente;
     private String status;
 
     public ServicoOrcamento() {
@@ -17,23 +17,23 @@ public class ServicoOrcamento implements Serializable {
     public void salvar(){
         DatabaseReference servicosRef = ConfiguracaoFirebase.getFirebaseDatabase()
                 .child("servicoOrcamento")
-                .child(getCliente().getId());
+                .child(getIdCliente());
         servicosRef.setValue(this);
     }
 
     public void deletar(){
         DatabaseReference servicosRef = ConfiguracaoFirebase.getFirebaseDatabase()
                 .child("servicoOrcamento")
-                .child(getCliente().getId());
+                .child(getIdCliente());
         servicosRef.removeValue();
     }
 
-    public Usuario getCliente() {
-        return cliente;
+    public String getIdCliente() {
+        return idCliente;
     }
 
-    public void setCliente(Usuario cliente) {
-        this.cliente = cliente;
+    public void setIdCliente(String idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getStatus() {
