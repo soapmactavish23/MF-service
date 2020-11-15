@@ -142,7 +142,7 @@ public class ProdutosFragmentAdm extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                dialog.dismiss();
             }
         });
     }

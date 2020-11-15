@@ -271,10 +271,16 @@ public class ProdutoOrcamentoActivity extends AppCompatActivity {
         finish();
     }
 
+    public void reabir(View view){
+        orcamentoSelecionado.setStatus("FINALIZADO");
+        orcamentoSelecionado.salvar();
+        finish();
+    }
+
     public void excluirOrcamento(View view){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("Excluir");
-        alertDialog.setMessage("Tem certeza que deseja excluir esse orçamento? Após isso não todos os itens serão removidos");
+        alertDialog.setMessage("Tem certeza que deseja excluir esse orçamento? Após isso, todos os itens serão removidos.");
         alertDialog.setCancelable(false);
         alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override

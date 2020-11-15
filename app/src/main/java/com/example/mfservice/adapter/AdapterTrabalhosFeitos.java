@@ -55,7 +55,7 @@ public class AdapterTrabalhosFeitos extends RecyclerView.Adapter<AdapterTrabalho
         //Pega a primira imagem da lista
         List<String> urlFotos = trabalhosFeitos.getFotos();
         String urlCapa = urlFotos.get(1);
-        //Picasso.get().load(urlCapa).into(holder.fotoTrabalhoFeito);
+        //String urlCapa = trabalhosFeitos.getFotoDepois();
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.galery_padrao);
         requestOptions.fitCenter();

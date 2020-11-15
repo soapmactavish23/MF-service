@@ -214,7 +214,7 @@ public class TrabalhosFeitosActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                dialog.dismiss();
             }
         });
     }

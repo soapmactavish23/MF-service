@@ -24,6 +24,7 @@ import com.example.mfservice.R;
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.helper.Permissao;
 import com.example.mfservice.model.TrabalhosFeitos;
+import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -186,7 +187,7 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
         });
 
     }
-    
+
     public void onClick(View view){
         switch (view.getId()){
             case R.id.imgTrabalhosFeitosAntes:

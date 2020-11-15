@@ -356,13 +356,17 @@ public class ConfiguracaoActivity extends AppCompatActivity {
     }
 
     private void atualizarOrcamentos(){
-        produtoOrcamento.setNomeCliente(usuarioLogado.getNome());
-        produtoOrcamento.setFotoCliente(usuarioLogado.getFoto());
-        produtoOrcamento.atualizar();
+        try{
+            produtoOrcamento.setNomeCliente(usuarioLogado.getNome());
+            produtoOrcamento.setFotoCliente(usuarioLogado.getFoto());
+            produtoOrcamento.atualizar();
 
-        servicoOrcamento.setNomeCliente(usuarioLogado.getNome());
-        servicoOrcamento.setFotoCliente(usuarioLogado.getFoto());
-        servicoOrcamento.salvar();
+            servicoOrcamento.setNomeCliente(usuarioLogado.getNome());
+            servicoOrcamento.setFotoCliente(usuarioLogado.getFoto());
+            servicoOrcamento.salvar();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

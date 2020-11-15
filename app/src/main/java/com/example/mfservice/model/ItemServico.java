@@ -7,14 +7,16 @@ import com.google.firebase.database.DatabaseReference;
 import java.io.Serializable;
 
 public class ItemServico implements Serializable {
-
+    private String id;
     private String idCliente;
+    private String idItem;
     private String titulo;
-    private String status;
     private String descricao;
 
     public ItemServico() {
         setIdCliente(UsuarioFirebase.getIdentificadorUsuario());
+        DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
+        setId(firebaseRef.child("mensagens").push().getKey());
     }
 
     public void salvar(){
@@ -25,6 +27,14 @@ public class ItemServico implements Serializable {
     public void deletar(){
         DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
         firebaseRef.child("itensServico").child(getIdCliente()).child(getTitulo()).removeValue();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getIdCliente() {
@@ -41,14 +51,6 @@ public class ItemServico implements Serializable {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getDescricao() {

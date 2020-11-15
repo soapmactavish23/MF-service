@@ -2,6 +2,7 @@ package com.example.mfservice.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mfservice.R;
+import com.example.mfservice.activity.ChatActivity;
 import com.example.mfservice.adapter.AdapterItem;
 import com.example.mfservice.adapter.AdapterServicos;
 import com.example.mfservice.config.ConfiguracaoFirebase;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dmax.dialog.SpotsDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,6 +56,7 @@ public class ServicosFragment extends Fragment {
     private AdapterServicos adapterServicos;
     private RecyclerView recyclerView;
     private FloatingActionButton btnExcluir;
+    private AlertDialog dialog;
 
     public ServicosFragment() {
         // Required empty public constructor
@@ -60,7 +64,7 @@ public class ServicosFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_servicos, container, false);
@@ -118,7 +122,11 @@ public class ServicosFragment extends Fragment {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-
+                        ItemServico itemServico = itemServicos.get(position);
+                        Intent intent = new Intent(getActivity(), ChatActivity.class);
+                        intent.putExtra("item", itemServico);
+                        intent.putExtra("cliente", usuarioLogado);
+                        startActivity(intent);
                     }
 
                     @Override
@@ -157,6 +165,12 @@ public class ServicosFragment extends Fragment {
     }
 
     private void recuperarOrcamentos(){
+        dialog = new SpotsDialog.Builder()
+                .setContext(getActivity())
+                .setMessage("Recuperando Orçamentos")
+                .setCancelable(false)
+                .build();
+        dialog.show();
         itemServicos.clear();
         valueEventListener = servicosRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -169,11 +183,12 @@ public class ServicosFragment extends Fragment {
                     txtNoneServico.setVisibility(View.GONE);
                 }
                 adapterServicos.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                dialog.dismiss();
             }
         });
     }
@@ -181,7 +196,7 @@ public class ServicosFragment extends Fragment {
     public void excluirOrcamento(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle("Excluir");
-        alertDialog.setMessage("Tem certeza que deseja excluir esse orçamento? Após isso não todos os itens serão removidos");
+        alertDialog.setMessage("Tem certeza que deseja excluir esse orçamento? Após isso, todos os itens serão removidos.");
         alertDialog.setCancelable(false);
         alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override

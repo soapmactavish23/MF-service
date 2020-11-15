@@ -75,6 +75,7 @@ public class ProdutosFragment extends Fragment {
     private int valorTotal;
     private LinearLayout linearValor;
     private FloatingActionButton btnExcluir, btnExportarPdf;
+    private AlertDialog dialog;
 
     public ProdutosFragment() {
     }
@@ -117,18 +118,23 @@ public class ProdutosFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //Iniciaizando dados cliente
                 cliente = snapshot.getValue(Usuario.class);
-                RequestOptions requestOptions = new RequestOptions();
-                requestOptions.placeholder(R.drawable.padrao);
-                Glide.with(getActivity()).applyDefaultRequestOptions(requestOptions).load(cliente.getFoto()).into(foto);
-                txtNome.setText(cliente.getNome());
-                txtEndereco.setText("Endereço: "+ cliente.getEndereco());
-                txtEmail.setText("E-mail: " + cliente.getEmail());
-                txtTelefone.setText("Contato: " + cliente.getContato());
+                try{
+                    RequestOptions requestOptions = new RequestOptions();
+                    requestOptions.placeholder(R.drawable.padrao);
+                    Glide.with(getActivity()).applyDefaultRequestOptions(requestOptions).load(cliente.getFoto()).into(foto);
+
+                    txtNome.setText(cliente.getNome());
+                    txtEndereco.setText("Endereço: "+ cliente.getEndereco());
+                    txtEmail.setText("E-mail: " + cliente.getEmail());
+                    txtTelefone.setText("Contato: " + cliente.getContato());
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                dialog.dismiss();
             }
         });
 
@@ -224,6 +230,12 @@ public class ProdutosFragment extends Fragment {
     }
 
     private void recuperarItens(){
+        dialog = new SpotsDialog.Builder()
+                .setContext(getActivity())
+                .setMessage("Recuperando Orçamentos")
+                .setCancelable(false)
+                .build();
+        dialog.show();
         items.clear();
         valueEventListener = itemRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -242,6 +254,7 @@ public class ProdutosFragment extends Fragment {
                 }
                 txtPrecoTotal.setText(valorTotal + "");
                 adapterItem.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override
@@ -378,7 +391,7 @@ public class ProdutosFragment extends Fragment {
     public void excluirOrcamento(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle("Excluir");
-        alertDialog.setMessage("Tem certeza que deseja excluir esse orçamento? Após isso não todos os itens serão removidos");
+        alertDialog.setMessage("Tem certeza que deseja excluir esse orçamento? Após isso, todos os itens serão removidos.");
         alertDialog.setCancelable(false);
         alertDialog.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override

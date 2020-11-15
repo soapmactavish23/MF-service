@@ -127,7 +127,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_delete"
             app:fab_colorNormal="@color/danger"
-            app:fab_label="Excluir Orçamentos"
+            app:fab_label="Excluir"
             />
 
     </com.github.clans.fab.FloatingActionMenu>

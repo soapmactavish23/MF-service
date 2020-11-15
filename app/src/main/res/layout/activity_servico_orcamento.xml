@@ -145,13 +145,13 @@
         >
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/btnFinalizar"
+            android:id="@+id/btnReabrir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_check"
-            app:fab_colorNormal="@color/success"
-            app:fab_label="Finalizar"
-            android:onClick="finalizar"
+            android:src="@drawable/ic_reload"
+            app:fab_colorNormal="@color/dark"
+            app:fab_label="Reabrir"
+            android:onClick="reabir"
             />
 
         <com.github.clans.fab.FloatingActionButton
@@ -160,8 +160,18 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_delete"
             app:fab_colorNormal="@color/danger"
-            app:fab_label="Excluir Orçamentos"
+            app:fab_label="Excluir"
             android:onClick="excluirOrcamento"
+            />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/btnFinalizar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check"
+            app:fab_colorNormal="@color/success"
+            app:fab_label="Finalizar"
+            android:onClick="finalizar"
             />
 
     </com.github.clans.fab.FloatingActionMenu>

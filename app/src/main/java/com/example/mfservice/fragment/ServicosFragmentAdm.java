@@ -140,7 +140,7 @@ public class ServicosFragmentAdm extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                dialog.dismiss();
             }
         });
     }

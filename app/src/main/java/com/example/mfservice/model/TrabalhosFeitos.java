@@ -2,6 +2,7 @@ package com.example.mfservice.model;
 
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -29,6 +30,12 @@ public class TrabalhosFeitos implements Serializable {
         DatabaseReference trabalhosFeitosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("trabalhos feitos")
                 .child(getId());
         trabalhosFeitosRef.removeValue();
+
+        //Criar nó no storage
+        StorageReference storageReference = ConfiguracaoFirebase.getStorageReference();
+        StorageReference imagemTrabalhoFeito = storageReference.child("imagens").child("trabalhos feitos").child(getId())
+                .child("imagem0");
+        imagemTrabalhoFeito.delete();
     }
 
     public void atualizar(){
@@ -43,7 +50,6 @@ public class TrabalhosFeitos implements Serializable {
         trabalhosFeitosMap.put("id", getId());
         trabalhosFeitosMap.put("titulo", getTitulo());
         trabalhosFeitosMap.put("descricao", getDescricao());
-        trabalhosFeitosMap.put("fotos", getFotos());
         return trabalhosFeitosMap;
     }
 
