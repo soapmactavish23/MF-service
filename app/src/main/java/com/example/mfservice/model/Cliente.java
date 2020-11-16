@@ -2,6 +2,7 @@ package com.example.mfservice.model;
 
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -32,6 +33,10 @@ public class Cliente implements Serializable {
                 .child(getId());
         clienteRef.removeValue();
 
+        //Criar nó no storage
+        StorageReference storage = ConfiguracaoFirebase.getStorageReference();
+        StorageReference imagemProduto = storage.child("imagens").child("cliente").child(getCategoria()).child(getId());
+        imagemProduto.child("imagem").delete();
     }
 
     public void atualizar(){

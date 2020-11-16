@@ -33,9 +33,10 @@ public class TrabalhosFeitos implements Serializable {
 
         //Criar nó no storage
         StorageReference storageReference = ConfiguracaoFirebase.getStorageReference();
-        StorageReference imagemTrabalhoFeito = storageReference.child("imagens").child("trabalhos feitos").child(getId())
-                .child("imagem0");
-        imagemTrabalhoFeito.delete();
+        StorageReference imagemTrabalhoFeito = storageReference.child("imagens").child("trabalhos feitos").child(getId());
+        for(int i = -1; i < fotos.size(); i++){
+            imagemTrabalhoFeito.child("imagem" + i).delete();
+        }
     }
 
     public void atualizar(){

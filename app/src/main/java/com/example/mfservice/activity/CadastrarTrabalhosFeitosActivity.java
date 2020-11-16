@@ -34,6 +34,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import dmax.dialog.SpotsDialog;
@@ -131,13 +132,12 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
         }
     }
 
-    private void salvarFotoStorage(String urlString, final int totFotos, int contador){
+    private void salvarFotoStorage(String urlString, final int totFotos, final int contador){
         //Criar nó no storage
         StorageReference imagemTrabalhoFeito = storage.child("imagens")
                 .child("trabalhos feitos")
                 .child(trabalhosFeitos.getId())
                 .child("imagem" + contador);
-
         UploadTask uploadTask = imagemTrabalhoFeito.putFile(Uri.parse(urlString));
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -145,42 +145,21 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
                 Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
                 while(!uri.isComplete());
                 Uri url = uri.getResult();
+
                 final String urlConvertida = url.toString();
                 listaUrlFotos.add(urlConvertida);
+
                 if(totFotos == listaUrlFotos.size()){
                     trabalhosFeitos.setFotos(listaUrlFotos);
-                    if(trabalhosFeitosSelecionado == null){
-                        trabalhosFeitos.salvar();
-                        dialog.dismiss();
-                        finish();
-                    }else{
-                        trabalhosFeitos.atualizar();
-                        dialog.dismiss();
-                        finish();
-                    }
+                    trabalhosFeitos.salvar();
+                    dialog.dismiss();
+                    finish();
                 }
-                /*storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        listaUrlFotos.add(urlConvertida);
-                        if(totFotos == listaUrlFotos.size()){
-                            trabalhosFeitos.setFotos(listaUrlFotos);
-                            if(trabalhosFeitosSelecionado == null){
-                                trabalhosFeitos.salvar();
-                                dialog.dismiss();
-                                finish();
-                            }else{
-                                trabalhosFeitos.atualizar();
-                                dialog.dismiss();
-                                finish();
-                            }
-                        }
-                    }
-                });*/
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                dialog.dismiss();
                 exibirMensagem("Fala ao fazer upload");
                 Log.i("INFO", "FALHA: " + e.getMessage());
             }

@@ -20,6 +20,8 @@ import com.synnapps.carouselview.ImageClickListener;
 import com.synnapps.carouselview.ImageListener;
 import com.synnapps.carouselview.ViewListener;
 
+import java.util.Collections;
+
 public class DetalhesTrabalhosFeitosActivity extends AppCompatActivity {
 
     private TrabalhosFeitos trabalhosFeitos;

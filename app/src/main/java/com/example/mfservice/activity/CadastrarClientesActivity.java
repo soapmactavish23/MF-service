@@ -176,15 +176,6 @@ public class CadastrarClientesActivity extends AppCompatActivity {
                         cliente.salvar();
                         dialog.dismiss();
                         finish();
-                        /*storage.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                cliente.setFoto(urlConvertida);
-                                cliente.salvar();
-                                dialog.dismiss();
-                                finish();
-                            }
-                        });*/
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
