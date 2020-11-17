@@ -53,7 +53,15 @@ public class DetalhesTrabalhosFeitosActivity extends AppCompatActivity {
             final ImageListener imageListener = new ImageListener() {
                 @Override
                 public void setImageForPosition(int position, ImageView imageView) {
-                    String urlString = trabalhosFeitos.getFotos().get(position);
+                    String urlString = "";
+                    switch (position){
+                        case 0:
+                            urlString = trabalhosFeitos.getFotoAntes();
+                            break;
+                        case 1:
+                            urlString = trabalhosFeitos.getFotoDepois();
+                            break;
+                    }
                     RequestOptions requestOptions = new RequestOptions();
                     requestOptions.placeholder(R.drawable.galery_padrao);
                     requestOptions.fitCenter();
@@ -63,13 +71,20 @@ public class DetalhesTrabalhosFeitosActivity extends AppCompatActivity {
                             .into(imageView);
                 }
             };
-            carouselView.setPageCount(trabalhosFeitos.getFotos().size());
+            carouselView.setPageCount(2);
             carouselView.setImageListener(imageListener);
             carouselView.setImageClickListener(new ImageClickListener() {
                 @Override
                 public void onClick(int position) {
                     Intent intent = new Intent(DetalhesTrabalhosFeitosActivity.this, GaleryActivity.class);
-                    intent.putExtra("foto", trabalhosFeitos.getFotos().get(position));
+                    switch (position){
+                        case 0:
+                            intent.putExtra("foto", trabalhosFeitos.getFotoAntes());
+                            break;
+                        case 1:
+                            intent.putExtra("foto", trabalhosFeitos.getFotoDepois());
+                            break;
+                    }
                     intent.putExtra("titulo", trabalhosFeitos.getTitulo());
                     startActivity(intent);
                 }

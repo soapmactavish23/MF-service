@@ -53,9 +53,10 @@ public class AdapterTrabalhosFeitos extends RecyclerView.Adapter<AdapterTrabalho
         holder.descricao.setText(trabalhosFeitos.getDescricao());
 
         //Pega a primira imagem da lista
-        List<String> urlFotos = trabalhosFeitos.getFotos();
-        String urlCapa = urlFotos.get(1);
-        //String urlCapa = trabalhosFeitos.getFotoDepois();
+        /*List<String> urlFotos = trabalhosFeitos.getFotos();
+        String urlCapa = urlFotos.get(1);*/
+        String urlCapa = trabalhosFeitos.getFotoDepois();
+
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.galery_padrao);
         requestOptions.fitCenter();

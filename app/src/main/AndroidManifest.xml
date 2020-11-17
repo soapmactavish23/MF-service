@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.ChatActivity"></activity>
+        <activity android:name=".activity.CadastrarFotosAntesDepoisActivity"></activity>
+        <activity android:name=".activity.ChatActivity" />
         <activity android:name=".activity.ServicoOrcamentoActivity" />
         <activity android:name=".activity.EditarProdutoOrcamentoActivity" />
         <activity

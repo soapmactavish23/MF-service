@@ -14,7 +14,8 @@ public class TrabalhosFeitos implements Serializable {
     private String id;
     private String titulo;
     private String descricao;
-    private List<String> fotos;
+    private String fotoAntes;
+    private String fotoDepois;
 
     public TrabalhosFeitos() {
         DatabaseReference trabalhosFeitosRef = ConfiguracaoFirebase.getFirebaseDatabase().child("trabalhos feitos");
@@ -34,9 +35,8 @@ public class TrabalhosFeitos implements Serializable {
         //Criar nó no storage
         StorageReference storageReference = ConfiguracaoFirebase.getStorageReference();
         StorageReference imagemTrabalhoFeito = storageReference.child("imagens").child("trabalhos feitos").child(getId());
-        for(int i = -1; i < fotos.size(); i++){
-            imagemTrabalhoFeito.child("imagem" + i).delete();
-        }
+        imagemTrabalhoFeito.child("antes").delete();
+        imagemTrabalhoFeito.child("depois").delete();
     }
 
     public void atualizar(){
@@ -78,11 +78,19 @@ public class TrabalhosFeitos implements Serializable {
         this.descricao = descricao;
     }
 
-    public List<String> getFotos() {
-        return fotos;
+    public String getFotoAntes() {
+        return fotoAntes;
     }
 
-    public void setFotos(List<String> fotos) {
-        this.fotos = fotos;
+    public void setFotoAntes(String fotoAntes) {
+        this.fotoAntes = fotoAntes;
+    }
+
+    public String getFotoDepois() {
+        return fotoDepois;
+    }
+
+    public void setFotoDepois(String fotoDepois) {
+        this.fotoDepois = fotoDepois;
     }
 }
