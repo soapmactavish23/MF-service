@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.mfservice.R;
 import com.example.mfservice.config.UsuarioFirebase;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.model.ItemServico;
 import com.example.mfservice.model.ServicoOrcamento;
 import com.example.mfservice.model.Usuario;
@@ -25,6 +26,7 @@ public class ServicosActivity extends AppCompatActivity {
     private Usuario usuario;
     private ServicoOrcamento servicoOrcamento;
     private ItemServico itemServico;
+    private Helper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class ServicosActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Configuracoes Iniciais
+        helper = new Helper(this);
         //fab = findViewById(R.id.addServico);
 
         //Checar se o usuario e adm
@@ -89,7 +92,7 @@ public class ServicosActivity extends AppCompatActivity {
                 itemServico.salvar();
 
                 servicoOrcamento.salvar();
-                exibirMensagem("Orçamento enviado com sucesso!");
+                helper.exibirMensagem("Orçamento enviado com sucesso!");
             }
         });
         alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -100,10 +103,6 @@ public class ServicosActivity extends AppCompatActivity {
         });
         AlertDialog alert = alertDialog.create();
         alert.show();
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override

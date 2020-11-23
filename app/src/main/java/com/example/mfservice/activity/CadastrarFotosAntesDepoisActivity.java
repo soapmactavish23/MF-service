@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mfservice.R;
 import com.example.mfservice.config.ConfiguracaoFirebase;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.helper.Permissao;
 import com.example.mfservice.model.TrabalhosFeitos;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,6 +42,8 @@ public class CadastrarFotosAntesDepoisActivity extends AppCompatActivity {
     };
     private StorageReference storage;
     private TrabalhosFeitos trabalhosFeitos;
+    private Helper helper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +55,7 @@ public class CadastrarFotosAntesDepoisActivity extends AppCompatActivity {
         imagem1 = findViewById(R.id.imgTrabalhosFeitosAntes);
         imagem2 = findViewById(R.id.imgTrabalhosFeitosDepois);
         storage = ConfiguracaoFirebase.getStorageReference();
-
+        helper = new Helper(this);
 
         Bundle bundle = getIntent().getExtras();
         trabalhosFeitos = (TrabalhosFeitos) bundle.getSerializable("trabalhoFeito");
@@ -64,10 +67,6 @@ public class CadastrarFotosAntesDepoisActivity extends AppCompatActivity {
         Glide.with(this)
                 .applyDefaultRequestOptions(new RequestOptions().placeholder(R.drawable.galery_padrao))
                 .load(trabalhosFeitos.getFotoDepois()).into(imagem2);
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void salvarFotoAntes(String urlString){
@@ -90,13 +89,13 @@ public class CadastrarFotosAntesDepoisActivity extends AppCompatActivity {
                 trabalhosFeitos.setFotoAntes(urlConvertida);
                 trabalhosFeitos.salvar();
                 dialog.dismiss();
-                exibirMensagem("Foto salva com sucesso");
+                helper.exibirMensagem("Foto salva com sucesso");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 dialog.dismiss();
-                exibirMensagem("Fala ao fazer upload");
+                helper.exibirMensagem("Fala ao fazer upload");
                 Log.i("INFO", "FALHA: " + e.getMessage());
             }
         });
@@ -122,13 +121,13 @@ public class CadastrarFotosAntesDepoisActivity extends AppCompatActivity {
                 trabalhosFeitos.setFotoDepois(urlConvertida);
                 trabalhosFeitos.salvar();
                 dialog.dismiss();
-                exibirMensagem("Foto salva com sucesso");
+                helper.exibirMensagem("Foto salva com sucesso");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 dialog.dismiss();
-                exibirMensagem("Fala ao fazer upload");
+                helper.exibirMensagem("Fala ao fazer upload");
                 Log.i("INFO", "FALHA: " + e.getMessage());
             }
         });
@@ -186,7 +185,7 @@ public class CadastrarFotosAntesDepoisActivity extends AppCompatActivity {
         if(!trabalhosFeitos.getFotoDepois().equals("") || !trabalhosFeitos.getFotoAntes().equals("")){
             finish();
         }else{
-            exibirMensagem("Selecione as fotos antes de finalizar");
+            helper.exibirMensagem("Selecione as fotos antes de finalizar");
         }
     }
 

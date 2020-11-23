@@ -41,7 +41,7 @@ public class AdapterTrabalhosFeitos extends RecyclerView.Adapter<AdapterTrabalho
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_trabalhos_feitos, parent, false);
+        View item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_nome_descricao, parent, false);
         return new MyViewHolder(item);
     }
 
@@ -51,16 +51,16 @@ public class AdapterTrabalhosFeitos extends RecyclerView.Adapter<AdapterTrabalho
 
         holder.titulo.setText(trabalhosFeitos.getTitulo());
         holder.descricao.setText(trabalhosFeitos.getDescricao());
-
-        //Pega a primira imagem da lista
-        /*List<String> urlFotos = trabalhosFeitos.getFotos();
-        String urlCapa = urlFotos.get(1);*/
         String urlCapa = trabalhosFeitos.getFotoDepois();
 
         RequestOptions requestOptions = new RequestOptions();
+        requestOptions.centerInside();
         requestOptions.placeholder(R.drawable.galery_padrao);
-        requestOptions.fitCenter();
-        Glide.with(context).load(urlCapa).apply(requestOptions).into(holder.fotoTrabalhoFeito);
+
+        Glide.with(context)
+                .applyDefaultRequestOptions(requestOptions)
+                .load(urlCapa)
+                .into(holder.fotoTrabalhoFeito);
     }
 
     @Override
@@ -76,9 +76,9 @@ public class AdapterTrabalhosFeitos extends RecyclerView.Adapter<AdapterTrabalho
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            titulo = itemView.findViewById(R.id.txtTitulo);
-            descricao = itemView.findViewById(R.id.txtDescricao);
-            fotoTrabalhoFeito = itemView.findViewById(R.id.imgTrabalhosFeitos);
+            titulo = itemView.findViewById(R.id.txtNome);
+            descricao = itemView.findViewById(R.id.txtDepoimento);
+            fotoTrabalhoFeito = itemView.findViewById(R.id.img);
         }
     }
 }

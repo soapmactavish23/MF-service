@@ -26,6 +26,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.mfservice.R;
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.config.UsuarioFirebase;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.helper.Permissao;
 import com.example.mfservice.model.Cliente;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,6 +55,7 @@ public class CadastrarClientesActivity extends AppCompatActivity {
     private android.app.AlertDialog dialog;
     private Spinner spinnerCategoria;
     private Button btnExcluir;
+    private Helper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class CadastrarClientesActivity extends AppCompatActivity {
         spinnerCategoria = findViewById(R.id.spinnerCategoria);
         storage = ConfiguracaoFirebase.getStorageReference();
         btnExcluir = findViewById(R.id.btnExcluir);
+        helper = new Helper(this);
 
         //Bundle
         Bundle bundle = getIntent().getExtras();
@@ -137,7 +140,7 @@ public class CadastrarClientesActivity extends AppCompatActivity {
                 salvarCliente();
             }
         }else{
-            exibirMensagem("Preencha o Campo Nome do Cliente");
+            helper.exibirMensagem("Preencha o Campo Nome do Cliente");
         }
     }
 
@@ -180,7 +183,7 @@ public class CadastrarClientesActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        exibirMensagem("Fala ao fazer upload");
+                        helper.exibirMensagem("Fala ao fazer upload");
                         Log.i("INFO", "FALHA: " + e.getMessage());
                     }
                 });
@@ -218,7 +221,7 @@ public class CadastrarClientesActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        exibirMensagem("Fala ao fazer upload");
+                        helper.exibirMensagem("Fala ao fazer upload");
                         Log.i("INFO", "FALHA: " + e.getMessage());
                     }
                 });
@@ -272,10 +275,6 @@ public class CadastrarClientesActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return false;
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     public void excluirCliente(){

@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.mfservice.R;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.model.ServicoOrcamento;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -20,6 +21,7 @@ public class CadastrarServicosActivity extends AppCompatActivity {
     private TextInputEditText editTitulo;
     private Spinner spinnerCategoria;
     private android.app.AlertDialog dialog;
+    private Helper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class CadastrarServicosActivity extends AppCompatActivity {
         //Configuracoes Iniciais
         editTitulo = findViewById(R.id.editTitulo);
         spinnerCategoria = findViewById(R.id.spinnerCategoria);
+        helper = new Helper(this);
 
         //Configurando as categorias
         String[] categoria = getResources().getStringArray(R.array.categorias_servicos);
@@ -64,16 +67,9 @@ public class CadastrarServicosActivity extends AppCompatActivity {
             ServicoOrcamento servicoOrcamento = new ServicoOrcamento();
 
         }else{
-            exibirMsg("Preencha o campo Título");
+            helper.exibirMensagem("Preencha o campo Título");
         }
     }
 
-    private void exibirMsg(String msg){
-        Toast.makeText(
-                getApplicationContext(),
-                msg,
-                Toast.LENGTH_SHORT
-        ).show();
-    }
 
 }

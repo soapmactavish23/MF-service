@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.mfservice.R;
 import com.example.mfservice.config.ConfiguracaoFirebase;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.helper.Permissao;
 import com.example.mfservice.model.TrabalhosFeitos;
 import com.github.clans.fab.FloatingActionButton;
@@ -45,6 +46,7 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
     private TextInputEditText editTitulo, editDescricao;
     private TextView txtTitulo;
     private TrabalhosFeitos trabalhosFeitosSelecionado;
+    private Helper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
         editTitulo = findViewById(R.id.editTitulo);
         editDescricao = findViewById(R.id.editDescricao);
         txtTitulo = findViewById(R.id.txtTitulo);
+        helper = new Helper(this);
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
@@ -86,12 +89,8 @@ public class CadastrarTrabalhosFeitosActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }else{
-            exibirMensagem("Preencha o Campo Título");
+            helper.exibirMensagem("Preencha o Campo Título");
         }
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override

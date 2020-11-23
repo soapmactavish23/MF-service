@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.mfservice.R;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.model.ProdutoOrcamento;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -15,6 +16,7 @@ public class EditarProdutoOrcamentoActivity extends AppCompatActivity {
 
     private TextInputEditText editFormaPagamento, editPrazoEntrega, editValidade, editObs;
     private ProdutoOrcamento orcamentoSelecionado;
+    private Helper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class EditarProdutoOrcamentoActivity extends AppCompatActivity {
         editValidade = findViewById(R.id.editValidade);
         editObs = findViewById(R.id.editObs);
         Bundle bundle = getIntent().getExtras();
+        helper = new Helper(this);
 
         //Carregar Dados
         orcamentoSelecionado = (ProdutoOrcamento) bundle.getSerializable("orcamentoSelecionado");
@@ -57,15 +60,7 @@ public class EditarProdutoOrcamentoActivity extends AppCompatActivity {
         orcamentoSelecionado.setValidade(validade);
         orcamentoSelecionado.setObs(obs);
         orcamentoSelecionado.salvar();
-        exibirMensagem("Orçamento Atualizado");
+        helper.exibirMensagem("Orçamento Atualizado");
         finish();
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(
-                this,
-                msg,
-                Toast.LENGTH_SHORT
-        ).show();
     }
 }

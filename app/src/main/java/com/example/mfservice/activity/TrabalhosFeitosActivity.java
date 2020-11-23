@@ -187,10 +187,6 @@ public class TrabalhosFeitosActivity extends AppCompatActivity {
         adapterTrabalhosFeitos.notifyDataSetChanged();
     }
 
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
     public void recuperarTrabalhosFeitos(){
         dialog = new SpotsDialog.Builder()
                 .setContext(this)

@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.mfservice.R;
 import com.example.mfservice.config.ConfiguracaoFirebase;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.helper.Permissao;
 import com.example.mfservice.model.ClientesSatisfeitos;
 import com.example.mfservice.model.Produto;
@@ -48,6 +49,7 @@ public class CadastrarClientesSatisfeitosActivity extends AppCompatActivity {
     };
     private StorageReference storage;
     private android.app.AlertDialog dialog;
+    private Helper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class CadastrarClientesSatisfeitosActivity extends AppCompatActivity {
         editNomeCliente = findViewById(R.id.editNomeCliente);
         editDepoimento = findViewById(R.id.editDepoimento);
         storage = ConfiguracaoFirebase.getStorageReference();
-
+        helper = new Helper(this);
     }
 
     public void onClick(View view){
@@ -95,13 +97,13 @@ public class CadastrarClientesSatisfeitosActivity extends AppCompatActivity {
                     clientesSatisfeitos.setFoto(foto);
                     salvarClienteSatisfeito();
                 }else{
-                    exibirMensagem("Preencha o Campo Depoimento");
+                    helper.exibirMensagem("Preencha o Campo Depoimento");
                 }
             }else{
-                exibirMensagem("Preencha o Campo Nome do Cliente");
+                helper.exibirMensagem("Preencha o Campo Nome do Cliente");
             }
         }else{
-            exibirMensagem("Insira uma foto");
+            helper.exibirMensagem("Insira uma foto");
         }
     }
 
@@ -143,7 +145,7 @@ public class CadastrarClientesSatisfeitosActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                exibirMensagem("Fala ao fazer upload");
+                helper.exibirMensagem("Fala ao fazer upload");
                 Log.i("INFO", "FALHA: " + e.getMessage());
             }
         });
@@ -197,9 +199,5 @@ public class CadastrarClientesSatisfeitosActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return false;
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

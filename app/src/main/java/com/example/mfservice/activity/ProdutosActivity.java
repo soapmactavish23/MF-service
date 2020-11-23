@@ -127,8 +127,4 @@ public class ProdutosActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
 }

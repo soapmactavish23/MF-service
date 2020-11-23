@@ -24,12 +24,13 @@
     </string-array>
 
     <string-array name="linhas">
+        <item>PESO LIVRE</item>
+        <item>STRONG</item>
         <item>SIGMA</item>
         <item>URANOS</item>
         <item>CROMUS</item>
         <item>EVO</item>
-        <item>PESO LIVRE</item>
-        <item>NENHUM</item>
+        <item>TODAS</item>
     </string-array>
 
     <string-array name="status">

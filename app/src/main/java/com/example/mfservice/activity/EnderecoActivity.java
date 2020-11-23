@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import com.bumptech.glide.load.resource.bitmap.BitmapDrawableResource;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.model.ProdutoOrcamento;
 import com.example.mfservice.model.Usuario;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,6 +55,7 @@ public class EnderecoActivity extends AppCompatActivity implements OnMapReadyCal
     private EditText editMeuLocal;
     private Usuario usuario;
     private Marker marcadorMeuLocal, marcadorMinhaCasa;
+    private Helper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,7 @@ public class EnderecoActivity extends AppCompatActivity implements OnMapReadyCal
         editMeuLocal = findViewById(R.id.editMeuLocal);
         Bundle bundle = getIntent().getExtras();
         usuario = (Usuario) bundle.getSerializable("DadosUsuario");
+        helper = new Helper(this);
 
         //Inicializar mapas
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -119,11 +122,11 @@ public class EnderecoActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(DialogInterface dialogInterface, final int i) {
                 String end = inputEndereco.getText().toString();
                 if(end.isEmpty() || end.equals("")){
-                    exibirMensagem("Peencha o campo de endereço");
+                    helper.exibirMensagem("Peencha o campo de endereço");
                 }else{
                     usuario.setEndereco(end);
                     usuario.atualizar();
-                    exibirMensagem("Endereço Salvo com Sucesso");
+                    helper.exibirMensagem("Endereço Salvo com Sucesso");
                 }
             }
         });
@@ -135,10 +138,6 @@ public class EnderecoActivity extends AppCompatActivity implements OnMapReadyCal
         });
         AlertDialog alert = alertDialog.create();
         alert.show();
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private Address recuperarMeuEndereco(){

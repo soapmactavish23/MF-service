@@ -23,6 +23,7 @@ import com.example.mfservice.R;
 import com.example.mfservice.adapter.AdapterMensagem;
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.config.UsuarioFirebase;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.model.ItemServico;
 import com.example.mfservice.model.Mensagem;
 import com.example.mfservice.model.Usuario;
@@ -52,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
     private DatabaseReference firebaseRef, mensagensRef;
     private String idUsuario;
     private AlertDialog dialog;
+    private Helper helper;
 
     //private static String ID_MF_SERVICE = "cmlja25vZ3VlaXJhMTIzMUBnbWFpbC5jb20=";
     private static String ID_MF_SERVICE = "bWZzZXJ2aWNlcGFAZ21haWwuY29t";
@@ -71,6 +73,7 @@ public class ChatActivity extends AppCompatActivity {
         txtNome = findViewById(R.id.txtNomeChat);
         editMsg = findViewById(R.id.editMsg);
         recyclerMensagens = findViewById(R.id.recyclerMensagens);
+        helper = new Helper(this);
 
         //Inicializando componentes do firebase
         firebaseRef = ConfiguracaoFirebase.getFirebaseDatabase();
@@ -207,15 +210,7 @@ public class ChatActivity extends AppCompatActivity {
             editMsg.setText("");
             listaMensagens.clear();
         }else {
-            exibirToast("Preencha o campo de mensagem");
+            helper.exibirMensagem("Preencha o campo de mensagem");
         }
-    }
-
-    private void exibirToast(String msg){
-        Toast.makeText(
-                getApplicationContext(),
-                msg,
-                Toast.LENGTH_SHORT
-        ).show();
     }
 }

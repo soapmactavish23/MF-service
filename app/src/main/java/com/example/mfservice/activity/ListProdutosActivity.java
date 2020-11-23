@@ -29,6 +29,7 @@ import com.example.mfservice.adapter.AdapterProdutos;
 import com.example.mfservice.config.ConfiguracaoFirebase;
 import com.example.mfservice.helper.RecyclerItemClickListener;
 import com.example.mfservice.model.Produto;
+import com.example.mfservice.model.TrabalhosFeitos;
 import com.example.mfservice.model.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -147,7 +148,6 @@ public class ListProdutosActivity extends AppCompatActivity {
                     }
                 }
         ));
-
     }
 
     @Override
@@ -169,10 +169,6 @@ public class ListProdutosActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -238,7 +234,7 @@ public class ListProdutosActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String l = spinner.getSelectedItem().toString();
-                if(l.equals("NENHUM")){
+                if(l.equals("TODAS")){
                     recuperarPorLinha("");
                 }else{
                     recuperarPorLinha(l);

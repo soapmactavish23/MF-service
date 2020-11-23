@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mfservice.R;
 import com.example.mfservice.config.ConfiguracaoFirebase;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.model.Item;
 import com.example.mfservice.model.Produto;
 import com.example.mfservice.model.ProdutoOrcamento;
@@ -58,6 +59,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
     private List<Item> items = new ArrayList<>();
     private Boolean orcamentoPendente = false;
     private ProdutoOrcamento produtoOrcamento;
+    private Helper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         txtLinha = findViewById(R.id.txtLinha);
         txtPreco = findViewById(R.id.txtPreco);
         carouselView = findViewById(R.id.carouselView);
+        helper = new Helper(this);
 
         //Dados produto
         Bundle bundle = getIntent().getExtras();
@@ -162,9 +165,9 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
                     valorTotal = Integer.parseInt(produtoSelecionado.getPrecoVenda()) * Integer.parseInt(qtdProdutos);
                     item.setValorTotal(valorTotal + "");
                     item.salvar();
-                    exibirMensagem("Orçamento Enviado Com Sucesso!");
+                    helper.exibirMensagem("Orçamento Enviado Com Sucesso!");
                 }else{
-                    exibirMensagem("Preencha o campo de quantidade");
+                    helper.exibirMensagem("Preencha o campo de quantidade");
                 }
             }
         });
@@ -176,10 +179,6 @@ public class DetalhesProdutoActivity extends AppCompatActivity {
         });
         AlertDialog alert = alertDialog.create();
         alert.show();
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.blackcat.currencyedittext.CurrencyEditText;
 import com.bumptech.glide.Glide;
 import com.example.mfservice.R;
 import com.example.mfservice.config.ConfiguracaoFirebase;
+import com.example.mfservice.helper.Helper;
 import com.example.mfservice.helper.Permissao;
 import com.example.mfservice.model.Produto;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -66,12 +67,8 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
     private StorageReference storage;
     private Produto produto1;
     private Produto produtoSelecionado;
-    private Uri foto1;
-    private Uri foto2;
-    private Uri foto3;
-    private Uri foto4;
-    private Uri foto5;
-    private Uri foto6;
+    private Helper helper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +96,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         spinnerTipoProduto = findViewById(R.id.spinnerTipoProduto);
         spinnerLinha = findViewById(R.id.spinnerLinha);
         storage = ConfiguracaoFirebase.getStorageReference();
+        helper = new Helper(this);
 
         //Carregar Spinner de linha
         String[] linha = getResources().getStringArray(R.array.linhas);
@@ -231,18 +229,14 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
                     produto1.setProduto(produto);
                     salvarProduto();
                 } else {
-                    exibirMensagem("Preencha o Campo Preço de Venda");
+                    helper.exibirMensagem("Preencha o Campo Preço de Venda");
                 }
             }else{
-                exibirMensagem("Preencha o Campo Título");
+                helper.exibirMensagem("Preencha o Campo Título");
             }
         }else{
-            exibirMensagem("Selecione ao menos uma foto");
+            helper.exibirMensagem("Selecione ao menos uma foto");
         }
-    }
-
-    private void exibirMensagem(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void salvarProduto(){
@@ -291,7 +285,7 @@ public class CadastrarProdutoActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                exibirMensagem("Fala ao fazer upload");
+                helper.exibirMensagem("Fala ao fazer upload");
                 Log.i("INFO", "FALHA: " + e.getMessage());
             }
         });
